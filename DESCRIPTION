@@ -1,14 +1,30 @@
 Package: tidycensus.tutorials
-Title: What the Package Does (One Line, Title Case)
+Title: Tutorials for Analyzing US Census Data
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person(given = "David",
+           family = "Kane",
+           role = c("aut", "cre"),
+           email = "dave.kane@gmail.com",
+           comment = c(ORCID = "0000-0002-6660-3934"))
+Description: This package provides tutorials for "Tutorials for Analyzing US 
+  Census Data: Methods, Maps, and Models in R" by Kyle Walker. In an ideal
+  world, students would read the book and type in all the associated R commands
+  themselves. Sadly, that often does not happen. These tutorials allow
+  students to demonstrate (and their instructors to be sure) that all work
+  has been completed. See the tutorial.helpers package for a background
+  discussion of the tool and approach.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Imports:
+    tidycensus,
+    tutorial.helpers
 Suggests: 
-    testthat (>= 3.0.0)
+    idbr,
+    learnr,
+    rsconnect,
+    testthat (>= 3.0.0),
+    tidyverse
 Config/testthat/edition: 3
