@@ -28,6 +28,7 @@ Suggests:
     learnr,
     mapview,
     patchwork,
+    plotly,
     roxygen2,
     rsconnect,
     sf,
