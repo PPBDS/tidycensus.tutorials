@@ -23,12 +23,17 @@ Imports:
     tutorial.helpers
 Suggests: 
     ggthemes,
-    idbr,
     ipumsr,
+    leaflet,
     learnr,
+    mapview,
+    patchwork,
     roxygen2,
     rsconnect,
+    sf,
     testthat (>= 3.0.0),
-    tidyverse
+    tidyverse,
+    tigris,
+    tmap
 Config/testthat/edition: 3
 URL: https://ppbds.github.io/tidycensus.tutorials/
