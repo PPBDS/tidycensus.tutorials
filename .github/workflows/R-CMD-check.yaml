@@ -1,3 +1,13 @@
+# Below is the standard "check-release" Github Actions from the nice
+# folks at r-libs. It works fine. The problem is that I really want
+# to use renv with this package. But, if you do, you need to use
+# setup-renv instead of setup-r-dependencies, obviously. The problem
+# with that is that setup-renv seems unable to work with rstanarm, and
+# maybe other packages. Either it does not build at all or, if it does,
+# the cache stops working. Despite many hours of work, and Q/A with
+# Posit Community, I could not get it to function. So, no renv for
+# this package.
+
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
@@ -17,37 +27,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # Using setup-renv below makes pandoc necessary.
-
-      - uses: r-lib/actions/setup-pandoc@v2
-      
-      # Need because of ggalt package, perhaps because it is dependence on 
-      # the proj4 package.
-      
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libproj-dev
-
-
       - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
 
-      # The default value of the cache-version is 1, which just uses what is there. If
-      # you want to rebuild the cache, set this to >1.
-
-      - uses: r-lib/actions/setup-renv@v2
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          cache-version: 1
-
-      # Sure seems like check-r-package should take care of this installation, but
-      # it does not seem to do so. Note that you can't just include rcmdcheck in the
-      # DESCRIPTION file without causing failure to local calls to R CMD check.
-
-      - run: Rscript -e 'install.packages("rcmdcheck")'
+          extra-packages: any::rcmdcheck
+          needs: check
 
       - uses: r-lib/actions/check-r-package@v2
-
-
-
