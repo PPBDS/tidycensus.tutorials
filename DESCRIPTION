@@ -1,6 +1,6 @@
 Package: tidycensus.tutorials
 Title: Tutorials for Analyzing US Census Data
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: 
     person(given = "David",
            family = "Kane",
@@ -22,8 +22,11 @@ Imports:
     tidycensus,
     tutorial.helpers
 Suggests: 
+    ggthemes,
     idbr,
+    ipumsr,
     learnr,
+    roxygen2,
     rsconnect,
     testthat (>= 3.0.0),
     tidyverse

@@ -7,3 +7,6 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+tutorials/[^/]*/(?!(data|images|.*Rmd))
+^README\.Rmd$
+^TODO\.txt$

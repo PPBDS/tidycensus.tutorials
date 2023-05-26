@@ -18,7 +18,6 @@ library(tidycensus)
 library(idbr)
 library(tidyverse)
 library(stringr)
-library(primer.data)
 library(plotly)
 
 # Time limit is longer than the default because plotting was taking longer than
