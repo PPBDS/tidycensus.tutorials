@@ -1670,21 +1670,6 @@
       "Repository": "CRAN",
       "Hash": "95ef9167b75dde9d2ccc3c7528393e7e"
     },
-    "primer.data": {
-      "Package": "primer.data",
-      "Version": "0.7.2.9002",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "primer.data",
-      "RemoteUsername": "PPBDS",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "6429971650f863ed0723cd7f7553e9a34a569e54",
-      "Requirements": [
-        "R"
-      ],
-      "Hash": "caa58e3518bc5d917a916841d0ee8125"
-    },
     "processx": {
       "Package": "processx",
       "Version": "3.8.1",
@@ -1938,6 +1923,32 @@
         "sp"
       ],
       "Hash": "0d34b89b43e900467e60f5449226f3e3"
+    },
+    "roxygen2": {
+      "Package": "roxygen2",
+      "Version": "7.2.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "R6",
+        "brew",
+        "cli",
+        "commonmark",
+        "cpp11",
+        "desc",
+        "knitr",
+        "methods",
+        "pkgload",
+        "purrr",
+        "rlang",
+        "stringi",
+        "stringr",
+        "utils",
+        "withr",
+        "xml2"
+      ],
+      "Hash": "7b153c746193b143c14baa072bae4e27"
     },
     "rprojroot": {
       "Package": "rprojroot",

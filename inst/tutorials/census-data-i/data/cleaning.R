@@ -2,7 +2,6 @@ library(learnr)
 library(tutorial.helpers)
 library(tidyverse)
 library(stringr)
-library(primer.data)
 library(tidycensus)
 library(ipumsr)
 library(ggthemes)
@@ -64,10 +63,10 @@ write_rds(dallas_bachelors, "data/dallas_bachelors.rds")
    year = 2021,
    geometry = TRUE
  ) |>
-   mutate(percent = 100 * (value / summary_value)) 
- 
- # Whenever you run this with year = 2021, it says error in UseMethod("gather") : 
- # no applicable method for 'gather' applied to an object of class "character", It works for 2020 and all previous years, not 2021 though. 
+   mutate(percent = 100 * (value / summary_value))
+
+ # Whenever you run this with year = 2021, it says error in UseMethod("gather") :
+ # no applicable method for 'gather' applied to an object of class "character", It works for 2020 and all previous years, not 2021 though.
 
 write_rds(hennepin_race, "data/hennepin_race.rds")
 
@@ -95,10 +94,10 @@ write_rds(hennepin_race, "data/hennepin_race.rds")
  )
 
  write_rds(fertility_data, "data/fertility_data.rds")
- 
+
  years <- 2005:2019
  names(years) <- years
- 
+
  dekalb_years <- map_dfr(years, ~{
    get_acs(geography = "county",
            variables = "B25077_001",
@@ -107,6 +106,6 @@ write_rds(hennepin_race, "data/hennepin_race.rds")
            survey = "acs1",
            year = .x,)
  },.id = "Year")
- 
+
  write_rds(dekalb_years, "inst/tutorials/025-census-data-i/data/dekalb_years.rds")
- 
+
