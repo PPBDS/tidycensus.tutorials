@@ -92,7 +92,7 @@ The Census API works by accessing Census databases and tables. We can find these
 
 ### Exercise 1
 
-Let's try accessing the Decennial Census database. In order to do this, we'll use the `get_decennial()` function with the `geography`, and `variables` arguments.
+Let's try accessing the Decennial Census database. In order to do this, we'll use the `get_decennial()` function with the `geography`, `variables`, and `year` arguments.
 
 ### 
 
@@ -100,7 +100,7 @@ Let's try to find the total American population by state. First of all, we need 
 
 ### 
 
-Run `get_decennial()` below setting `geography` to  `"state"`, and `variables` to `"P001001"`.
+Run `get_decennial()` below setting `geography` to  `"state"`, `variables` to `"P001001"`, and `year` to `2010`.
 
 ```{r getting-data-1, exercise = TRUE}
 
@@ -108,7 +108,8 @@ Run `get_decennial()` below setting `geography` to  `"state"`, and `variables` t
 
 ```{r getting-data-1-hint-1, eval = FALSE}
 get_decennial(... = "...", 
-              variables = "...")
+              variables = "..."
+              ... = 2010)
 ```
 
 ### 
@@ -121,11 +122,11 @@ include_graphics("images/first_decennial.png")
 
 ### 
 
-The `geography` argument determines the scope of the data (such as `us` for the entire country and `county` for counties), and the `variables` argument defines which variables you want to use.
+The `geography` argument determines the scope of the data (such as `us` for the entire country and `county` for counties), the `variables` argument defines which variables you want to use, and the `year` argument defines the year that our data comes from.
 
 ### Exercise 2
 
-`get_decennial()` has a default value for the `year` argument, which is `2010`. Copy and paste your code from above and add the `year` argument, and set it to `2020`. Change the `variables` argument to `"P1_001N"`, because the `"P001001"` was renamed starting in 2020.
+Copy and paste your code from above and change the `year` argument, and set it to `2020`. Change the `variables` argument to `"P1_001N"`, because the `"P001001"` was renamed starting in 2020.
 
 ```{r getting-data-2, exercise = TRUE}
 
