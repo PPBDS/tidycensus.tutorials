@@ -18,6 +18,7 @@ library(learnr)
 library(tutorial.helpers)
 library(tidyverse)
 library(tidycensus)
+library(sf)
 library(ipumsr)
 library(ggthemes)
 library(tigris)
@@ -80,6 +81,8 @@ years <- 2005:2019
 
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
 ```
+
+<!-- DK: Just added in the sf package. Mention explicitly that this needs to be loaded. -->
 
 ## Introduction
 
