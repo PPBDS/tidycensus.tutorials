@@ -26,6 +26,8 @@ library(tmap)
 library(knitr)
 library(mapview)
 library(leaflet)
+library(glue)
+library(patchwork)
 
 # Time limit is longer than the default because plotting was taking longer than
 # the usual limit of 60 seconds, at least for some students.
@@ -1216,16 +1218,25 @@ Notice that our map is now interactive. We can hover above areas and see somethi
 
 ### Exercise 13
 
-Let's take it one step further. Logically, we can assume that tracts change with each decennial census. In order to show this, we will need the packages `patchwork` and `glue` along with `tidyverse`. 
+Let's take it one step further. Logically, we can assume that tracts change with each decennial census. In order to show this, we will need the packages `patchwork` and `glue` along with `tidyverse`. Load the `glue` and `patchwork` packages.
 
-### 
+```{r census-geographic-da-13, exercise = TRUE}
+
+```
+
+```{r census-geographic-da-13-hint-1, eval = FALSE}
+library(...)
+...(patchwork)
+```
+
+### Exercise 14
 
 Take a look below. We have created a variable for you already. This will focus on data from Tarrant County, Texas. The `map` function iterates through each year, grabbing a cartographic boundary file of Census tracts for the four decennial Census years.
 
 Below the `tracts()` function but inside the end `})`, start a graph with `ggplot()` and `year_tracts` as the argument. Add the `geom_sf()` layer and the `theme_void` layer. Finally, add the following layer: `labs(title = glue("{.x}: {nrow(year_tracts)} tracts"))`.
 
 
-```{r census-geographic-da-13, exercise = TRUE}
+```{r census-geographic-da-14, exercise = TRUE}
 yearly_plots <- map(seq(1990, 2020, 10), ~{
   year_tracts <- tracts("TX", "Tarrant", year = .x,
                         cb = TRUE)
@@ -1235,7 +1246,7 @@ yearly_plots <- map(seq(1990, 2020, 10), ~{
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r census-geographic-da-13-hint-1, eval = FALSE}
+```{r census-geographic-da-14-hint-1, eval = FALSE}
 yearly_plots <- map(seq(1990, 2020, 10), ~{
   year_tracts <- tracts("TX", "Tarrant", year = .x,
                         cb = TRUE)
@@ -1253,19 +1264,19 @@ By using the `glue` package in `labs()`, we create a custom title for each year 
 
 This generates the graphs, but we are not done yet. The graphs are now stored in the `yearly_plots` variable.  
 
-### Exercise 14
+### Exercise 15
 
 Now, we can use `patchwork` to facet the graphs.
 
 Copy and paste your code from above. Then below that, use `patchwork` to facet it. Check the hint to see how we should format this. We are indexing the `yearly_plot` object using double brackets. 
 
-```{r census-geographic-da-14, exercise = TRUE}
+```{r census-geographic-da-15, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r census-geographic-da-14-hint-1, eval = FALSE}
+```{r census-geographic-da-15-hint-1, eval = FALSE}
 ... 
 (yearly_plots[[1]] + ...[[2]]) / 
   (yearly_plots[[...]] + ...[[...]])
@@ -1286,7 +1297,7 @@ The forward slash that we included basically stacks graphs 1 and 2 on top of gra
 
 We've successfuly faceted a graph by time, how cool is that?!
 
-### Exercise 15
+### Exercise 16
 
 For geographic data to appropriately represent locations in mapping and spatial analysis, they must be referenced to some model of the Earth’s surface correctly. In simpler terms - a data model of the state of Florida should represent where Florida is actually located relative to other locations! This is defined as a coordinate reference system (CRS).
 
@@ -1296,13 +1307,13 @@ When plotting an object with `geom_sf()` we can specify a CRS with `coord_sf()`
 
 Create a variable named `fl_counties` and assign it to the `counties()` function with arguments `"FL"` and `cb = TRUE`. Below that, use `ggplot()` and `geom_sf()` to plot the variable. 
 
-```{r census-geographic-da-15, exercise = TRUE}
+```{r census-geographic-da-16, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r census-geographic-da-15-hint-1, eval = FALSE}
+```{r census-geographic-da-16-hint-1, eval = FALSE}
 fl_counties <- counties("...", cb = ...)
 ggplot(...) + 
   geom_sf()
@@ -1312,17 +1323,17 @@ ggplot(...) +
 
 Good! Now let's incorporate a specified CRS with `coord_sf()`.
 
-### Exercise 16
+### Exercise 17
 
 Copy and paste your code from before. Add the `coord_sf()` layer and set the argument `crs` to `3087`.
 
-```{r census-geographic-da-16, exercise = TRUE}
+```{r census-geographic-da-17, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r census-geographic-da-16-hint-1, eval = FALSE}
+```{r census-geographic-da-17-hint-1, eval = FALSE}
 ... + 
   coord_sf(crs = ...)
 ```
@@ -1335,33 +1346,11 @@ Now that we've specified a CRS, your graph should look like this:
 include_graphics("images/crs_mod.png")
 ```
 
-### Exercise 17
+### Exercise 18
 
 As seen in the earlier graph, the tick marks default to longitude and latitude. We can change this with the `datum` argument.
 
 Copy and paste your code from above. Within `coord_sf()`, add another argument (`datum`) and set it to `3087`.
-
-```{r census-geographic-da-17, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r census-geographic-da-17-hint-1, eval = FALSE}
-... + 
-  coord_sf(... = ..., datum = ...)
-```
-
-### 
-
-Now we know how to modify both our CRS, and our axis ticks. 
-
-### Exercise 18
-
-Let's shift gears to national US mapping. A common problem for national display of the United States is the fragmented nature of US states and territories geographically. A lot of times, programmers have to decide what to do with Hawaii, Alaska, and Puerto Rico. 
-
-Using the `tigris` function `states()` with `cb` set to `TRUE`, create a variable named `us_states` and assign it. Below that, use `ggplot()`, `geom_sf()` and `theme_void()` to construct a map. 
-
 
 ```{r census-geographic-da-18, exercise = TRUE}
 
@@ -1370,6 +1359,28 @@ Using the `tigris` function `states()` with `cb` set to `TRUE`, create a variabl
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r census-geographic-da-18-hint-1, eval = FALSE}
+... + 
+  coord_sf(... = ..., datum = ...)
+```
+
+### 
+
+Now we know how to modify both our CRS, and our axis ticks. 
+
+### Exercise 19
+
+Let's shift gears to national US mapping. A common problem for national display of the United States is the fragmented nature of US states and territories geographically. A lot of times, programmers have to decide what to do with Hawaii, Alaska, and Puerto Rico. 
+
+Using the `tigris` function `states()` with `cb` set to `TRUE`, create a variable named `us_states` and assign it. Below that, use `ggplot()`, `geom_sf()` and `theme_void()` to construct a map. 
+
+
+```{r census-geographic-da-19, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r census-geographic-da-19-hint-1, eval = FALSE}
 us_states <- states(cb = ...)
 ggplot(...) + 
   geom_sf() +
@@ -1380,7 +1391,7 @@ ggplot(...) +
 
 We can see how difficult it is to get anything useful from this map. 
 
-### Exercise 19
+### Exercise 20
 
 We can fix this by using a a projected coordinate reference system appropriate for the United States, such as the continental US Albers Equal Area projection. 
 
@@ -1389,13 +1400,13 @@ We can fix this by using a a projected coordinate reference system appropriate f
 Copy and paste your code from earlier and add the `coord_sf()` layer. Within this function, set `crs` to `"ESRI:102003"`. 
 
 
-```{r census-geographic-da-19, exercise = TRUE}
+```{r census-geographic-da-20, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r census-geographic-da-19-hint-1, eval = FALSE}
+```{r census-geographic-da-20-hint-1, eval = FALSE}
 ... + 
   coord_sf(crs = "...")
 ```
@@ -1404,19 +1415,19 @@ Copy and paste your code from earlier and add the `coord_sf()` layer. Within thi
 
 Notice that this reformats the graph and makes it much easier to analyze. 
 
-### Exercise 20
+### Exercise 21
 
 We can do this same thing and make it a lot easier through the `tigris` package. 
 
 Notice that we redefined `us_states` for you. Below that, create a new variable named `us_states_shifted` and assign it to the function `shift_geometry()` with `us_states` as the argument. 
 
-```{r census-geographic-da-20, exercise = TRUE}
+```{r census-geographic-da-21, exercise = TRUE}
 us_states <- states(cb = TRUE)
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r census-geographic-da-20-hint-1, eval = FALSE}
+```{r census-geographic-da-21-hint-1, eval = FALSE}
 us_states <- states(cb = TRUE)
 us_states_shifted <- shift_geometry(...)
 ```
@@ -1425,17 +1436,17 @@ us_states_shifted <- shift_geometry(...)
 
 `shift_geometry()` does all the reformatting work for us, so now we can just plot it.
 
-### Exercise 21
+### Exercise 22
 
 Copy and paste your code from above. Below that, create a plot using `ggplot()`, `geom_sf()`, and `theme_void()`.
 
-```{r census-geographic-da-21, exercise = TRUE}
+```{r census-geographic-da-22, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r census-geographic-da-21-hint-1, eval = FALSE}
+```{r census-geographic-da-22-hint-1, eval = FALSE}
 us_states <- states(cb = TRUE)
 us_states_shifted <- shift_geometry(...)
 ggplot(...) +
@@ -1453,7 +1464,7 @@ include_graphics("images/shift_geom.png")
 
 We have seen how we can `tigris` and its functions to reformat graphs. Learn more about `shift_geometry()` and its arguments [here](https://walker-data.com/census-r/census-geographic-data-and-applications-in-r.html#shifting-and-rescaling-geometry-for-national-us-mapping).
 
-### Exercise 22
+### Exercise 23
 
 Let's explore some other useful reformatting options, such as changing polygons to points. 
 
@@ -1461,7 +1472,7 @@ Let's explore some other useful reformatting options, such as changing polygons 
 
 Look below to what we've already written. `tx_places` uses the `places()` function to get places from Texas, and `tx_outline` gets the actual state outline of Texas using `states()`. Click run code. 
 
-```{r census-geographic-da-22, exercise = TRUE}
+```{r census-geographic-da-23, exercise = TRUE}
 tx_places <- places("TX", cb = TRUE) %>%
   filter(NAME %in% c("Dallas", "Fort Worth", "Houston",
                      "Austin", "San Antonio", "El Paso")) %>%
@@ -1479,25 +1490,21 @@ ggplot() +
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r census-geographic-da-22-hint-1, eval = FALSE}
-
-```
-
 ### 
 
 The issue with this graphic is that city geographies are pretty irregular All  cities spread across large areas, have holes, and  include portions that are far from the main city. We can fix this by making the polygons into points. 
 
-### Exercise 23
+### Exercise 24
 
 Copy and paste the code above. Before `ggplot()`, create a new variable named `tx_centroids`. Set this variable to the `st_centroid()` function with the argument `tx_places`. Then in the second `geom_sf()`, set `data` to `tx_centroids`, `color` to `"red"`, and `size` to `3`.
 
-```{r census-geographic-da-23, exercise = TRUE}
+```{r census-geographic-da-24, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r census-geographic-da-23-hint-1, eval = FALSE}
+```{r census-geographic-da-24-hint-1, eval = FALSE}
 ...
 
 tx_centroids <- st_centroids(...)
