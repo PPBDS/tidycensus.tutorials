@@ -817,7 +817,7 @@ Now that we have our data, let's plot it.
 
 ### Exercise 16
 
-Copy/paste your code from above. Pipe it into `ggplot()` setting `x` to `Year`, `y` to `estimate`, and `group` to `1`.
+Copy/paste your code from above. Pipe it into `ggplot()` setting `x` to `years`, `y` to `estimate`, and `group` to `1`.
 
 ```{r margin-of-error-16, exercise = TRUE}
 
@@ -827,7 +827,7 @@ Copy/paste your code from above. Pipe it into `ggplot()` setting `x` to `Year`, 
 
 ```{r margin-of-error-16-hint-1, eval = FALSE}
 ... +
-  ggplot(aes(x = Year, y = estimate, group = 1))
+  ggplot(aes(x = years, y = estimate, group = 1))
 ```
 
 ### 
