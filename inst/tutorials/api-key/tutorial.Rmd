@@ -1,6 +1,6 @@
 ---
 title: API Key
-author: Miriam Heiss
+author: Miriam Heiss and Mann Talati
 tutorial:
   id: api-key
 output:
@@ -21,6 +21,11 @@ library(plotly)
 
 # Time limit is longer than the default because plotting was taking longer than
 # the usual limit of 60 seconds, at least for some students.
+
+fertility_data <- read_rds("data/fertility_data.rds")
+
+fertility_data$tooltip <- paste0(fertility_data$name, ": ", 
+                                 round(fertility_data$tfr, 2))
 
 knitr::opts_chunk$set(echo = FALSE)
 options(tutorial.exercise.timelimit = 240, 
@@ -63,7 +68,7 @@ question_text(NULL,
 
 ### 
 
-The output should include the string "package:tidycensus". Kyle Walker is also the author of the **[tidycensus](https://walker-data.com/tidycensus/)** package.
+The output should include the string "package:tidycensus". Kyle Walker is also the author of the [**tidycensus**](https://walker-data.com/tidycensus/) package.
 
 ### Exercise 2
 
@@ -163,7 +168,7 @@ knitr::include_graphics("images/sweden-pop.png")
 
 ###
 
-Load the `idbr` package. On the next line, run `get_idb()` with `country` set to `"Sweden"`, `variables"` to `"pop"`, and `year` to `1990:2100`.
+Load the `idbr` package. On the next line, run `get_idb()` with `country` set to `"Sweden"`, `variables` to `"pop"`, and `year` to `1990:2100`.
 
 ```{r international-data-1, exercise = TRUE}
 
@@ -239,7 +244,6 @@ knitr::include_graphics("images/sweden-pop.png")
 ### 
 
 Nice! We just successfully made a plot using international Census data. 
-
 ###
 
 Go to [Chapter 12](https://walker-data.com/census-r/working-with-census-data-outside-the-united-states.html#visualizing-idb-data) of Kyle Walkers book on Census Data for information on more advanced plotting!
