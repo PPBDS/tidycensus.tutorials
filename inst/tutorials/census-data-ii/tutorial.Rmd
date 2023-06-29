@@ -1192,11 +1192,11 @@ question_text(NULL,
 
 ### 
 
-We have one more argument to add, `shape_file()`.
+We have one more argument to add, `shape_layer()`.
 
 ### Exercise 10
 
-Add `shape_file` and set it to `starts_with("US_tract_1910")`.
+Add `shape_layer()` and set it to `starts_with("US_tract_1910")`.
 
 ```{r nhgis-10}
 question_text(NULL,
@@ -1327,7 +1327,7 @@ Let's finish off our map.
 
 ### Exercise 17
 
-Add the `scale_fill_viridis_c()` layer  setting `options` to `"magma"` and `labels` to `scales::percent` so our axis has percentages.  Run `readLines("NHGIS_data.Rmd")` in the console and copy/paste the output below. 
+Add the `scale_fill_viridis_c()` layer  setting `option` to `"magma"` and `labels` to `scales::percent` so our axis has percentages.  Run `readLines("NHGIS_data.Rmd")` in the console and copy/paste the output below. 
 
 ```{r nhgis-17}
 question_text(NULL,
@@ -1365,8 +1365,6 @@ include_graphics("images/NHGIS_plt.png")
 ###
 
 This section should have gave you a basic understand of NHGIS, and how you can get and plot data from it. 
-
-
 
 ## Mapping points
 
