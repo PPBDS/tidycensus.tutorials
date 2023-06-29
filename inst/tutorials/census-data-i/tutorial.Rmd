@@ -1199,7 +1199,7 @@ This should get rid of the background and just show the tracts.
 
 We can also make our graphs interactive by using the `mapview` package. The package visualizes geographic data on an interactive, zoomable map.
 
-Below `la_tracts`, run `mapview()` with the variable as the argument.
+Below `la_tracts`, run `mapview()` with `la_tracts` as the argument.
 
 ```{r census-geographic-da-12, exercise = TRUE}
 la_tracts <- tracts("NM", "Los Alamos")

@@ -5,8 +5,8 @@ tutorial:
   id: census-data-ii
 output:
   learnr::tutorial:
-    progressive:  true
-    allow_skip::  true
+    progressive: yes
+    'allow_skip:': yes
 runtime: shiny_prerendered
 description: Mapping data in R
 ---
@@ -21,6 +21,8 @@ library(knitr)
 library(jsonlite)
 library(tmap)
 library(tigris)
+library(glue)
+library(patchwork)
 
 # Time limit is longer than the default because plotting was taking longer than
 # the usual limit of 60 seconds, at least for some students.
@@ -119,10 +121,9 @@ ms_map <- ms_hh_data %>%
 <!-- DK: Maybe revisit so that census api key is available for Github actions to use. -->
 
 ## Introduction
-
 Throughout this tutorial we will be learning how to access and analyze **microdata**. Microdata refers to individual-level data made available to researchers.
 
-###
+### 
 
 All files that we create in this tutorial should be placed in your `census_tutorial` subdirectory that you created in `Census Data I`.
 
@@ -247,11 +248,33 @@ get_pums(variables = c("..."),
 
 Vacant housing units are included in the dataset, but as they do not have person-level characteristics, all person-level variables like `AGEP` and `SEX` have values of `NA`. 
 
+<!-- DK: Removed this because we can't use View() within an Exercise code block, I think. -->
+
+<!-- ### Exercise 6 -->
+
+<!-- So by now we have been exposed to a couple PUMS variables such as `AGEP`, `SEX`, `PWGTP`, etc.  -->
+
+<!-- Run `View()` with `pums_variables` as the argument.  -->
+
+<!-- ```{r accessing-census-mic-6, exercise = TRUE} -->
+
+<!-- ``` -->
+
+<!-- <button onclick = "transfer_code(this)">Copy previous code</button> -->
+
+<!-- ```{r accessing-census-mic-6-hint-1, eval = FALSE} -->
+<!-- View(...) -->
+<!-- ``` -->
+
+<!-- ###  -->
+
+<!-- By running this, we get a look at various different PUMS variables. You’ll use information in the `var_code` column to fetch variables. Learn more about the other columns [here](https://walker-data.com/census-r/introduction-to-census-microdata.html#variables-available-in-the-acs-pums). -->
+
 ### Exercise 6
 
-So by now we have been exposed to a couple PUMS variables such as `AGEP`, `SEX`, `PWGTP`, etc. 
+We can also return additional contextual information for variables by using the `recode` argument.
 
-Run `View()` with `pums_variables` as the argument. 
+Copy and paste your code from exercise 3. Add the `recode` argument and set it to `TRUE`. 
 
 ```{r accessing-census-mic-6, exercise = TRUE}
 
@@ -260,26 +283,6 @@ Run `View()` with `pums_variables` as the argument.
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r accessing-census-mic-6-hint-1, eval = FALSE}
-View(...)
-```
-
-### 
-
-By running this, we get a look at various different PUMS variables. You’ll use information in the `var_code` column to fetch variables. Learn more about the other columns [here](https://walker-data.com/census-r/introduction-to-census-microdata.html#variables-available-in-the-acs-pums).
-
-### Exercise 7
-
-We can also return additional contextual information for variables by using the `recode` argument.
-
-Copy and paste your code from exercise 3. Add the `recode` argument and set it to `TRUE`. 
-
-```{r accessing-census-mic-7, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r accessing-census-mic-7-hint-1, eval = FALSE}
 wy_pums_recoded <- get_pums(
   variables = c("..."),
   state = "...",
@@ -293,7 +296,7 @@ wy_pums_recoded <- get_pums(
 
 Note that the dataset returns three new columns: `ST_label`, `HHT_label`, and `SEX_label` which include longer and more informative descriptions of the value labels.
 
-### Exercise 8
+### Exercise 7
 
 Sometimes getting PUMS data takes a very long time. We can subset data. 
 
@@ -301,13 +304,13 @@ Sometimes getting PUMS data takes a very long time. We can subset data.
 
 Copy and paste your code from exercise 3. Add the `variables_filter` argument and set it to a list where `SEX` is `2`. You will need to use the `list()` function.
 
-```{r accessing-census-mic-8, exercise = TRUE}
+```{r accessing-census-mic-7, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r accessing-census-mic-8-hint-1, eval = FALSE}
+```{r accessing-census-mic-7-hint-1, eval = FALSE}
 get_pums(
   variables = c("..."),
   state = "...",
@@ -321,7 +324,7 @@ get_pums(
 
 Look at the `SEX` column. Notice that every value is `2` due to the `variables_filter` argument.
 
-### Exercise 9
+### Exercise 8
 
 Some geographical information is available in the PUMS samples in the form of the **Public Use Microdata Area**, or **PUMA**.
 
@@ -329,13 +332,13 @@ Some geographical information is available in the PUMS samples in the form of th
 
 Run `pumas()` below setting state to `"WY"`, `cb` to `TRUE`, and `year` to `2019`.
 
-```{r accessing-census-mic-9, exercise = TRUE}
+```{r accessing-census-mic-8, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r accessing-census-mic-9-hint-1, eval = FALSE}
+```{r accessing-census-mic-8-hint-1, eval = FALSE}
 pumas(state = "...", cb = ..., year = ...)
 ```
 
@@ -347,17 +350,17 @@ The `pumas()` function returns PUMAs, where you can specify what state and year 
 
 The code above just spits out a bunch of random gibberish at us. Let's make this a nice map.  
 
-### Exercise 10
+### Exercise 9
 
 Copy and paste your code from above. Pipe this into `ggplot()`
 
-```{r accessing-census-mic-10, exercise = TRUE}
+```{r accessing-census-mic-9, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r accessing-census-mic-10-hint-1, eval = FALSE}
+```{r accessing-census-mic-9-hint-1, eval = FALSE}
 ... |> 
   ggplot()
 ```
@@ -366,17 +369,17 @@ Copy and paste your code from above. Pipe this into `ggplot()`
 
 This is the base for our map. 
 
-### Exercise 11
+### Exercise 10
 
 Copy and paste your code from above. Add the `geom_sf()` and `theme_void()` layers. 
 
-```{r accessing-census-mic-11, exercise = TRUE}
+```{r accessing-census-mic-10, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r accessing-census-mic-11-hint-1, eval = FALSE}
+```{r accessing-census-mic-10-hint-1, eval = FALSE}
 ... |> 
   ... + 
   geom_sf() + 
@@ -395,17 +398,17 @@ include_graphics("images/puma.png")
 
 These are the 5 PUMAS of Wyoming, which cover large rural areas.
 
-### Exercise 12
+### Exercise 11
 
 Copy and paste your code from above. Simply change the `state` argument in `pumas()` to `"NY"` instead of `"WY"`.
 
-```{r accessing-census-mic-12, exercise = TRUE}
+```{r accessing-census-mic-11, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r accessing-census-mic-12-hint-1, eval = FALSE}
+```{r accessing-census-mic-11-hint-1, eval = FALSE}
 pumas(state = "NY", cb = ..., year = ...) |> 
  ... + 
   ... + 
@@ -420,7 +423,7 @@ Notice that there are a lot more PUMAs, which are more aligned with community di
 
 You should now know how to create simple maps of PUMAs.
 
-### Exercise 13
+### Exercise 12
 
 PUMA information is also available in `get_pums()` under the variable code `PUMA`.
 
@@ -428,13 +431,13 @@ PUMA information is also available in `get_pums()` under the variable code `PUMA
 
 Copy and paste your code from exercise 3. In the `variables` column, change `"SEX"` to `"PUMA"`. Keep everything else the same. 
 
-```{r accessing-census-mic-13, exercise = TRUE}
+```{r accessing-census-mic-12, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r accessing-census-mic-13-hint-1, eval = FALSE}
+```{r accessing-census-mic-12-hint-1, eval = FALSE}
 get_pums(
   variables = c("PUMA", "..."),
   state = "...",
@@ -453,11 +456,11 @@ include_graphics("images/pums_PUMA.png")
 
 From this tibble, we can see PUMA is an attribute of PUMS data. 
 
-### Exercise 14
+### Exercise 13
 
 Copy and paste your code from above. Add the `puma` argument and set it to `"00500"` and have variables only set to `"AGEP"`.
 
-```{r accessing-census-mic-14, exercise = TRUE}
+```{r accessing-census-mic-13, exercise = TRUE}
 get_pums(
   variables = "AGEP",
   state = "...",
@@ -469,7 +472,7 @@ get_pums(
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r accessing-census-mic-14-hint-1, eval = FALSE}
+```{r accessing-census-mic-13-hint-1, eval = FALSE}
 
 ```
 
@@ -477,7 +480,7 @@ get_pums(
 
 We can utilize the `puma` argument to select a certain PUMA code. 
 
-### Exercise 15
+### Exercise 14
 
 We can also look at PUMAs from different states at the same time by changing the `state` argument.
 
@@ -485,13 +488,13 @@ We can also look at PUMAs from different states at the same time by changing the
 
 Copy and paste your code from above. Set the `state` argument to `"multiple"`. You **WILL** get an error, we will fix that in the next exercise. 
 
-```{r accessing-census-mic-15, exercise = TRUE}
+```{r accessing-census-mic-14, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r accessing-census-mic-15-hint-1, eval = FALSE}
+```{r accessing-census-mic-14-hint-1, eval = FALSE}
 get_pums(
   variables = "...",
   state = "multiple",
@@ -505,17 +508,17 @@ get_pums(
 
 Let's fix the error. 
 
-### Exercise 16
+### Exercise 15
 
 We now have to also modify the `puma` argument. Set `puma` to a vector with one element being `"WY" = "00500"`, and the other being `"UT" = "05001"`.
 
-```{r accessing-census-mic-16, exercise = TRUE}
+```{r accessing-census-mic-15, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r accessing-census-mic-16-hint-1, eval = FALSE}
+```{r accessing-census-mic-15-hint-1, eval = FALSE}
 get_pums(
   variables = "...",
   state = "...",
@@ -1249,7 +1252,7 @@ question_text(NULL,
 	rows = 3)
 ```
 
-###
+### 
 
 This should just show the tracts in NYC. Let's customize this. 
 
@@ -1266,7 +1269,7 @@ question_text(NULL,
 	rows = 3)
 ```
 
-###
+### 
 
 This allows us to do our calculations across the row. 
 
@@ -1283,7 +1286,7 @@ question_text(NULL,
 	rows = 3)
 ```
 
-###
+### 
 
 We've created a `total` column for the population of NYC. Let's finish our modifications.
 
@@ -1300,7 +1303,7 @@ question_text(NULL,
 	rows = 3)
 ```
 
-###
+### 
 
 Your code chunk should look like this:
 
@@ -1321,7 +1324,7 @@ question_text(NULL,
 	rows = 3)
 ```
 
-###
+### 
 
 Let's finish off our map. 
 
@@ -1338,7 +1341,7 @@ question_text(NULL,
 	rows = 3)
 ```
 
-###
+### 
 
 Almost done!
 
@@ -1361,13 +1364,11 @@ Your graph should look like this:
 include_graphics("images/NHGIS_plt.png")
 ```
 
-
-###
+### 
 
 This section should have gave you a basic understand of NHGIS, and how you can get and plot data from it. 
 
 ## Mapping points
-
 <!-- This is the section for mapping latitude and longitude -->
 
 <!-- Address to lat long converter found here: https://www.census.gov/programs-surveys/geography/technical-documentation/complete-technical-documentation/census-geocoder.html may be a good idea to download a bunch of addresses and then map them. Library found here: https://cran.r-project.org/web/packages/tidygeocoder/tidygeocoder.pdf -->
@@ -1412,7 +1413,7 @@ Visit [this website](https://usda-fns.hub.arcgis.com/datasets/USDA-FNS::snap-sto
 
 Fill out the request form, filtering it so that you only receive data about the store name, state, county, longitude, and latitude.
 
-###
+### 
 
 Then, filter out the state and county so that you only request data about Illinois and Cook County. Make sure to use acronyms like "IL" and "COOK" rather than the full name. Make sure to click "enter" to apply the filter.
 
@@ -1675,7 +1676,6 @@ question_text(NULL,
 ```
 
 ## Summary
-
 From this tutorial, you should have a basic understanding of microdata, how to access and manipulate it, and some special databases such as NHGIS and IPUMS. Additionally, you have some experience with mapping longitude and latitude.
 
 ```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}

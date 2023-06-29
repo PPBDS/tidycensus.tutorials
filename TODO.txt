@@ -1,5 +1,9 @@
 Break up the current tutorials into sections which map directly onto different chapters.
 
+Make sure to only load the libraries which are needed in that chapter.
+
+Introduce all the necessary libraries with questions, telling students to load each of them by hand, each in a separate question.
+
 Add a package help page.
 
 
