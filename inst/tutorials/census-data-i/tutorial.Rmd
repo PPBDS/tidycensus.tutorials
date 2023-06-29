@@ -1862,6 +1862,8 @@ Initialize the graph using `tm_shape()` with `hennepin_race` as the argument. Ad
   tm_facets(by = "...", scale.factor = ...)
 ```
 
+Note: this will result in an error that will be fixed in the next exercise.
+
 ### 
 
 This facets the graph by the `variable` column. 
