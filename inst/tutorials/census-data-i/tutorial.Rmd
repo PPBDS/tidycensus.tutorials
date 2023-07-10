@@ -963,8 +963,6 @@ Load the `tigris` package
 
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
 ```{r census-geographic-da-1-hint-1, eval = FALSE}
 library(...)
 ```
