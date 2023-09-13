@@ -1121,7 +1121,7 @@
     },
     "knitr": {
       "Package": "knitr",
-      "Version": "1.43",
+      "Version": "1.44",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1133,7 +1133,7 @@
         "xfun",
         "yaml"
       ],
-      "Hash": "9775eb076713f627c07ce41d8199d8f6"
+      "Hash": "60885b9f746c9dfaef110d070b5f7dc0"
     },
     "labeling": {
       "Package": "labeling",
@@ -2146,21 +2146,20 @@
     },
     "stars": {
       "Package": "stars",
-      "Version": "0.6-3",
+      "Version": "0.6-4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "abind",
         "classInt",
-        "lwgeom",
         "methods",
         "parallel",
         "rlang",
         "sf",
         "units"
       ],
-      "Hash": "aabf1b52077015da97f3cb6aec3d4754"
+      "Hash": "8b4284bf9fddfb481d516877a2045023"
     },
     "stringi": {
       "Package": "stringi",
@@ -2443,7 +2442,7 @@
     },
     "tmap": {
       "Package": "tmap",
-      "Version": "3.3-3",
+      "Version": "3.3-4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -2468,7 +2467,7 @@
         "viridisLite",
         "widgetframe"
       ],
-      "Hash": "7c1c0624e51105988b579d77289cea7b"
+      "Hash": "c65363bc002492caf754352499ce2386"
     },
     "tmaptools": {
       "Package": "tmaptools",
