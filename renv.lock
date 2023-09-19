@@ -1886,7 +1886,7 @@
     },
     "rmarkdown": {
       "Package": "rmarkdown",
-      "Version": "2.24",
+      "Version": "2.25",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1906,7 +1906,7 @@
         "xfun",
         "yaml"
       ],
-      "Hash": "3854c37590717c08c32ec8542a2e0a35"
+      "Hash": "d65e35823c817f09f4de424fcdfa812a"
     },
     "rnaturalearthdata": {
       "Package": "rnaturalearthdata",
@@ -2493,9 +2493,14 @@
     },
     "tutorial.helpers": {
       "Package": "tutorial.helpers",
-      "Version": "0.2.5",
-      "Source": "Repository",
-      "Repository": "CRAN",
+      "Version": "0.2.5.9007",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "tutorial.helpers",
+      "RemoteUsername": "PPBDS",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "9ddf724344d967df87474bdf156a020895730bb8",
       "Requirements": [
         "R",
         "dplyr",
@@ -2511,7 +2516,7 @@
         "stringr",
         "tibble"
       ],
-      "Hash": "fc03bccd0618261b664d8b00692001a6"
+      "Hash": "2dc58c44b51a11e4d6db1a6f84ff619e"
     },
     "tzdb": {
       "Package": "tzdb",
