@@ -12,10 +12,10 @@ description: "Tutorial for Chapter 3"
 
 ```{r setup, include = FALSE}
 library(learnr)
-library(knitr)
 library(tutorial.helpers)
 library(tidycensus)
 library(tidyverse)
+
 
 knitr::opts_chunk$set(echo = FALSE)
 options(tutorial.exercise.timelimit = 60, 
