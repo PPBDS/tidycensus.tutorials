@@ -13,6 +13,9 @@ description: "Tutorial for Chapter 3"
 ```{r setup, include = FALSE}
 library(learnr)
 library(tutorial.helpers)
+library(tidycensus)
+library(tidyverse)
+
 
 knitr::opts_chunk$set(echo = FALSE)
 options(tutorial.exercise.timelimit = 60, 
@@ -25,15 +28,210 @@ options(tutorial.exercise.timelimit = 60,
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
 ```
 
+```{r filter-1, exercise = TRUE}
+```
 
+
+```{r filter-1-hint-1, eval = FALSE}
+
+```
+
+```{r, include = FALSE}
+
+```
 
 ## Introduction
+
+Lets learn how to use tidyverse tools to gain insight on US Census data. We (mostly) follow the approach of [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker.
 ###
 
 <!-- Two to four sentence about the main topics covered in this tutorial. Why are we here? What will students get out of giving you 90 minutes of their lives? How does this tutorial connect to other tutorials? -->
 
 ## First section (use sentence case)
+
+### Exercise 1
+
+Start your code by loading in the **tidyverse** and **tidycensus** package
+
+```{r filter-1, exercise = TRUE}
+```
+
+
+```{r filter-1-hint-1, eval = FALSE}
+library(...)
+library(...)
+```
+
+```{r, include = FALSE}
+library(tidyverse)
+library(tidycensus)
+```
+
+
+The tidyverse is a collection of R packages that are designed to work together in common data wrangling, analysis, and visualization projects. The **tidyverse** specifically a package itself, but rather loads several core packages within the tidyverse.
+
+### Exercise 2
+For a first example, let’s request data on median age from the 2016-2020 ACS with `get_acs()` for all counties in the United States. Set median_age to `get_acs()` with geography = "county", variables = B01002_001, and the year = 2020.
+
+
+
+```{r filter-2, exercise = TRUE}
+```
+
+
+```{r filter-2-hint-1, eval = FALSE}
+median_age <- get_acs(
+  geography = "...",
+  variables = "B01002_001",
+  year = ...
+)
+```
+
+```{r, include = FALSE}
+median_age <- get_acs(
+  geography = "county",
+  variables = "B01002_001",
+  year = 2020
+)
+```
+
+The default method for printing data used by the **tibble** package shows the first 10 rows of the dataset, which in this case prints counties in Alabama. On the right hand side of the tibble you can see both moe and estimate, both of which we will talk about later in the chapter. 
+
+### Exercise 3
+
+`arrange()` sorts a dataset by values in one or more columns and returns the sorted result. To view the dataset in ascending order of a given column, supply the data object(median_age) and a column name(let's do estimate) to the arrange() function.
+
+```{r filter-3, exercise = TRUE}
+```
+
+
+```{r filter-3-hint-1, eval = FALSE}
+arrange(..., estimate)
+```
+
+```{r, include = FALSE}
+arrange(median_age, estimate)
+```
+
+Per the 2016-2020 ACS, the youngest county is De Baca County, New Mexico. Two of the five youngest “counties” in the United States are independent cities in Virginia, which are treated as county-equivalents. 
+
+### Exercise 4
+
+New lets try to find the oldest counties in the US by median age. Use the `arrange()` function for the same dataset but instead use `desc(estimate)`.
+
+```{r filter-4, exercise = TRUE}
+```
+
+
+```{r filter-4-hint-1, eval = FALSE}
+arrange(median_age, desc(...))
+```
+
+```{r, include = FALSE}
+arrange(median_age, desc(estimate))
+```
+
+Notice how Sumter county is the oldest county in our tibble. The **dplyr** package in the tidyverse has a variety of functions including `arrange()`.
+
 ###
+
+Now try to answer the question: How many counties in the US have a median age of 50 or older?
+
+### Exercise 5
+
+Lets try filtering our median_age data set. Use `arrange()`, with median_age and our estimate >= 50. 
+
+
+```{r filter-1, exercise = TRUE}
+```
+
+
+```{r filter-5-hint-1, eval = FALSE}
+filter(median_age, estimate >= 50)
+```
+
+```{r, include = FALSE}
+filter(median_age, ... >= 50)
+```
+
+
+
+The `filter()` function queries a data set for rows where a given condition evaluates to TRUE, and retains those rows only. In this case, the data set is filtering our median_age data set for counties that have a median age of 50 or older. 
+
+### 
+
+What if we want to separate the columns into county and state?
+
+### Exercise 6 
+
+Notice above how our column for location is called NAME. To make it less confusing, use the `separate()` function with your dataset median_age, the column NAME, into = c("county","state") , and sep = ", "  
+
+
+
+```{r filter-6, exercise = TRUE}
+```
+
+
+```{r filter-6-hint-1, eval = FALSE}
+separate(
+  median_age,
+  NAME,
+  into = c(..., ...),
+  sep = ", "
+)
+```
+
+```{r, include = FALSE}
+separate(
+  median_age,
+  NAME,
+  into = c("county", "state"),
+  sep = ", "
+)
+```
+
+
+
+The `seperate()` function of the **dyplr** package allows us to separate a column. 
+###
+
+Since some data have too much information to count, we can normalize this data by dividing the total population into different variables.
+
+### Exercise 7 
+
+Lets do this by setting race_vars to White = "B03002_003", Black = "B03002_004",
+Native = "B03002_005", Asian = "B03002_006", HIPI = "B03002_007", and Hispanic = "B03002_012". 
+  
+```{r filter-7, exercise = TRUE}
+```
+
+
+```{r filter-7-hint-1, eval = FALSE}
+race_vars <- c(
+  White = "B03002_003",
+  Black = "...",
+  Native = "B03002_005",
+  Asian = "...",
+  HIPI = "B03002_007",
+  Hispanic = "..."
+)
+```
+
+```{r, include = FALSE}
+race_vars <- c(
+  White = "B03002_003",
+  Black = "B03002_004",
+  Native = "B03002_005",
+  Asian = "B03002_006",
+  HIPI = "B03002_007",
+  Hispanic = "B03002_012"
+)
+```
+
+This separates our dataset race_vars to different variables. 
+
+###
+Now with this data, lets 
 
 ## Summary
 ###
