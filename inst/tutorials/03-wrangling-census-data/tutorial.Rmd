@@ -56,6 +56,7 @@ library(tidycensus)
 The tidyverse is a collection of R packages that are designed to work together in common data wrangling, analysis, and visualization projects. The **tidyverse** specifically a package itself, but rather loads several core packages within the tidyverse.
 
 
+
 ### Exercise 2
 
 For a first example, let’s request data on median age from the 2016-2020 ACS with `get_acs()` for all counties in the United States. Set median_age to `get_acs()` with geography = "county", variables = B01002_001, and the year = 2020.
@@ -84,6 +85,8 @@ median_age <- get_acs(
 
 The default method for printing data used by the **tibble** package shows the first 10 rows of the dataset, which in this case prints counties in Alabama. On the right hand side of the tibble you can see both moe and estimate, both of which we will talk about later in the chapter. 
 
+
+
 ### Exercise 3
 
 `arrange()` sorts a dataset by values in one or more columns and returns the sorted result. To view the dataset in ascending order of a given column, supply the data object(median_age) and a column name(let's do estimate) to the arrange() function.
@@ -102,6 +105,7 @@ arrange(median_age, estimate)
 
 Per the 2016-2020 ACS, the youngest county is De Baca County, New Mexico. Two of the five youngest “counties” in the United States are independent cities in Virginia, which are treated as county-equivalents. 
 
+
 ### Exercise 4
 
 New lets try to find the oldest counties in the US by median age. Use the `arrange()` function for the same dataset but instead use `desc(estimate)`.
@@ -119,6 +123,8 @@ arrange(median_age, desc(estimate))
 ```
 
 Notice how Sumter county is the oldest county in our tibble. The **dplyr** package in the tidyverse has a variety of functions including `arrange()`.
+
+
 
 ### 
 
@@ -213,9 +219,166 @@ race_vars <- c(
 
 This separates our dataset race_vars to different variables. 
 
+### Exercise 8
+
+Let's try accessing the Decennial Census database. In order to do this, we'll use the `get_decennial()` function with the `geography`, `variables`, and `year` arguments.
+
 ### 
 
-Now with this data, lets 
+Let's try to find the total American population by state. First of all, we need to access the variable containing these populations, which is `P001001`.
+
+### 
+
+Run `get_decennial()` below setting `geography` to  `"state"`, `variables` to `"P001001"`, and `year` to `2010`.
+
+```{r first-section-use-ce-8, exercise = TRUE}
+
+```
+
+```{r first-section-use-ce-8-hint-1, eval = FALSE}
+get_decennial(... = "...", 
+              variables = "..."
+              ... = 2010)
+```
+
+
+
+### 
+
+This should return a tibble with 52 rows and 4 columns.
+
+
+### 
+
+The `geography` argument determines the scope of the data (such as `us` for the entire country and `county` for counties), the `variables` argument defines which variables you want to use, and the `year` argument defines the year that our data comes from.
+
+### Exercise 9
+
+Copy and paste your code from above and change the `year` argument, and set it to `2020`. Change the `variables` argument to `"P1_001N"`, because the `"P001001"` was renamed starting in 2020.
+
+```{r first-section-use-ce-9, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r first-section-use-ce-9-hint-1, eval = FALSE}
+get_decennial(... = "...", 
+              variables = "...",
+              year = ...)
+```
+
+### 
+
+By changing the `year` argument, we can specify when we want our data to be from. 
+
+### Exercise 10
+
+Along with the arguments we have already learned, there is also the `sumfile` argument, or "summary file". 
+
+### 
+
+Run the `get_decennial()` function below setting `geography` to `"state"`, `variables` to `"P1_005N"`, `year` to `2020`, and `sumfile` to `"pl"`.
+
+```{r first-section-use-ce-10, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r first-section-use-ce-10-hint-1, eval = FALSE}
+get_decennial(geography = "...",
+        variables      = "...",
+        year = ...,
+        sumfile = "..."
+)
+```
+
+### 
+
+This retrieves information on the American Indian & Alaska Native population by state from the 2020 decennial Census. The `pl` summary file is one type that is a limited subset of variables from the decennial US Census to be used for legislative redistricting. 
+
+To learn more about the `sumfile`, we again recommend Walker's [book](https://walker-data.com/census-r/an-introduction-to-tidycensus.html#getting-started-with-tidycensus).
+
+### Exercise 11
+
+Just as `get_decennial()` gets information from the Decennial Census, `get_acs()` gets information from the **A**merican **C**ommunity **S**urvey. 
+
+### 
+
+Run the `get_acs()` function setting `geography` to  `"state"`, `variables` to `"B05006_150"` and `year` to `2021`.
+
+```{r first-section-use-ce-11, exercise = TRUE}
+
+```
+
+```{r first-section-use-ce-11-hint-1, eval = FALSE}
+get_acs(geography = "...",
+        variables      = "...",
+        year = ...
+)
+```
+
+### 
+
+The example above fetches data on the number of residents born in Mexico by state. Notice that the tibble produced has an `estimate` and a `moe` column rather than a `value` column like the Decennial Census data. 
+
+<!-- DK: Awkward. -->
+
+**This is important.**
+
+### Exercise 12
+
+Along with the arguments, we've already learned, there is also a `survey` argument. This argument defaults to 5 year periods if not specified. We can change it to a one-year period rather than a default 5-year period by adding `survey = "acs1"`.
+
+### 
+
+Run `get_acs` below setting `geography` to `"state"`, `variables` to `"B05006_150"`, `survey` = `"acs1"`, and `year` to `2021`.
+
+
+```{r first-section-use-ce-12, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r first-section-use-ce-12-hint-1, eval = FALSE}
+get_acs(... = "...", 
+        variables = "...", 
+        survey = "...",
+        ... = 2019)
+```
+
+### 
+
+The above function yields data on the number of residents born in Mexico by state in the year of just 2021 instead of a 5-year period as earlier. 
+
+### 
+
+Notice that the GEOID column contains the [FIPS code](https://transition.fcc.gov/oet/info/maps/census/fips/fips.txt#:~:text=FIPS%20codes%20are%20numbers%20which,to%20which%20the%20county%20belongs.) of the area the data covers. This code is a standardized way to identify different geographical areas. It gets larger as the area under consideration narrows. The FIPS for Massachusetts is 25. For Middlesex County within Massachusetts, the FIPS is 25017.
+
+
+### Exercise 13
+
+Rather than using the `variables` argument, you can supply a table name to the `table` parameter in `get_acs()`; this will return data for every variable in that table. 
+
+Run `get_acs()` below setting `geography` to `"state"`, `table` to `"B01001"`, and `year` to `2021`
+
+```{r first-section-use-ce-13, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r first-section-use-ce-13-hint-1, eval = FALSE}
+get_acs(... = "...", 
+        table = "...",
+        ... = ...)
+```
+
+### 
+
+This code got all variables associated with table `B01001`, which covers sex broken down by age, from the 2017-2021 5-year ACS.
 
 ## Summary
 ### 
