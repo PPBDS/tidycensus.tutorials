@@ -29,7 +29,9 @@ options(tutorial.exercise.timelimit = 60,
 ```
 
 ## Introduction
-Lets learn how to use tidyverse tools to gain insight on US Census data. We (mostly) follow the approach of [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker.
+
+Let's learn how to use tidyverse tools to gain insight on US Census data. We (mostly) follow the approach of [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker.
+
 ### 
 
 <!-- Two to four sentence about the main topics covered in this tutorial. Why are we here? What will students get out of giving you 90 minutes of their lives? How does this tutorial connect to other tutorials? -->
@@ -241,6 +243,11 @@ get_decennial(... = "...",
               ... = 2010)
 ```
 
+```{r, include=FALSE}
+get_decennial(geography = "state", 
+              variables = "P001001",
+              year = 2010)
+```
 
 
 ### 
