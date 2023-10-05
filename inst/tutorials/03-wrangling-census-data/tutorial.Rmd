@@ -484,15 +484,7 @@ oglala_lakota_age <- get_acs(
 )
 ```
 
-```{r, include = FALSE}
-oglala_lakota_age <- get_acs(
-  geography = "county",
-  state = "SD",
-  county = "Oglala Lakota",
-  table = "B01001",
-  year = 2010
-)
-```
+
 
 ###
 We get an error because ten years ago, this county was named "Shannon". 
