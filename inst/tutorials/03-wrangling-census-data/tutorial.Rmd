@@ -29,23 +29,26 @@ options(tutorial.exercise.timelimit = 60,
 ```
 
 ## Introduction
-
 Let's learn how to use tidyverse tools to gain insight on US Census data. We (mostly) follow the approach of [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You will learn key functions inside the tidyverse and tidycensus package including get_acs(), filter(), and arrange(). You will also learn how to be cautious while comparing graphs because of certain errors.  
 
 ### 
 
 <!-- Two to four sentence about the main topics covered in this tutorial. Why are we here? What will students get out of giving you 90 minutes of their lives? How does this tutorial connect to other tutorials? -->
 
-## First section (use sentence case)
+## The tidyverse
+### 
+
+The tidyverse is a collection of R packages that are designed to work together in common data wrangling, analysis, and visualization projects. Many of these R packages, maintained by RStudio, are among the most popular R packages worldwide.
+
 ### Exercise 1
 
 Start your code by loading in the **tidyverse** and **tidycensus** package
 
-```{r first-section-use-se-1, exercise = TRUE}
+```{r the-tidyverse-1, exercise = TRUE}
 
 ```
 
-```{r first-section-use-se-1-hint-1, eval = FALSE}
+```{r the-tidyverse-1-hint-1, eval = FALSE}
 library(...)
 library(...)
 ```
@@ -58,18 +61,17 @@ library(tidycensus)
 The tidyverse is a collection of R packages that are designed to work together in common data wrangling, analysis, and visualization projects. The **tidyverse** specifically a package itself, but rather loads several core packages within the tidyverse.
 
 
-
 ### Exercise 2
 
 For a first example, let’s request data on median age from the 2016-2020 ACS with `get_acs()` for all counties in the United States. Set median_age to `get_acs()` with geography = "county", variables = B01002_001, and the year = 2020.
 
 
 
-```{r first-section-use-se-2, exercise = TRUE}
+```{r the-tidyverse-2, exercise = TRUE}
 
 ```
 
-```{r first-section-use-se-2-hint-1, eval = FALSE}
+```{r the-tidyverse-2-hint-1, eval = FALSE}
 median_age <- get_acs(
   geography = "...",
   variables = "B01002_001",
@@ -93,11 +95,11 @@ The default method for printing data used by the **tibble** package shows the fi
 
 `arrange()` sorts a dataset by values in one or more columns and returns the sorted result. To view the dataset in ascending order of a given column, supply the data object(median_age) and a column name(let's do estimate) to the arrange() function.
 
-```{r first-section-use-se-3, exercise = TRUE}
+```{r the-tidyverse-3, exercise = TRUE}
 
 ```
 
-```{r first-section-use-se-3-hint-1, eval = FALSE}
+```{r the-tidyverse-3-hint-1, eval = FALSE}
 arrange(..., estimate)
 ```
 
@@ -112,11 +114,11 @@ Per the 2016-2020 ACS, the youngest county is De Baca County, New Mexico. Two of
 
 New lets try to find the oldest counties in the US by median age. Use the `arrange()` function for the same dataset but instead use `desc(estimate)`.
 
-```{r first-section-use-se-4, exercise = TRUE}
+```{r the-tidyverse-4, exercise = TRUE}
 
 ```
 
-```{r first-section-use-se-4-hint-1, eval = FALSE}
+```{r the-tidyverse-4-hint-1, eval = FALSE}
 arrange(median_age, desc(...))
 ```
 
@@ -137,11 +139,11 @@ Now try to answer the question: How many counties in the US have a median age of
 Lets try filtering our median_age data set. Use `arrange()`, with median_age and our estimate >= 50. 
 
 
-```{r first-section-use-se-5, exercise = TRUE}
+```{r the-tidyverse-5, exercise = TRUE}
 
 ```
 
-```{r first-section-use-se-5-hint-1, eval = FALSE}
+```{r the-tidyverse-5-hint-1, eval = FALSE}
 filter(median_age, ... >= 50)
 ```
 
@@ -161,11 +163,11 @@ Notice above how our column for location is called NAME. To make it less confusi
 
 
 
-```{r first-section-use-se-6, exercise = TRUE}
+```{r the-tidyverse-6, exercise = TRUE}
 
 ```
 
-```{r first-section-use-se-6-hint-1, eval = FALSE}
+```{r the-tidyverse-6-hint-1, eval = FALSE}
 separate(
   median_age,
   NAME,
@@ -193,11 +195,11 @@ Since some data have too much information to count, we can normalize this data b
 Lets do this by setting race_vars to White = "B03002_003", Black = "B03002_004",
 Native = "B03002_005", Asian = "B03002_006", HIPI = "B03002_007", and Hispanic = "B03002_012". 
   
-```{r first-section-use-se-7, exercise = TRUE}
+```{r the-tidyverse-7, exercise = TRUE}
 
 ```
 
-```{r first-section-use-se-7-hint-1, eval = FALSE}
+```{r the-tidyverse-7-hint-1, eval = FALSE}
 race_vars <- c(
   White = "B03002_003",
   Black = "...",
@@ -233,22 +235,21 @@ Let's try to find the total American population by state. First of all, we need 
 
 Run `get_decennial()` below setting `geography` to  `"state"`, `variables` to `"P001001"`, and `year` to `2010`.
 
-```{r first-section-use-ce-8, exercise = TRUE}
+```{r the-tidyverse-8, exercise = TRUE}
 
 ```
 
-```{r first-section-use-ce-8-hint-1, eval = FALSE}
+```{r the-tidyverse-8-hint-1, eval = FALSE}
 get_decennial(... = "...", 
               variables = "..."
               ... = 2010)
 ```
 
-```{r, include=FALSE}
+```{r include = FALSE}
 get_decennial(geography = "state", 
               variables = "P001001",
               year = 2010)
 ```
-
 
 ### 
 
@@ -263,28 +264,23 @@ The `geography` argument determines the scope of the data (such as `us` for the 
 
 Copy and paste your code from above and change the `year` argument, and set it to `2020`. Change the `variables` argument to `"P1_001N"`, because the `"P001001"` was renamed starting in 2020.
 
-```{r first-section-use-ce-9, exercise = TRUE}
+```{r the-tidyverse-9, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r first-section-use-ce-9-hint-1, eval = FALSE}
+```{r the-tidyverse-9-hint-1, eval = FALSE}
 get_decennial(... = "...", 
               variables = "...",
               year = ...)
 ```
 
-
-```{r, include = FALSE}
+```{r include = FALSE}
 get_decennial(geography = "state", 
               variables = "P1_001N",
               year = 2020)
 ```
-
-
-
-
 
 ### 
 
@@ -298,13 +294,13 @@ Along with the arguments we have already learned, there is also the `sumfile` ar
 
 Run the `get_decennial()` function below setting `geography` to `"state"`, `variables` to `"P1_005N"`, `year` to `2020`, and `sumfile` to `"pl"`.
 
-```{r first-section-use-ce-10, exercise = TRUE}
+```{r the-tidyverse-10, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r first-section-use-ce-10-hint-1, eval = FALSE}
+```{r the-tidyverse-10-hint-1, eval = FALSE}
 get_decennial(geography = "...",
         variables      = "...",
         year = ...,
@@ -312,15 +308,13 @@ get_decennial(geography = "...",
 )
 ```
 
-
-```{r, include = FALSE}
+```{r include = FALSE}
 get_decennial(geography = "state",
         variables      = "P1_005N",
         year = 2020,
         sumfile = "pl"
 )
 ```
-
 
 ### 
 
@@ -336,24 +330,24 @@ Just as `get_decennial()` gets information from the Decennial Census, `get_acs()
 
 Run the `get_acs()` function setting `geography` to  `"state"`, `variables` to `"B05006_150"` and `year` to `2021`.
 
-```{r first-section-use-ce-11, exercise = TRUE}
+```{r the-tidyverse-11, exercise = TRUE}
 
 ```
 
-```{r first-section-use-ce-11-hint-1, eval = FALSE}
+```{r the-tidyverse-11-hint-1, eval = FALSE}
 get_acs(geography = "...",
         variables      = "...",
         year = ...
 )
 ```
 
-
-```{r, include = FALSE}
+```{r include = FALSE}
 get_acs(geography = "state",
         variables = "B05006_150",
         year = 2021
 )
 ```
+
 ### 
 
 The example above fetches data on the number of residents born in Mexico by state. Notice that the tibble produced has an `estimate` and a `moe` column rather than a `value` column like the Decennial Census data. 
@@ -371,21 +365,20 @@ Along with the arguments, we've already learned, there is also a `survey` argume
 Run `get_acs` below setting `geography` to `"state"`, `variables` to `"B05006_150"`, `survey` = `"acs1"`, and `year` to `2021`.
 
 
-```{r first-section-use-ce-12, exercise = TRUE}
+```{r the-tidyverse-12, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r first-section-use-ce-12-hint-1, eval = FALSE}
+```{r the-tidyverse-12-hint-1, eval = FALSE}
 get_acs(... = "...", 
         variables = "...", 
         survey = "...",
         ... = 2019)
 ```
 
-
-```{r, include = FALSE}
+```{r include = FALSE}
 get_acs(geography = "state", 
         variables = "B05006_150", 
         survey = "acs1",
@@ -407,42 +400,42 @@ Rather than using the `variables` argument, you can supply a table name to the `
 
 Run `get_acs()` below setting `geography` to `"state"`, `table` to `"B01001"`, and `year` to `2021`
 
-```{r first-section-use-ce-13, exercise = TRUE}
+```{r the-tidyverse-13, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r first-section-use-ce-13-hint-1, eval = FALSE}
+```{r the-tidyverse-13-hint-1, eval = FALSE}
 get_acs(... = "...", 
         table = "...",
         ... = ...)
 ```
 
-```{r, include = FALSE}
+```{r include = FALSE}
 get_acs(geography = "state", 
         table = "B01001",
         year = 2021)
 ```
-
 
 ### 
 
 This code got all variables associated with table `B01001`, which covers sex broken down by age, from the 2017-2021 5-year ACS.
 
 
-### Exercise 15
+### Exercise 14
+
 A common task when working with Census data is to examine demographic change or ACS estimates over time. 
 
 use `get_acts()` on the data set oglala_lakota_age. Within the function, set `geography` to `"county"`, `state` to `"SD"`, `county` to `"Oglala Lakota"`, `table` to  `"B01001"` and `year` to `2020`. 
 
-```{r first-section-use-se-15, exercise = TRUE}
+```{r the-tidyverse-14, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r first-section-use-se-15-hint, eval = FALSE}
+```{r the-tidyverse-14-hint-1, eval = FALSE}
 oglala_lakota_age <- ...(
   geography = "...",
   state = "...",
@@ -452,7 +445,7 @@ oglala_lakota_age <- ...(
 )
 ```
 
-```{r, include = FALSE}
+```{r include = FALSE}
 oglala_lakota_age <- get_acs(
   geography = "county",
   state = "SD",
@@ -462,19 +455,21 @@ oglala_lakota_age <- get_acs(
 )
 ```
 
-###
+### 
+
 Now lets look at the same data from 2010. 
 
-### Exercise 16
+### Exercise 15
+
 Use the same code as before, changing the `year` to `2010`. You should get an error. 
 
-```{r first-section-use-se-16, exercise = TRUE}
+```{r the-tidyverse-15, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r first-section-use-se-16-hint, eval = FALSE}
+```{r the-tidyverse-15-hint-1, eval = FALSE}
 oglala_lakota_age <- get_acs(
   geography = "county",
   state = "SD",
@@ -484,21 +479,21 @@ oglala_lakota_age <- get_acs(
 )
 ```
 
+### 
 
-
-###
 We get an error because ten years ago, this county was named "Shannon". 
 
-### Exercise 17
+### Exercise 16
+
 Using the same code as above, change the `county` name to `"Shannon"`. 
 
-```{r first-section-use-se-17, exercise = TRUE}
+```{r the-tidyverse-16, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r first-section-use-se-17-hint, eval = FALSE}
+```{r the-tidyverse-16-hint-1, eval = FALSE}
 oglala_lakota_age <- get_acs(
   geography = "county",
   state = "SD",
@@ -508,7 +503,7 @@ oglala_lakota_age <- get_acs(
 )
 ```
 
-```{r, include = FALSE}
+```{r include = FALSE}
 oglala_lakota_age <- get_acs(
   geography = "county",
   state = "SD",
@@ -518,23 +513,25 @@ oglala_lakota_age <- get_acs(
 )
 ```
 
-###
+### 
+
 When looking at the two datasets, you may notice that the `GEOID` column changed from `46113` in 2010 to `46102`to 2020. This is because when a geographic entity changes their name, the Census Bureau assigns it a new `GEOID`, meaning that analysts need to take care when dealing with those changes. 
 
 
-### Exercise 18
+### Exercise 17
+
  Let’s say that we are interested in analyzing the percentage of residents age 25 and up with a 4-year college degree for counties in Colorado from the 2019 1-year ACS. 
  
  Set the dataset `co_college` to the function `get_acs()`. Inside the function, set `geography` to `"county"`, `variables` to `"DP02_0068P"`, `state` to `"CO"`, `survey` to `"acs1"` and `year` to `2019`.  
  
 
-```{r first-section-use-se-18, exercise = TRUE}
+```{r the-tidyverse-17, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r first-section-use-se-18-hint, eval = FALSE}
+```{r the-tidyverse-17-hint-1, eval = FALSE}
 ... <- get_acs(
   ... = "county",
   variables = "...",
@@ -544,7 +541,7 @@ When looking at the two datasets, you may notice that the `GEOID` column changed
 )
 ```
 
-```{r, include = FALSE}
+```{r include = FALSE}
 co_college19 <- get_acs(
   geography = "county",
   variables = "DP02_0068P",
@@ -554,21 +551,21 @@ co_college19 <- get_acs(
 )
 ```
 
-###
+### 
 
 Notice how Boulder County, home to the University of Colorado, has a very high percentage of its population with a 4-year degree or higher.
 
-### Exercise 19
+### Exercise 18
 
 Copying the code above, lets change the `year` to `2018`. 
 
-```{r first-section-use-se-19, exercise = TRUE}
+```{r the-tidyverse-18, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r first-section-use-se-19-hint, eval = FALSE}
+```{r the-tidyverse-18-hint-1, eval = FALSE}
 co_college19 <- get_acs(
   geography = "county",
   variables = "DP02_0068P",
@@ -578,7 +575,7 @@ co_college19 <- get_acs(
 )
 ```
 
-```{r, include = FALSE}
+```{r include = FALSE}
 co_college19 <- get_acs(
   geography = "county",
   variables = "DP02_0068P",
@@ -588,24 +585,25 @@ co_college19 <- get_acs(
 )
 ```
 
-###
+### 
 
 Why are the values completely changed and different? This is because variable ID's change every year and as a result should not be used for time-series analysis. These variable ID's actually represent the civilian population age 18 and up, and have nothing to do with educational attainment.
 
-### Exercise 20
+### Exercise 19
+
 If our data is compromised from geography changes and variable ID changes, what is the best way to make a time-series analysis? The safest way to compare data is through Comparison Profile Tables!
 
 Let's get data from the ACS Comparison Profile on inflation-adjusted median household income for counties and county-equivalents in Alaska.
 
 Set the dataset `ak_income_compare` to the function `get_acs()`. Inside the function, set `geography` to `"county"`, `variables to `income15 = "CP03_2015_062"` and `income20 = "CP03_2020_062"`, `state` to `"AK"`, and `year` to `2020`.
 
-```{r first-section-use-se-20, exercise = TRUE}
+```{r the-tidyverse-19, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r first-section-use-se-20-hint, eval = FALSE}
+```{r the-tidyverse-19-hint-1, eval = FALSE}
 ... <- get_acs(
   ... = "county",
   variables = c(
@@ -617,7 +615,7 @@ Set the dataset `ak_income_compare` to the function `get_acs()`. Inside the func
 )
 ```
 
-```{r, include = FALSE}
+```{r include = FALSE}
 ak_income_compare <- get_acs(
   geography = "county",
   variables = c(
@@ -629,7 +627,8 @@ ak_income_compare <- get_acs(
 )
 ```
 
-###
+### 
+
 These tables are available for both the 1-year and 5-year ACS, and allow for comparison of demographic indicators over the past five years for a given year. For the 2016-2020 ACS, the “comparison year” is 2015, representing the closest non-overlapping 5-year dataset, which in this case is 2011-2015.
 
 
