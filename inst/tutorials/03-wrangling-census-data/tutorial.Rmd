@@ -30,7 +30,7 @@ options(tutorial.exercise.timelimit = 60,
 
 ## Introduction
 
-Let's learn how to use tidyverse tools to gain insight on US Census data. We (mostly) follow the approach of [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You will learn key functions inside the tidyverse and tidycensus package including get_acs(), filter(), and arrange(). You will also learn how 
+Let's learn how to use tidyverse tools to gain insight on US Census data. We (mostly) follow the approach of [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You will learn key functions inside the tidyverse and tidycensus package including get_acs(), filter(), and arrange(). You will also learn how to be cautious while comparing graphs because of certain errors.  
 
 ### 
 
