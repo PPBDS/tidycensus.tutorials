@@ -20,6 +20,14 @@ library(tidyverse)
 knitr::opts_chunk$set(echo = FALSE)
 options(tutorial.exercise.timelimit = 60, 
         tutorial.storage = "local") 
+
+oglala_lakota_age <- get_acs(
+  geography = "county",
+  state = "SD",
+  county = "Oglala Lakota",
+  table = "B01001",
+  year = 2020
+)
 ```
 
 ```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
@@ -28,12 +36,14 @@ options(tutorial.exercise.timelimit = 60,
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
 ```
 
+<!-- DK: Add links to function names in introduction. -->
+
+<!-- DK: Summary like Introduction. See https://ppbds.github.io/tutorial.helpers/articles/instructions.html for discussion. -->
+
 ## Introduction
 Let's learn how to use tidyverse tools to gain insight on US Census data. We (mostly) follow the approach of [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You will learn key functions inside the tidyverse and tidycensus package including `get_acs()`, `filter()`, and `arrange()`. You will also learn how to be cautious while comparing graphs because of certain errors.  
 
-### 
 
-<!-- Two to four sentence about the main topics covered in this tutorial. Why are we here? What will students get out of giving you 90 minutes of their lives? How does this tutorial connect to other tutorials? -->
 
 ## The tidyverse
 ### 
@@ -423,17 +433,22 @@ get_acs(geography = "state",
 This code got all variables associated with table `B01001`, which covers sex broken down by age, from the 2017-2021 5-year ACS.
 
 ## Comparing ACS Over Time
+### 
+
+<!-- DK: Introduction each Section. -->
+
+<!-- Maybe? A common task when working with Census data is to examine demographic change over time. Data from the Census API - and consequently tidycensus - only go back to the 2000 Decennial Census.  -->
+
 ### Exercise 1
 
 A common task when working with Census data is to examine demographic change or ACS estimates over time. 
 
-use `get_acts()` on the dataset oglala_lakota_age. Within the function, set `geography` = `"county"`, `state` = `"SD"`, `county` = `"Oglala Lakota"`, `table` =  `"B01001"` and `year` = `2020`. 
+Use `get_acts()` to create the dataset `oglala_lakota_age`. Within `get_acts()`, set `geography` = `"county"`, `state` = `"SD"`, `county` = `"Oglala Lakota"`, `table` =  `"B01001"` and `year` = `2020`. 
 
 ```{r comparing-acs-over-t-1, exercise = TRUE}
 
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r comparing-acs-over-t-1-hint-1, eval = FALSE}
 oglala_lakota_age <- ...(
@@ -445,31 +460,44 @@ oglala_lakota_age <- ...(
 )
 ```
 
-```{r include = FALSE}
-oglala_lakota_age <- get_acs(
-  geography = "county",
-  state = "SD",
-  county = "Oglala Lakota",
-  table = "B01001",
-  year = 2020
-)
-```
 
 ### 
 
-Now lets look at the same data from 2010. 
+For Oglala Lakota county in South Dakota, we now have the data from table B01001 from the American Community Survey for 2020.
+
+<!-- DK: Drop knowledge. -->
+
 
 ### Exercise 2
 
-Use the same code as before, changing the `year` = `2010`. You should get an error. 
+Print out the `oglala_lakota_age` tibble which you just created.
 
 ```{r comparing-acs-over-t-2, exercise = TRUE}
 
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
 ```{r comparing-acs-over-t-2-hint-1, eval = FALSE}
+oglala_lakota_age
+```
+
+```{r include = FALSE}
+oglala_lakota_age
+```
+
+### 
+
+<!-- DK: More knowledge. -->
+
+### Exercise 3
+
+Using the same code as in the first exercise in this section, change the `year` = `2010`. You should get an error. 
+
+```{r comparing-acs-over-t-3, exercise = TRUE}
+
+```
+
+
+```{r comparing-acs-over-t-3-hint-1, eval = FALSE}
 oglala_lakota_age <- get_acs(
   geography = "county",
   state = "SD",
@@ -483,17 +511,17 @@ oglala_lakota_age <- get_acs(
 
 We get an error because ten years ago, this county was named "Shannon". 
 
-### Exercise 3
+### Exercise 4
 
 Using the same code as above, change the `county` name to `"Shannon"`. 
 
-```{r comparing-acs-over-t-3, exercise = TRUE}
+```{r comparing-acs-over-t-4, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r comparing-acs-over-t-3-hint-1, eval = FALSE}
+```{r comparing-acs-over-t-4-hint-1, eval = FALSE}
 oglala_lakota_age <- get_acs(
   geography = "county",
   state = "SD",
@@ -518,20 +546,20 @@ oglala_lakota_age <- get_acs(
 When looking at the two datasets, you may notice that the `GEOID` column changed from `46113` in 2010 to `46102`to 2020. This is because when a geographic entity changes their name, the Census Bureau assigns it a new `GEOID`, meaning that analysts need to take care when dealing with those changes. 
 
 
-### Exercise 4
+### Exercise 5
 
  Let’s say that we are interested in analyzing the percentage of residents age 25 and up with a 4-year college degree for counties in Colorado from the 2019 1-year ACS. 
  
  Set the dataset `co_college` to the function `get_acs()`. Inside the function, set `geography` = `"county"`, `variables` = `"DP02_0068P"`, `state` = `"CO"`, `survey` = `"acs1"` and `year` = `2019`.  
  
 
-```{r comparing-acs-over-t-4, exercise = TRUE}
+```{r comparing-acs-over-t-5, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r comparing-acs-over-t-4-hint-1, eval = FALSE}
+```{r comparing-acs-over-t-5-hint-1, eval = FALSE}
 ... <- get_acs(
   ... = "county",
   variables = "...",
@@ -555,17 +583,17 @@ co_college19 <- get_acs(
 
 Notice how Boulder County, home to the University of Colorado, has a very high percentage of its population with a 4-year degree or higher.
 
-### Exercise 5
+### Exercise 6
 
 Copying the code above, lets change the `year` to `2018`. 
 
-```{r comparing-acs-over-t-5, exercise = TRUE}
+```{r comparing-acs-over-t-6, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r comparing-acs-over-t-5-hint-1, eval = FALSE}
+```{r comparing-acs-over-t-6-hint-1, eval = FALSE}
 co_college19 <- get_acs(
   geography = "county",
   variables = "DP02_0068P",
@@ -589,7 +617,7 @@ co_college19 <- get_acs(
 
 Why are the values completely changed and different? This is because variable ID's change every year and as a result should not be used for time-series analysis. These variable ID's actually represent the civilian population age 18 and up, and have nothing to do with educational attainment.
 
-### Exercise 6
+### Exercise 7
 
 If our data is compromised from geography changes and variable ID changes, what is the best way to make a time-series analysis? The safest way to compare data is through Comparison Profile Tables!
 
@@ -597,13 +625,13 @@ Let's get data from the ACS Comparison Profile on inflation-adjusted median hous
 
 Set the dataset `ak_income_compare` to the function `get_acs()`. Inside the function, set `geography` = `"county"`, `variables to `income15 = "CP03_2015_062"` and `income20 = "CP03_2020_062"`, `state` = `"AK"`, and `year` = `2020`.
 
-```{r comparing-acs-over-t-6, exercise = TRUE}
+```{r comparing-acs-over-t-7, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r comparing-acs-over-t-6-hint-1, eval = FALSE}
+```{r comparing-acs-over-t-7-hint-1, eval = FALSE}
 ... <- get_acs(
   ... = "county",
   variables = c(
@@ -631,20 +659,21 @@ ak_income_compare <- get_acs(
 
 These tables are available for both the 1-year and 5-year ACS, and allow for comparison of demographic indicators over the past five years for a given year. For the 2016-2020 ACS, the “comparison year” is 2015, representing the closest non-overlapping 5-year dataset, which in this case is 2011-2015.
 
-### Exercise 7
+### Exercise 8
+
 Let’s re-engineer the analysis above on educational attainment in Colorado counties, which below will be computed for a time series from 2010 to 2019. We only need a few variables (representing estimates of populations age 25+ who have finished a 4-year degree or graduate degrees, by sex), we’ll request those variables directly rather than the entire B15002 table. 
 
 Set `college_wars` equal to a vector of `"B15002_015"`, `"B15002_016"`, `"B15002_017"`, `"B15002_018"`, `"B15002_032"`, `"B15002_033"`, `"B15002_034"`, and `"B15002_035"`. 
 
 
 
-```{r comparing-acs-over-t-7, exercise = TRUE}
+```{r comparing-acs-over-t-8, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r comparing-acs-over-t-7-hint, eval = FALSE}
+```{r comparing-acs-over-t-8-hint-1, eval = FALSE}
 college_vars <- c("...",
                   "B15002_016",
                   "B15002_017",
@@ -655,7 +684,7 @@ college_vars <- c("...",
                   "B15002_035")
 ```
 
-```{r, include = FALSE}
+```{r include = FALSE}
 college_vars <- c("B15002_015",
                   "B15002_016",
                   "B15002_017",
@@ -666,38 +695,18 @@ college_vars <- c("B15002_015",
                   "B15002_035")
 ```
 
-###
+### 
+
 If we want data on college career holders from 2010 to 2019, we will have a lot of `get_acs()` functions. To reduce the unnecessary work, we will use iterations to avoid repetitive coding. This is similar to the loop operators `for` an `while` 
 
 
-### Exercise 8
+### Exercise 9
+
 The **purr** package has a variety of iteration functions such as `map_*()`. The function `map_dfr()` is especially useful in tidycensus, as it aiterates over an input and applies it to a function or process defined by the user, then row-binds the result into a single data frame. 
 
 Set `years` to `2010:2019`. Then set `names()` with `years` inside of it equal to `years`.
 
 
-
-```{r comparing-acs-over-t-8, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r comparing-acs-over-t-8-hint, eval = FALSE}
-years <- ....
-names(..) <- years
-```
-
-```{r, include = FALSE}
-years <- 2010:2019
-names(years) <- years
-```
-
-###
-
-### Exercise 9
-
-Copy the code above. Then set `college_by_year` to the function `map_dfr()` with the first argument as `years`. Inside the `map_dfr()` function, set the second argument to `~{ getacs() }`. It is fine to have an error.  
 
 ```{r comparing-acs-over-t-9, exercise = TRUE}
 
@@ -705,7 +714,29 @@ Copy the code above. Then set `college_by_year` to the function `map_dfr()` with
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r comparing-acs-over-t-9-hint, eval = FALSE}
+```{r comparing-acs-over-t-9-hint-1, eval = FALSE}
+years <- ....
+names(..) <- years
+```
+
+```{r include = FALSE}
+years <- 2010:2019
+names(years) <- years
+```
+
+### 
+
+### Exercise 10
+
+Copy the code above. Then set `college_by_year` to the function `map_dfr()` with the first argument as `years`. Inside the `map_dfr()` function, set the second argument to `~{ getacs() }`. It is fine to have an error.  
+
+```{r comparing-acs-over-t-10, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-acs-over-t-10-hint-1, eval = FALSE}
 
 years <- 2010:2019
 names(years) <- years
@@ -714,7 +745,7 @@ college_by_year <- ...(..., ~{
   get_acs() })
 ```
 
-```{r, include = FALSE, eval=FALSE}
+```{r include = FALSE, eval = FALSE}
 years <- 2010:2019
 names(years) <- years
 
@@ -722,19 +753,21 @@ college_by_year <- map_dfr(years, ~{
   get_acs() })
 ```
 
-###
+### 
+
 The tilde (`~`) operator and the curly brackets (`{}`) means that the code will run once for each element of `years`. 
 
-### Exercise 10
+### Exercise 11
+
 Copy the code above. Within the `get_acs()` function, set `geography` = `"county"`, `variables` = `collge_vars`, `state` = `"CO"`, `summary_var` = `"B15002_001"`, `survey` = `"acs1"` and `year` = `.x`. Within the `map_dfr()` function, set the third argument `.id` equal to `"year"`
 
-```{r comparing-acs-over-t-10, exercise = TRUE}
+```{r comparing-acs-over-t-11, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r comparing-acs-over-t-10-hint, eval = FALSE}
+```{r comparing-acs-over-t-11-hint-1, eval = FALSE}
 years <- 2010:2019
 names(years) <- years
 
@@ -750,7 +783,7 @@ college_by_year <- map_dfr(years, ~{
 }, .id = "...")
 ```
 
-```{r, include = FALSE}
+```{r include = FALSE}
 years <- 2010:2019
 names(years) <- years
 
@@ -766,40 +799,44 @@ college_by_year <- map_dfr(years, ~{
 }, .id = "year")
 ```
 
-###
+### 
+
 Let's go over the code so that you can understand. A numeric vector of `years` is defined with the syntax 2010:2019. This will create a vector of `years` at 1-year intervals. 
 
 Then the function map_dfr() takes three arguments. The first argument, `years` is the object that the function will iterate over. The second argument uses the formula to create data for each element of `years` and then outputs the data into a single data frame. The third argument makes a new column that will output the data for `year`. 
 
-### Exercise 11
+### Exercise 12
+
 Lets look at the results! 
 
 Pipe `college_by_year` using `%>%` to the function `arrange()`. Within `arrange()`, set the first argument as `NAME`, the second as `variable` and the third as `year`. 
 
-```{r comparing-acs-over-t-11, exercise = TRUE}
+```{r comparing-acs-over-t-12, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r comparing-acs-over-t-11-hint, eval = FALSE}
+```{r comparing-acs-over-t-12-hint-1, eval = FALSE}
 ... %>% 
   arrange(NAME, ..., ...)
 ```
 
-```{r, include = FALSE}
+```{r include = FALSE}
 college_by_year %>% 
   arrange(NAME, variable, year)
 ```
 
-###
+### 
+
 The result is a long-form data set that contains a time series of each requested ACS variable for each county in Colorado that is available in the 1-year ACS. 
 
-### Exercise 12
+### Exercise 13
+
 Let's calculate the percentage of the population age 25 and up with a 4-year college degree using our data from before.  
 
 Set `percent_college_by_year` to `college_by_year`. Then pipe `college_by_year` using `%>%` to the `group_by()` function with the first argument as `NAME` and the second argument as `year`. 
-```{r comparing-acs-over-t-12, exercise = TRUE}
+```{r comparing-acs-over-t-13, exercise = TRUE}
 
 ```
 
@@ -810,37 +847,39 @@ percent_college_by_year <- ... %>%
   group_by(..., year)
 ```
 
-```{r, include = FALSE}
+```{r include = FALSE}
 percent_college_by_year <- college_by_year %>%
   group_by(NAME, year)
 ```
 
-###
+### 
 
-### Exercise 13
+### Exercise 14
+
 Copy the code above. Continue using the pipe `%<%` to the function `summarize()`. For the first argument of `summarize()`, set `numerator` equal to `sum(estimate)`. For the second argument of `summarize()`, set `denominator` to `first(summary_est)`. 
 
-```{r comparing-acs-over-t-13, exercise = TRUE}
+```{r comparing-acs-over-t-14, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r comparing-acs-over-t-13-hint, eval = FALSE}
+```{r comparing-acs-over-t-14-hint-1, eval = FALSE}
 ... <- college_by_year %>%
   group_by(..., year) %>%
   summarize(... = sum(estimate),
             ... = first(...))
 ```
 
-```{r, include = FALSE}
+```{r include = FALSE}
 percent_college_by_year <- college_by_year %>%
   group_by(NAME, year) %>%
   summarize(numerator = sum(estimate),
             denominator = first(summary_est))
 ```
 
-###
+### 
+
 The function `summarize()` creates a new data frame. More information can be found [here](https://dplyr.tidyverse.org/reference/summarise.html)
 
 
