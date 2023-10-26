@@ -26,8 +26,32 @@ oglala_lakota_age <- get_acs(
   state = "SD",
   county = "Oglala Lakota",
   table = "B01001",
-  year = 2020
-)
+  year = 2020)
+  
+  
+  percent_college_by_year <- college_by_year %>%
+  group_by(NAME, year) %>%
+  summarize(numerator = sum(estimate),
+            denominator = first(summary_est)) %>%
+  mutate(pct_college = 100 * (numerator / denominator)) %>%
+  pivot_wider(id_cols = NAME,
+              names_from = year,
+              values_from = pct_college)
+  
+  years <- 2010:2019
+names(years) <- years
+
+college_by_year <- map_dfr(years, ~{
+  get_acs(
+    geography = "county",
+    variables = college_vars,
+    state = "CO",
+    summary_var = "B15002_001",
+    survey = "acs1",
+    year = .x
+  )
+}, .id = "year")
+
 ```
 
 ```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
@@ -463,7 +487,7 @@ oglala_lakota_age <- ...(
 
 ### 
 
-For Oglala Lakota county in South Dakota, we now have the data from table B01001 from the American Community Survey for 2020.
+The `get_acs()` function allows us obtain data from the American Community Survey. More information on this function can be found [here](https://www.rdocumentation.org/packages/tidycensus/versions/1.5/topics/get_acs).  
 
 <!-- DK: Drop knowledge. -->
 
@@ -485,6 +509,7 @@ oglala_lakota_age
 ```
 
 ### 
+This is a 2016-2020 age table for Oglala Lakota County, SD. This graph allows us to see the age composition of the Oglola Lakota County through this time period
 
 <!-- DK: More knowledge. -->
 
@@ -848,15 +873,14 @@ percent_college_by_year <- ... %>%
 ```
 
 ```{r include = FALSE}
-percent_college_by_year <- college_by_year %>%
-  group_by(NAME, year)
+percent_college_by_year
 ```
 
 ### 
 
 ### Exercise 14
 
-Copy the code above. Continue using the pipe `%<%` to the function `summarize()`. For the first argument of `summarize()`, set `numerator` equal to `sum(estimate)`. For the second argument of `summarize()`, set `denominator` to `first(summary_est)`. 
+Copy the code above. Continue using the pipe `%>%` to the function `summarize()`. For the first argument of `summarize()`, set `numerator` equal to `sum(estimate)`. For the second argument of `summarize()`, set `denominator` to `first(summary_est)`. 
 
 ```{r comparing-acs-over-t-14, exercise = TRUE}
 
@@ -872,15 +896,147 @@ Copy the code above. Continue using the pipe `%<%` to the function `summarize()`
 ```
 
 ```{r include = FALSE}
-percent_college_by_year <- college_by_year %>%
-  group_by(NAME, year) %>%
-  summarize(numerator = sum(estimate),
-            denominator = first(summary_est))
+percent_college_by_year
 ```
 
 ### 
 
 The function `summarize()` creates a new data frame. More information can be found [here](https://dplyr.tidyverse.org/reference/summarise.html)
+
+### Exercise 15
+Copy the code above. Continue the pipe `%>%` to the function `mutate()`. Within the function, set `pct_college` = `100` times `(numerator/denominator)`. 
+
+```{r comparing-acs-over-t-15, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-acs-over-t-15-hint, eval = FALSE}
+percent_college_by_year <- college_by_year %>%
+  group_by(NAME, year) %>%
+  summarize(numerator = sum(estimate),
+            denominator = first(summary_est)) %>%
+  mutate(... = ... * (numerator / ...)) 
+
+```
+
+```{r, include = FALSE}
+percent_college_by_year
+```
+
+###
+The `mutate()` function allows us the create, modify and delete columns. More information about this function can be found [here](https://dplyr.tidyverse.org/reference/mutate.html)
+
+### Exercise 16
+Copy the code above. Continue the pipe `%>%` to the function `pivot_wider()`. Within the function, set `id_cols` = `NAME`, `names_from` = `year`, and `values_from` = `pct_college`. 
+
+```{r comparing-acs-over-t-16, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-acs-over-t-16-hint, eval = FALSE}
+percent_college_by_year <- college_by_year %>%
+  group_by(NAME, year) %>%
+  summarize(numerator = sum(estimate),
+            denominator = first(summary_est)) %>%
+  mutate(pct_college = 100 * (numerator / denominator)) %>%
+  ...(... = NAME,
+              names_from = ...,
+              ... = pct_college)
+```
+
+```{r, include = FALSE}
+percent_college_by_year
+```
+
+###
+The code below outlines a `group_by() %>% summarize()` workflow for calculating the percentage of the population age 25 and up with a 4-year college degree, then uses the `pivot_wider()` function from the tidyr package to spread the years across the columns for tabular data display. If you want to know more information about the `pivot_wider()` function click [here](https://tidyr.tidyverse.org/reference/pivot_wider.html)
+
+## Handling margins of error with tidycensus
+###
+The American Community Survery is based on a sample with estimates characterized by margins of error, and by default MOE is set to a 90 confidence interval. This can be translated roughly as “we are 90 percent sure that the true value falls within a range defined by the estimate plus or minus the margin of error.” 
+
+### Exercise 1
+Lets look at data on median household income by county in Rhode Island using the default `moe_level` of 90. 
+
+Type the function `get_acs()`. Within this function, set `geography` = `"county"`, `state` = `"Rhode Island"`, `variables` = `"B19013_001"`, and `year` = `2020`. 
+
+```{r handling-margins-of--1, exercise = TRUE}
+
+```
+
+
+```{r handling-margins-of--1-hint, eval = FALSE}
+get_acs(
+  geography = ...,
+  ... = "Rhode Island",
+  ... = ...,
+  year = ...
+)
+```
+
+```{r, include = FALSE}
+get_acs(
+  geography = "county",
+  state = "Rhode Island",
+  variables = "B19013_001",
+  year = 2020
+)
+```
+
+###
+The data can be translated to saying, "We are 90% confident that the median household income in the county of Rhode Island falls within the range of the `estimate` plus or minus the `moe`. Take a look at the two columns and notice how the values are integers rather than decimals. We will compare this with our next tibble. 
+
+### Exercise 2
+
+Rather than using the default 90% moe, lets change the argument using the `get_acs()` function. Side note, the `moe_level` argument can only be either 90, 95 or 99.
+
+Copy the code above and add an argument `moe_level` = `99`. 
+
+```{r handling-margins-of--2, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r handling-margins-of--2-hint, eval = FALSE}
+get_acs(
+  geography = "county",
+  state = "Rhode Island",
+  variables = "B19013_001",
+  year = 2020,
+  moe_level = ...
+)
+```
+
+```{r, include = FALSE}
+get_acs(
+  geography = "county",
+  state = "Rhode Island",
+  variables = "B19013_001",
+  year = 2020,
+  moe_level = 99
+)
+```
+
+###
+Look at the data and notice how the values for the `moe` column has changed. This means that a stricter margin of error will increase the size of the MOE relative to its estimate. In simpler terms, if you want to be more confident(higher `moe_level`) in the estimate, then your margin of error will increase. 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
