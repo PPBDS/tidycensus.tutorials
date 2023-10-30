@@ -71,7 +71,6 @@ college_by_year <- map_dfr(years, ~{
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
 ```
 
-<!-- DK: Add links to function names in introduction. -->
 
 <!-- DK: Summary like Introduction. See https://ppbds.github.io/tutorial.helpers/articles/instructions.html for discussion. -->
 
@@ -959,9 +958,11 @@ The code below outlines a `group_by() %>% summarize()` workflow for calculating 
 
 ## Handling margins of error with tidycensus
 ###
-The American Community Survery is based on a sample with estimates characterized by margins of error, and by default MOE is set to a 90 confidence interval. This can be translated roughly as “we are 90 percent sure that the true value falls within a range defined by the estimate plus or minus the margin of error.” 
+
+The American Community Survey is based on a sample with estimates characterized by margins of error, and by default MOE is set to a 90 confidence interval. This can be translated roughly as “we are 90 percent sure that the true value falls within a range defined by the estimate plus or minus the margin of error.” 
 
 ### Exercise 1
+
 Lets look at data on median household income by county in Rhode Island using the default `moe_level` of 90. 
 
 Type the function `get_acs()`. Within this function, set `geography` = `"county"`, `state` = `"Rhode Island"`, `variables` = `"B19013_001"`, and `year` = `2020`. 
@@ -990,11 +991,12 @@ get_acs(
 ```
 
 ###
-The data can be translated to saying, "We are 90% confident that the median household income in the county of Rhode Island falls within the range of the `estimate` plus or minus the `moe`. Take a look at the two columns and notice how the values are integers rather than decimals. We will compare this with our next tibble. 
+
+The data can be translated to saying, "We are 90% confident that the median household income in the county of Rhode Island falls within the range of the `estimate` plus or minus the `moe`." For example, our estimate of the average household income in Bristol County, Rhode Island is $85,413 with a 90% confidence interval of +/- $6,122.
 
 ### Exercise 2
 
-Rather than using the default 90% moe, lets change the argument using the `get_acs()` function. Side note, the `moe_level` argument can only be either 90, 95 or 99.
+Rather than using the default 90% margin of error, lets change the argument using the `get_acs()` function. Side note, the `moe_level` argument can only be either 90, 95 or 99.
 
 Copy the code above and add an argument `moe_level` = `99`. 
 
@@ -1025,10 +1027,12 @@ get_acs(
 ```
 
 ###
-Look at the data and notice how the values for the `moe` column has changed. This means that a stricter margin of error will increase the size of the MOE relative to its estimate. In simpler terms, if you want to be more confident(higher `moe_level`) in the estimate, then your margin of error will increase. 
+
+Look at the data and notice how the values for the `moe` column has changed. The stricter margin of error increases the size of the confidence interval. In simpler terms, if you want to be more confident (i.e., set a higher `moe_level`) in the estimate, then your margin of error will increase. 
 
 ### Exercise 3
-or small geographies or small populations, margins of error can get quite large, in some cases exceeding their corresponding estimates. Let's examine data on age groups by sex for the population age 65 and older for Census tracts in Salt Lake County, Utah.
+
+For small geographies or small populations, margins of error can get quite large, in some cases exceeding their corresponding estimates. Let's examine data on age groups by sex for the population age 65 and older for Census tracts in Salt Lake County, Utah.
 
 Set `vars` to the function `paste0()`. Within the function, set the first argument as `"B01001_0"` and the second arguement as a vector of `20:25` and `44:49`. On the next line print out `vars`. 
 
@@ -1050,9 +1054,11 @@ vars
 ```
 
 ###
+
 Let's look at this code. First we are evaluating the `20:25` and `44:49` expressions to generate a vector of numbers for suffixes of variable IDs. Next we are using the `c()` function to combine the two vectors into a single vector. Lastly the `paste0()` function concatenates the prefix `"B01001_0"` with the variable IDs we just created. 
 
 ### Exercise 4
+
 The resulting object `vars` allows us to request variables in a call to `get_acs()`. 
 
 Set `salt_lake` to the function `get_acs()`. Within the function, set `geography` = `"tract"`, `variables` = `vars`, state = `"Utah"`, `county` = `"Salt Lake"`, and `year` = `2020`. 
@@ -1083,9 +1089,11 @@ salt_lake <- get_acs(
 ```
 
 ###
-The `paste0()` function we used for the `vars` object allows us to concatenate vectors after converting to character. More information about the function and its arguments can be found [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/paste)
+
+The `paste0()` function we used for the `vars` object allows us to concatenate vectors after converting to character. More information about the function and its arguments can be found [here](https://stat.ethz.ch/R-manual/R-devel/library/base/html/paste.html)
 
 ### Exercise 5
+
 Now we should examine our data using the `filter()` function. 
 
 Set `example_tract` to the `salt_lake` object we used above. Now pipe the `salt_lake` object using `%>%` to the function `filter()`. Within `filter()`, set `GEOID` equals to `"49035100100"`. On a separate line, pipe `example_tract` to the `select()` function. Within the function, type `-NAME`.  
@@ -1093,8 +1101,6 @@ Set `example_tract` to the `salt_lake` object we used above. Now pipe the `salt_
 ```{r handling-margins-of--5, exercise = TRUE}
 
 ```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r handling-margins-of--5-hint, eval = FALSE}
 example_tract <- ... %>%
@@ -1113,10 +1119,12 @@ example_tract %>%
 ```
 
 ###
-In many cases, the margins of error exceed their corresponding estimates. For example, for the variable `B01001_0025` it suggests that or the male population age 85 and up, there are anywhere between 0 and 45 people in that Census tract. This can make ACS data for small geographies problematic for planning and analysis purposes.
+In many cases, the ma
+rgins of error exceed their corresponding estimates. For example, for the variable `B01001_0025` it suggests that or the male population age 85 and up, there are anywhere between 0 and 45 people in that Census tract. This can make ACS data for small geographies problematic for planning and analysis purposes.
 
 
 ### Exercise 6
+
 A potential solution to large margins of error for small estimates in the ACS is to aggregate data upwards until a satisfactory margin of error to estimate ratio is reached.
 
 The `moe_prop()` function calculates a margin of error for a derived proportion. Type the function, then set the arguements to `25`, `100`, `5`, and `3`. 
