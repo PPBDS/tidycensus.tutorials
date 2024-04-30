@@ -1,8 +1,8 @@
 ---
-title: Census Data II
+title: Microdata
 author: Miriam Heiss, Anmay Gupta and Soham Gunturu
 tutorial:
-  id: census-data-ii
+  id: microdata
 output:
   learnr::tutorial:
     progressive: yes

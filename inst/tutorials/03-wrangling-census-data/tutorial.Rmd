@@ -1,5 +1,5 @@
 ---
-title: 'Wrangling Census data with tidyverse tools'
+title: Wrangling Census data with tidyverse tools
 author: David Kane
 tutorial:
   id: wrangling-census-data-with-tidyverse-tools
@@ -16,6 +16,7 @@ library(learnr)
 library(tutorial.helpers)
 library(tidycensus)
 library(tidyverse)
+library(knitr)
 
 
 knitr::opts_chunk$set(echo = FALSE)
@@ -128,6 +129,8 @@ percent_college_by_year <- college_by_year %>%
   pivot_wider(id_cols = NAME,
               names_from = year,
               values_from = pct_college)
+
+dekalb_years <- read_rds("data/dekalb_years.rds")
   
 ```
 
@@ -137,10 +140,18 @@ percent_college_by_year <- college_by_year %>%
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
 ```
 
+<!-- DK Everything after the initial section needs a thorough review and clean up. -->
+
+<!-- A better workflow is to have the student run the download code. Then, tell them that we have assigned the result of that download to an object. Then, next question, she prints out the object. This is better than having them assign to an object themselves since that task does not result in any output which we can then talk about. -->
+
+
 ## Introduction
 ### 
 
 This tutorial covers [Chapter 3: Wrangling Census data with tidyverse tools](https://walker-data.com/census-r/wrangling-census-data-with-tidyverse-tools.html) from [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You will learn about the [**tidycensus**](https://walker-data.com/tidycensus/index.html) package and some of its key functions, including [`get_decennial()`](https://walker-data.com/tidycensus/articles/basic-usage.html) and [`get_acs()`](https://walker-data.com/tidycensus/articles/basic-usage.html). We discuss margins of error (MOEs) in the American Community Survey and how to wrangle and interpret MOEs appropriately.
+
+Visit [https://api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html) and request an API key. Use your school or other organization name for the `Organization Name` field. Follow the steps and verify your API key via email. Do this now so that, once we need the API key in a few questions, it is available. 
+
 
 ## The tidyverse
 ### 
@@ -151,7 +162,7 @@ The [tidyverse](https://tidyverse.tidyverse.org/) is a collection of R packages 
 
 ### Exercise 1
 
-Start your code by loading in the **tidyverse** and **tidycensus** packages. 
+Load in **tidyverse** package. 
 
 ```{r the-tidyverse-1, exercise = TRUE}
 
@@ -159,25 +170,93 @@ Start your code by loading in the **tidyverse** and **tidycensus** packages.
 
 ```{r the-tidyverse-1-hint-1, eval = FALSE}
 library(...)
-library(...)
 ```
 
 ```{r the-tidyverse-1-test, include = FALSE}
 library(tidyverse)
-library(tidycensus)
 ```
 
-The tidyverse is a collection of R packages that are designed to work together in common data wrangling, analysis, and visualization projects. The **tidyverse** specifically a package itself, but rather loads several core packages within the tidyverse.
+The **tidyverse** is not really a package itself, but, rather, loads several core packages.
 
 ### Exercise 2
 
+We can access the US Census API via the **tidycensus** package. The **tidycensus** package utilizes an API key to access Census data. Load the **tidycensus** package into your R session.
+
+Run `search()` in the Console to see the libraries that you've currently loaded. CP/CR.
+
+```{r the-tidyverse-2}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+### 
+
+The output should include the string "package:tidycensus". Kyle Walker is also the author of the [**tidycensus**](https://walker-data.com/tidycensus/) package.
+
+### Exercise 3
+
+An API key is basically a password for an API, but they often come with certain restrictions. For example, the Census API only allows you to collect 50 variables (or columns) from a database at a time. 
+
+### 
+
+Copy and paste your API key into the box below. If you don't want to share your API key, change a few letters to make it different after you have pasted it into the box.
+
+```{r the-tidyverse-3}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+### 
+
+While an API key isn't mandatory for accessing the Census, it allows you to do more requests and use multiple computers to collect data. It's  also necessary for using the **tidycensus** package.
+
+### Exercise 4
+
+You may remember putting your GitHub Personal Access Token into your `.Renviron` file for safekeeping. We'll be doing the same for our Census API key, but the process looks a little bit different.
+
+### 
+
+The **tidycensus** package makes the process much simpler. Run `census_api_key("YOUR API KEY HERE", install = TRUE)` in the Console, substituting your API key in the field.
+
+### 
+
+This should save your key into your `.Renviron` file. Restart your R session.
+
+### 
+
+Run `Sys.getenv("CENSUS_API_KEY")` in the Console. Copy-paste the command and the output in the space below. 
+
+```{r the-tidyverse-4}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 2)
+```
+
+### 
+
+This should contain your Census API key. If you want to see where the key is stored, run `usethis::edit_r_environ()` in the Console. It should open up your `.Renviron` file and show you all of the keys that you have stored there so far. Make sure to close this file after every usage, for it stores very sensitive information that you don't want to accidentally alter or delete. 
+
+
+### Exercise 5
+
 For a first example, let’s request data on median age from the 2016-2020 ACS with `get_acs()` for all counties in the United States. Run `get_acs()` with `geography` = `"county"`, `variables` = `"B01002_001"`, and the `year` = `2020`.
 
-```{r the-tidyverse-2, exercise = TRUE}
+```{r the-tidyverse-5, exercise = TRUE}
 
 ```
 
-```{r the-tidyverse-2-hint-1, eval = FALSE}
+```{r the-tidyverse-5-hint-1, eval = FALSE}
 get_acs(
   geography = "...",
   variables = "B01002_001",
@@ -190,18 +269,18 @@ get_acs(
 The default method for printing data used by the **tibble** package shows the first 10 rows of the dataset, which in this case prints counties in Alabama. On the right hand side of the tibble you can see both moe and estimate, both of which we will talk about later in the chapter. 
 
 
-### Exercise 3
+### Exercise 6
 
 Set `median_age` to the result of your previous call to `get_acs()`.
 
 
-```{r the-tidyverse-3, exercise = TRUE}
+```{r the-tidyverse-6, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r the-tidyverse-3-hint-1, eval = FALSE}
+```{r the-tidyverse-6-hint-1, eval = FALSE}
 ... <- get_acs(
   geography = "county",
   variables = "B01002_001",
@@ -213,20 +292,20 @@ Set `median_age` to the result of your previous call to `get_acs()`.
 
 We almost always assign the results of a function call which retrieves data from a source like the Census to a permanent object, `median_age` in this case. Strictly speaking, we don't need to do this. We could just start a pipe with this function call. But, first, this is sometimes annoyingly slow and, second, we don't want to be abusive and query an online source every time we make a tiny change.
 
-### Exercise 4
+### Exercise 7
 
 Write `median_age` and press "Run Code".
 
 
-```{r the-tidyverse-4, exercise = TRUE}
+```{r the-tidyverse-7, exercise = TRUE}
 
 ```
 
-```{r the-tidyverse-4-hint-1, eval = FALSE}
+```{r the-tidyverse-7-hint-1, eval = FALSE}
 median_age
 ```
 
-```{r the-tidyverse-4-test, include = FALSE}
+```{r the-tidyverse-7-test, include = FALSE}
 median_age
 ```
 
@@ -236,22 +315,22 @@ Note that the key variable is called `estimate` rather than `age` or `median_age
 
 
 
-### Exercise 5
+### Exercise 8
 
 `arrange()` sorts a dataset by values in one or more columns and returns the sorted result. Pipe `median_age` to the `arrange()` with the argument `estimate`.
 
-```{r the-tidyverse-5, exercise = TRUE}
+```{r the-tidyverse-8, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r the-tidyverse-5-hint-1, eval = FALSE}
+```{r the-tidyverse-8-hint-1, eval = FALSE}
 median_age |> 
   ...(estimate)
 ```
 
-```{r the-tidyverse-5-test, include = FALSE}
+```{r the-tidyverse-8-test, include = FALSE}
 median_age |> 
   arrange(estimate)
 ```
@@ -263,22 +342,22 @@ Per the 2016-2020 ACS, the youngest county is De Baca County, New Mexico. Two of
 We would normally do this analysis by justing piping `median_age` into `arrange(estimate)`, producing the same answer as here.
 
 
-### Exercise 6
+### Exercise 9
 
 New let's try to find the oldest counties in the US by median age. Change `estimate` to `desc(estimate)` within `arrange()` in the previous code.
 
-```{r the-tidyverse-6, exercise = TRUE}
+```{r the-tidyverse-9, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r the-tidyverse-6-hint-1, eval = FALSE}
+```{r the-tidyverse-9-hint-1, eval = FALSE}
 median_age |> 
   arrange(...(estimate))
 ```
 
-```{r the-tidyverse-6-test, include = FALSE}
+```{r the-tidyverse-9-test, include = FALSE}
 median_age |> 
   arrange(desc(estimate))
 ```
@@ -289,23 +368,23 @@ The oldest county in the United States is Sumter County, Florida. Sumter County 
 
 
 
-### Exercise 7
+### Exercise 10
 
 How many counties in the US have a median age of 50 or older? Pipe `median_age` to `filter()` with the argument `estimate >= 50`. 
 
 
-```{r the-tidyverse-7, exercise = TRUE}
+```{r the-tidyverse-10, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r the-tidyverse-7-hint-1, eval = FALSE}
+```{r the-tidyverse-10-hint-1, eval = FALSE}
 median_age |> 
   filter(... >= 50)
 ```
 
-```{r the-tidyverse-7-test, include = FALSE}
+```{r the-tidyverse-10-test, include = FALSE}
 median_age |> 
   filter(estimate >= 50)
 ```
@@ -315,22 +394,22 @@ median_age |>
 The `filter()` function queries a data set for rows where a given condition evaluates to TRUE, and retains those rows only. In this case, the data set is filtering our `median_age` data set for counties that have a median age of 50 or older. 
 
 
-### Exercise 8
+### Exercise 11
 
 What if we want to separate the columns into county and state? The best tool for that is the `separate_wider_delim()` function. Pipe `median_age` to `separate_wider_delim()` with arguments `col = name`, `into = c("county","state")` and `sep = ", "`. (Note that it is `", "` with a space, not `","` without one.)
 
-```{r the-tidyverse-8, exercise = TRUE}
+```{r the-tidyverse-11, exercise = TRUE}
 
 ```
 
-```{r the-tidyverse-8-hint-1, eval = FALSE}
+```{r the-tidyverse-11-hint-1, eval = FALSE}
 median_age |> 
   separate(... = NAME,
   into = ...,
   ... = ", ")
 ```
 
-```{r the-tidyverse-8-test, include = FALSE}
+```{r the-tidyverse-11-test, include = FALSE}
 median_age |> 
   separate(col = NAME,
   into = c("county", "state"),
@@ -342,12 +421,12 @@ median_age |>
 `separate()` is an older **dplyr** function for accomplishing this same task. It has been superseded by [`separate_wider_position()`](https://tidyr.tidyverse.org/reference/separate_wider_delim.html) and [`separate_wider_delim()`](https://tidyr.tidyverse.org/reference/separate_wider_delim.html). 
 
 
-### Exercise 9
+### Exercise 12
 
 Data in Census and ACS tables, as in the example above, are frequently comprised of variables that individually constitute sub-categories such as the numbers of households in different household income bands. One limitation of the approach above, however, is that the data and the resulting analysis return estimated counts, which are difficult to compare across geographies. Press "Run Code".
 
 
-```{r the-tidyverse-9, exercise = TRUE}
+```{r the-tidyverse-12, exercise = TRUE}
 race_vars <- c(
   White = "B03002_003",
   Black = "B03002_004",
@@ -358,7 +437,7 @@ race_vars <- c(
 )
 ```
 
-```{r the-tidyverse-9-test, include = FALSE}
+```{r the-tidyverse-12-test, include = FALSE}
 race_vars <- c(
   White = "B03002_003",
   Black = "B03002_004",
@@ -373,16 +452,16 @@ race_vars <- c(
 
 We will make use of this variable in our next download request. 
 
-### Exercise 10
+### Exercise 13
 
 Call `get_acs()` with `geography = "county"`, `state = "AZ"`, `variables = race_vars`,  and `year = 2020`. This is similar to previous calls we have made to `get_acs()` except, instead of using a single variable code, we are providing a vector of codes.  
 
 
-```{r the-tidyverse-10, exercise = TRUE}
+```{r the-tidyverse-13, exercise = TRUE}
 
 ```
 
-```{r the-tidyverse-10-hint-1, eval = FALSE}
+```{r the-tidyverse-13-hint-1, eval = FALSE}
 get_acs(
   geography = "county",
   state = "AZ",
@@ -397,20 +476,20 @@ Note the wide range in raw numbers. Some categories are 100 or even 1,000 times 
 
 
 
-### Exercise 11
+### Exercise 14
 
 A solution to this issue might involve normalizing the estimated count data by dividing it by the overall population from which the sub-group is derived. Appropriate denominators for ACS tables are frequently found in the tables themselves as variables.
 
 Use the same code as in the last Exercise, but add `summary_var = "B03002_001"` as an argument to the call to `get_acs()`.
 
 
-```{r the-tidyverse-11, exercise = TRUE}
+```{r the-tidyverse-14, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r the-tidyverse-11-hint-1, eval = FALSE}
+```{r the-tidyverse-14-hint-1, eval = FALSE}
 get_acs(
   geography = "county",
   state = "AZ",
@@ -424,15 +503,15 @@ get_acs(
 
 Adding a variable ID to the `summary_var` parameter in `get_acs()`  will create two new columns: `summary_est` and `summary_moe`, representing the summary variable’s estimate and margin of error. In this case, the summary variable is the total population for each county. 
 
-### Exercise 12
+### Exercise 15
 
 In the background, we ran this same download and assigned the result to a new object: `az_race`. Type `az_race` and hit "Run Code".
 
-```{r the-tidyverse-12, exercise = TRUE}
+```{r the-tidyverse-15, exercise = TRUE}
 
 ```
 
-```{r the-tidyverse-12-hint-1, eval = FALSE}
+```{r the-tidyverse-15-hint-1, eval = FALSE}
 az_race
 ```
 
@@ -442,22 +521,21 @@ Look closely as the results for Apache County. Each of the variables which we re
 
 <!-- DK: Really ought to understand and explain why `sum(az_race$estimate[1:6])` does not equal `az_race$summary_est[1]`. -->
 
-### Exercise 13
+### Exercise 16
 
 Pipe `az_race` to `mutate(percent = 100 * (estimate / summary_est))` and continue the pipe with `select(NAME, variable, percent)`.
 
-```{r the-tidyverse-13, exercise = TRUE}
+```{r the-tidyverse-16, exercise = TRUE}
 
 ```
 
-
-```{r the-tidyverse-13-hint-1, eval = FALSE}
+```{r the-tidyverse-16-hint-1, eval = FALSE}
 az_race %>%
   ...(percent = 100 * (estimate / ...)) %>%
   select(..., variable, percent)
 ```
 
-```{r the-tidyverse-13-test, include = FALSE}
+```{r the-tidyverse-16-test, include = FALSE}
 az_race %>%
   mutate(percent = 100 * (estimate / summary_est)) %>%
   select(NAME, variable, percent)
@@ -466,10 +544,6 @@ az_race %>%
 ### 
 
 This is the typical workflow. First, we figure out what variables we need and download them using a function like `get_acs()` or `get_decennial()`. We save the result to a permanent object like `az_race`. Then, we build pipes starting from that saved object.
-
-
-
-
 
 
 ## Comparing ACS estimates over time
@@ -734,7 +808,7 @@ If we want data on college career holders from 2010 to 2019, we will have a lot 
 
 ### Exercise 9
 
-The **purr** package has a variety of iteration functions such as `map_*()`. The function `map_dfr()` is especially useful in tidycensus, as it iterates over an input and applies it to a function or process defined by the user, then row-binds the result into a single data frame. 
+The **purrr** package has a variety of iteration functions such as `map_*()`. The function `map_dfr()` is especially useful in tidycensus, as it iterates over an input and applies it to a function or process defined by the user, then row-binds the result into a single data frame. 
 
 Set `years` to `2010:2019`. On a separate line type the function `names()` with the argument as `years`. Set this function to `years`. 
 
@@ -969,6 +1043,8 @@ The code below outlines a `group_by() %>% summarize()` workflow for calculating 
 
 The American Community Survey is based on a sample with estimates characterized by margins of error, and by default MOE is set to a 90 confidence interval. This can be translated roughly as “we are 90 percent sure that the true value falls within a range defined by the estimate plus or minus the margin of error.” 
 
+<!-- We are not going to teach you statistics in this tutorial! Behind the scenes, the ACS is making all sorts of calculations. In the end, using statistics, they provide us with two numbers: an *estimate* of the median household income in each county and a *moe* (margin of error) for that estimate. -->
+
 ### Exercise 1
 
 Lets look at data on median household income by county in Rhode Island using the default `moe_level` of 90. 
@@ -1001,9 +1077,17 @@ get_acs(
 
 The data can be translated to saying, "We are 90% confident that the median household income in the county of Rhode Island falls within the range of the `estimate` plus or minus the `moe`." For example, our estimate of the average household income in Bristol County, Rhode Island is $85,413 with a 90% confidence interval of +/- $6,122.
 
+### 
+
+There are only five counties in Rhode Island. In an ideal world, we would have the household income for every family in each county. If we did, we could precisely calculate what the median (and the mean and the max and . . .) household income is in each county. But we don't have data on every household because the ACS is a survey, unlike the Census. We only have a sample of some households in each county.
+
+### 
+
+In other words, the ACS calculated that a good estimate of the median household income in Bristol County is \$85,413. Is that the *true* number? The ACS does not know! It does not have data for all the households in Bristol County. The ACS only has data for a *sample* of households.
+
 ### Exercise 2
 
-Rather than using the default 90% margin of error, lets change the argument using the `get_acs()` function. Side note, the `moe_level` argument can only be either 90, 95 or 99.
+Rather than using the default 90% margin of error, let's change the argument using the `get_acs()` function. Side note, the `moe_level` argument can only be either 90, 95 or 99.
 
 Copy the code above and add an argument `moe_level` = `99`. 
 
@@ -1036,6 +1120,22 @@ get_acs(
 ### 
 
 Look at the data and notice how the values for the `moe` column has changed. The stricter margin of error increases the size of the confidence interval. In simpler terms, if you want to be more confident (i.e., set a higher `moe_level`) in the estimate, then your margin of error will increase. 
+
+### 
+
+When the confidence level is 99%, it means (roughly!) that 99 out of 100 times, the true (and unknown) value of median household income will fall between the confidence interval's upper bound and lower bound. 
+
+In the examples earlier, as confidence level increased, so did margin of error because if your interval is larger, there is a higher chance that the true value falls within it.
+
+
+<!-- Could insert some more examples here and spread out all the commentary. Also include: -->
+
+<!-- When the confidence level is 99%, it means (roughly!) that 99 out of 100 times, the true (and unknown) value of median household income will fall between the confidence interval's upper bound and lower bound.  -->
+
+<!-- In the examples earlier, as confidence level increased, so did margin of error because if your interval is larger, there is a higher chance that the true value falls within it. -->
+
+<!-- You can learn more about a margin of error and some related functions [here](https://walker-data.com/census-r/wrangling-census-data-with-tidyverse-tools.html#handling-margins-of-error-in-the-american-community-survey-with-tidycensus). -->
+
 
 ### Exercise 3
 
@@ -1170,6 +1270,442 @@ we had an ACS estimate of 25 with a margin of error of 5 around that estimate. T
 ```
 
 ### 
+
+## Plots of MOE
+### 
+
+<!-- Not sure where this is in the book, but leaving it here for now. Really need to save copies of this data and not download it live each time. -->
+
+### Exercise 1
+
+So now that we have an idea of what a confidence interval and a margin of error are, let's visualize them.
+
+We are going to create this graph:
+
+```{r plots-of-moe-1}
+moe_hhincome_plot <- get_acs(state = "Maine", geography = "county", variables = c((hhincome = "B19013_001"), year = 2021)) |>
+  mutate(NAME = str_remove(NAME, " County, Maine"))|>
+  ggplot(mapping = aes(x = estimate, y = reorder(NAME, estimate))) +
+  geom_pointrange(aes(xmax = estimate + moe, xmin = estimate - moe))+ 
+  scale_x_continuous(labels = scales::label_dollar())+
+  labs(title = "Median Household income in Maine Counties", 
+       subtitle = "Counties Surrounding Portland seem to be Richer",
+       y = "Counties",
+       x = "Median Household income",
+       caption = "2021 American Community Survey")
+
+moe_hhincome_plot
+```
+
+### 
+
+Run `get_acs()` below setting `state` to `"Maine"`, `geography` to `"county"`, `variables` to `c(hhincome = "B19013_001")` (remember we can rename variable names by doing it in a vector), and `year` to `2021`.
+
+```{r margin-of-error-5, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-1-hint-1, eval = FALSE}
+get_acs(state = "...",
+        geography = "...",
+        variables = c(hhincome = "..."),
+        year = ...)
+```
+
+### 
+
+This gives you your data, but the `NAME` column is somewhat annoying because it includes "County" and "Maine". We already know that they are counties in Maine so let's clean it up.
+
+### Exercise 2
+
+Copy/paste your code from last exercise. Pipe it into `mutate()`. Inside `mutate()`, set the `NAME` column to `str_remove(NAME, " County, Maine")`.
+
+```{r plots-of-moe-2, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-2-hint-1, eval = FALSE}
+get_acs(state = "...",
+        geography = "...",
+        variables = c(hhincome = "..."),
+        year = ...) |> 
+  mutate(NAME = str_remove(NAME, " County, Maine"))
+```
+
+### 
+
+The `str_remove()` function looked at the `NAME` column (1st argument) and removed the text that was specified in the second argument. 
+
+### Exercise 3
+
+Copy/paste your code from above and pipe it into `ggplot()`. Set `x` to `estimate` and `y` to `reorder(NAME, estimate)`.
+
+```{r plots-of-moe-3, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-3-hint-1, eval = FALSE}
+... |> 
+  ggplot(aes(x = ..., 
+             y = reorder(NAME, estimate)))
+```
+
+### 
+
+By reordering the names on the y-axis based on their `estimate` value, we avoid the sloppiness of the default ordering, which would have been alphabetical.
+
+### Exercise 4
+
+We will be using `geom_pointrange`, which is very similar to `geom_point()` but with a line going through it to show the range and margin of error.
+
+### 
+
+For `geom_pointrange` to show the margin of error, we will need to do some (very basic) math. We need to make the high end and the low end of the margin of error, by adding and subtracting `moe` from `estimate`, like this: `geom_pointrange(aes(xmax = estimate + moe, xmin = estimate - moe))`.
+
+```{r plots-of-moe-4, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-4-hint-1, eval = FALSE}
+... +
+  geom_pointrange(aes(xmax = ..., xmin = ...))
+```
+
+### 
+
+Now, we need to fix our x-axis.
+
+### Exercise 5
+
+We need to add dollar signs to signify that this represents money.
+
+### 
+
+Add the `scale_x_continuous()` layer setting `labels` to `scales::label_dollar()`.
+
+```{r plots-of-moe-5, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-5-hint-1, eval = FALSE}
+... +
+  scale_x_continuous(labels = scales::label_dollar())
+```
+
+### 
+
+You can do a lot of things using the scales package, such as adding percent signs and dollar signs. You can learn more about scales [here](https://scales.r-lib.org/).
+
+### Exercise 6
+
+Add the appropriate labels. Remember, our graph should look like this:
+
+```{r plots-of-moe-6}
+moe_hhincome_plot
+```
+
+```{r margin-of-error-10, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-6-hint-1, eval = FALSE}
+... + 
+  labs(...)
+```
+
+### 
+
+We just visualized margins of error at one moment in time, now, we are going to make a plot that spans multiple years. You can learn more about visualizing margins of error [here](https://walker-data.com/census-r/exploring-us-census-data-with-visualization.html?q=margins%20of%20error#visualizing-margins-of-error)
+
+### Exercise 7
+
+We are going to create this plot:
+
+```{r plots-of-moe-7, echo = FALSE}
+years <- 2005:2019
+names(years) <- years
+
+dekalb_plot <- ggplot(dekalb_years, mapping = aes(x = Year, 
+                                   y = estimate, 
+                                   group = 1)) + 
+  geom_line()+
+  geom_point()+
+  geom_ribbon(fill = "navy", alpha = 0.3, aes(ymax = estimate + moe, ymin = estimate - moe))+
+  scale_y_continuous(labels = scales::label_dollar(scale = .001, suffix = "k"))
+  
+dekalb_plot
+```
+
+Create a vector named `years` that goes from `2005` through `2019`
+
+```{r margin-of-error-11, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-7-hint-1, eval = FALSE}
+years <- 2005:2019
+```
+
+### 
+
+These are the years we will iterate over.
+
+### Exercise 8
+
+Run `library(purrr)` below
+
+```{r plots-of-moe-8, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-8-hint-1, eval = FALSE}
+library(...)
+```
+
+### 
+
+We will be using `map_dfr()` from the `purrr` package for this graph.
+
+### 
+
+For exercises 15-24, add the following line at the top of every code box:
+
+`names(years) <- years`
+
+Otherwise your graph will be a little (or a lot) wacky.
+
+### Exercise 9
+
+Run `map_dfr` below, setting the first argument to `years`. You WILL get an error.
+
+```{r plots-of-moe-9, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-9-hint-1, eval = FALSE}
+names(years) <- years
+map_dfr(years)
+```
+
+### 
+
+The first argument just tells `map_dfr()` which object to iterate over.
+
+### Exercise 10
+
+Copy/paste your code from above. Your second argument should be enclosed within `~{}` (Curly brackets with a tilde in front.)
+
+Inside the curly brackets, run `get_acs()` setting `geography` to `"county"`, `variables`   to `"B25077_001"`, `state` to `"GA"`, `county` to `"Dekalb"`, `year` to `.x`, and `survey` to `"acs1"`.
+
+```{r plots-of-moe-10, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-10-hint-1, eval = FALSE}
+...
+map_dfr(years,  ~{
+  get_acs(
+    geography = "...",
+    variables = "...",
+    state = "...",
+    county = "...",
+    year = .x,
+    survey = "...")})
+
+```
+
+### 
+
+By setting `year` to `.x`, the function iterates through our vector and grabs data from each year instead of just one. 
+
+Our data should be there, but it's confusing to know which year is which. 
+
+### Exercise 11
+
+Copy/paste your code from above. Add a third argument in `map_dfr()`. The argument is `.id`, and you should set it to `"Year"`.
+
+```{r plots-of-moe-11, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-11-hint-1, eval = FALSE}
+...
+map_dfr(years,  ~{
+  get_acs(geography = "...",
+    variables = "...",
+    state = "...",
+    county = "...",
+    year = .x,
+    survey = "...")},
+  .id = "Year")
+```
+
+### 
+
+If you look at the data now, there should be a new `Year` column. This is what the `.id` argument does: it creates a new column in the output data frame that contains values equivalent to the names of the input object, which in this case is `years`.
+
+### 
+
+Now that we have our data, let's plot it.
+
+### Exercise 12
+
+Copy/paste your code from above. Pipe it into `ggplot()` setting `x` to `years`, `y` to `estimate`, and `group` to `1`.
+
+```{r plots-of-moe-12, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-12-hint-1, eval = FALSE}
+... +
+  ggplot(aes(x = years, y = estimate, group = 1))
+```
+
+### 
+
+The argument group = 1 is used to help `ggplot()` understand how to connect the yearly data points with lines given that only one county is being visualized.
+
+### Exercise 13
+
+Add the `geom_line()` and `geom_point()` layers.
+
+```{r plots-of-moe-13, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-13-hint-1, eval = FALSE}
+... + 
+  geom_line() +
+  geom_point()
+```
+
+### 
+
+`geom_line()` draws the lines, and we layer points on top of the lines as well to highlight the actual ACS estimates.
+
+### Exercise 14
+
+We will add the margin of error component with `geom_ribbon()`.
+
+### 
+
+Add the `geom_ribbon` layer. Inside `aes()` set `ymin` to `estimate - moe` and `ymax` to `estimate + moe`.
+
+```{r plots-of-moe-14, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-14-hint-1, eval = FALSE}
+... + 
+  geom_ribbon(aes(ymin = estimate - moe,
+                  ymax = estimate + moe))
+```
+
+### 
+
+Now we need to add some styling arguments within `geom_ribbon()` outside of `aes()`
+
+### Exercise 15
+
+Outside of `aes()` but inside `geom_ribbon()`, set `fill` to `"navy"` and `alpha` to `0.3`.
+
+```{r plots-of-moe-15, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-15-hint-1, eval = FALSE}
+... + 
+  geom_ribbon(aes(...), fill = "...", alpha = ...)
+```
+
+### 
+
+<!-- knowledge drop of sorts -->
+
+### 
+
+Now we need to re-label the y axis.
+
+### Exercise 16
+
+It's more appealing to see $400k for money rather than 400000. Let's do that.
+
+### 
+
+Add the `scale_y_continuous()` layer setting `labels` to `scales::label_dollar()`. Inside `label_dollar()`, set `scale` to `.001` and `suffix` to `"k"`.
+
+```{r plots-of-moe-16, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-16-hint-1, eval = FALSE}
+... + 
+  scale_y_continuous(labels = scales::label_dollar(scale = .001, suffix = "k"))
+```
+
+### 
+
+We label the y-axis with dollar signs, divide them by 1000, and then add the "k" suffix.
+
+### Exercise 17
+
+Add the appropriate labels.
+
+Remember our plot should look like this:
+
+```{r plots-of-moe-17}
+include_graphics("images/moe_plt_time.png")
+```
+
+```{r margin-of-error-21, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r plots-of-moe-17-hint-1, eval = FALSE}
+... + 
+  labs(...)
+```
+
+### 
+
+Now, we know what a margin of error is and how to plot it. We can also plot margins of error over many years and in one instance in time.
+
+
+
 
 ## Summary
 ### 
