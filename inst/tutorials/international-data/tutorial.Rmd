@@ -1,14 +1,14 @@
 ---
-title: API Key
+title: International data
 author: Miriam Heiss and Mann Talati
 tutorial:
-  id: api-key
+  id: international-data
 output:
   learnr::tutorial:
     progressive:  true
     allow_skip::  true
 runtime: shiny_prerendered
-description: Getting an API key to access data
+description: Using international data
 ---
 ```{r setup, include = FALSE}
 library(learnr)
@@ -39,97 +39,9 @@ options(tutorial.exercise.timelimit = 240,
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
 ```
 
-## Introduction
-
-An application programming interface (API) key is a code used to identify and authenticate an application or user. They also act as a unique identifier and provide a secret token for authentication purposes. The **tidycensus** package works even without an Census API key, but you should still get one, not least because some packages, like **ibdr** require one.
-
-## Getting a Census API Key
-
-### Exercise 1
-
-We can access the US Census API via the **tidycensus** package. The **tidycensus** package utilizes an API key to access Census data.
-
-### 
-
-Load the **tidycensus** package into your R session.
-
-### 
-
-Run `search()` in the Console to see the libraries that you've currently loaded. CP/CR.
-
-```{r accessing-the-census-1}
-question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
-```
-
-### 
-
-The output should include the string "package:tidycensus". Kyle Walker is also the author of the [**tidycensus**](https://walker-data.com/tidycensus/) package.
-
-### Exercise 2
-
-Now that we have the package needed to access the Census database, we need to get an API key. 
-
-###
-
-An API key is basically a password for an API, but they often come with certain restrictions. For example, the Census API only allows you to collect 50 variables (or columns) from a database at a time. 
-
-### 
-
-Visit [https://api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html) and request an API key. Use your school or other organization name for the `Organization Name` field. Follow the steps and verify your API key via email. 
-
-### 
-
-Copy and paste your API key into the box below. If you don't want to share your API key, change a few letters to make it different after you have pasted it into the box.
-
-```{r accessing-the-census-2}
-question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 3)
-```
-
-### 
-
-While an API key isn't mandatory for accessing the Census, it allows you to do more requests and use multiple computers to collect data. It's  also necessary for using the **tidycensus** package.
-
-### Exercise 3
-
-You may remember putting your GitHub Personal Access Token into your `.Renviron` file for safekeeping. We'll be doing the same for our Census API key, but the process looks a little bit different.
-
-### 
-
-The **tidycensus** package makes the process much simpler. Run `census_api_key("YOUR API KEY HERE", install = TRUE)` in the Console, substituting your API key in the field.
-
-###
-
-This should save your key into your `.Renviron` file. Restart your R session.
-
-### 
-
-Run `Sys.getenv("CENSUS_API_KEY")` in the Console. Copy-paste the command and the output in the space below. 
-
-```{r accessing-the-census-3}
-question_text(NULL,
-    answer(NULL, correct = TRUE),
-    allow_retry = TRUE,
-    try_again_button = "Edit Answer",
-    incorrect = NULL,
-    rows = 2)
-```
-
-### 
-
-This should contain your Census API key. If you want to see where the key is stored, run `usethis::edit_r_environ()` in the Console. It should open up your `.Renviron` file and show you all of the keys that you have stored there so far. Make sure to close this file after every usage, for it stores very sensitive information that you don't want to accidentally alter or delete. 
-
 
 ## International data
+###
 
 We can use the **ibdr** package to get information about other countries from the US Census Bureau.
 
