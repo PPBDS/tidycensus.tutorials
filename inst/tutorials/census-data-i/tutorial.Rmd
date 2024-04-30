@@ -87,11 +87,14 @@ years <- 2005:2019
 <!-- DK: Just added in the sf package. Mention explicitly that this needs to be loaded. -->
 
 ## Introduction
+###
 
 Let's learn how to work with and map data from the US Census. We (mostly) follow the approach of [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. If you would like to work more with census data, follow Walker's advice closely.
 
 ## Getting data 
 ### 
+
+<!-- DK: Chapter 2? -->
 
 The Census API works by accessing Census databases and tables. We can find these tables by visiting [data.census.gov](data.census.gov). We will learn how to access data from the **American Community Survey**, the **Decennial Census**, and the **Population Estimates Program** in this section. 
 
@@ -413,6 +416,8 @@ Congrats! You now have the necessary skills to pull all kinds of data from the [
 
 
 ## Margin of error
+###
+
 In this section, we are going to learn what a margin of error (moe) is, and how we can analyze and visualize it.
 
 ### Exercise 1
@@ -952,6 +957,10 @@ Now, we know what a margin of error is and how to plot it. We can also plot marg
 <!-- MH: I will leave this section the same, it's good. -->
 
 ## Census geographic data
+###
+
+<!-- DK: This is from Chapter 5 in the book. -->
+
 
 Census and ACS data are associated with geographies, which are the units at which the data is aggregated. We are going to learn how to work with these.
 
