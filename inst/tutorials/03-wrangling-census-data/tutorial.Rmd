@@ -271,41 +271,24 @@ The default method for printing data used by the **tibble** package shows the fi
 
 ### Exercise 6
 
-Set `median_age` to the result of your previous call to `get_acs()`.
+Behind the scenes, we assigned the resuls of this call to `get_acs()` to a new object, `median_age`.
+
+We almost always assign the results of a function call which retrieves data from a source like the Census to a permanent object, `median_age` in this case. Strictly speaking, we don't need to do this. We could just start a pipe with this function call. But, first, this is sometimes annoyingly slow and, second, we don't want to be abusive and query an online source every time we make a tiny change.
+
+### 
+
+Write `median_age` and press "Run Code".
 
 
 ```{r the-tidyverse-6, exercise = TRUE}
 
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
 ```{r the-tidyverse-6-hint-1, eval = FALSE}
-... <- get_acs(
-  geography = "county",
-  variables = "B01002_001",
-  year = 2020
-)
-```
-
-### 
-
-We almost always assign the results of a function call which retrieves data from a source like the Census to a permanent object, `median_age` in this case. Strictly speaking, we don't need to do this. We could just start a pipe with this function call. But, first, this is sometimes annoyingly slow and, second, we don't want to be abusive and query an online source every time we make a tiny change.
-
-### Exercise 7
-
-Write `median_age` and press "Run Code".
-
-
-```{r the-tidyverse-7, exercise = TRUE}
-
-```
-
-```{r the-tidyverse-7-hint-1, eval = FALSE}
 median_age
 ```
 
-```{r the-tidyverse-7-test, include = FALSE}
+```{r the-tidyverse-6-test, include = FALSE}
 median_age
 ```
 
@@ -315,22 +298,22 @@ Note that the key variable is called `estimate` rather than `age` or `median_age
 
 
 
-### Exercise 8
+### Exercise 7
 
 `arrange()` sorts a dataset by values in one or more columns and returns the sorted result. Pipe `median_age` to the `arrange()` with the argument `estimate`.
 
-```{r the-tidyverse-8, exercise = TRUE}
+```{r the-tidyverse-7, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r the-tidyverse-8-hint-1, eval = FALSE}
+```{r the-tidyverse-7-hint-1, eval = FALSE}
 median_age |> 
   ...(estimate)
 ```
 
-```{r the-tidyverse-8-test, include = FALSE}
+```{r the-tidyverse-7-test, include = FALSE}
 median_age |> 
   arrange(estimate)
 ```
@@ -342,22 +325,22 @@ Per the 2016-2020 ACS, the youngest county is De Baca County, New Mexico. Two of
 We would normally do this analysis by justing piping `median_age` into `arrange(estimate)`, producing the same answer as here.
 
 
-### Exercise 9
+### Exercise 8
 
 New let's try to find the oldest counties in the US by median age. Change `estimate` to `desc(estimate)` within `arrange()` in the previous code.
 
-```{r the-tidyverse-9, exercise = TRUE}
+```{r the-tidyverse-8, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r the-tidyverse-9-hint-1, eval = FALSE}
+```{r the-tidyverse-8-hint-1, eval = FALSE}
 median_age |> 
   arrange(...(estimate))
 ```
 
-```{r the-tidyverse-9-test, include = FALSE}
+```{r the-tidyverse-8-test, include = FALSE}
 median_age |> 
   arrange(desc(estimate))
 ```
@@ -368,23 +351,23 @@ The oldest county in the United States is Sumter County, Florida. Sumter County 
 
 
 
-### Exercise 10
+### Exercise 9
 
 How many counties in the US have a median age of 50 or older? Pipe `median_age` to `filter()` with the argument `estimate >= 50`. 
 
 
-```{r the-tidyverse-10, exercise = TRUE}
+```{r the-tidyverse-9, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r the-tidyverse-10-hint-1, eval = FALSE}
+```{r the-tidyverse-9-hint-1, eval = FALSE}
 median_age |> 
   filter(... >= 50)
 ```
 
-```{r the-tidyverse-10-test, include = FALSE}
+```{r the-tidyverse-9-test, include = FALSE}
 median_age |> 
   filter(estimate >= 50)
 ```
@@ -394,22 +377,22 @@ median_age |>
 The `filter()` function queries a data set for rows where a given condition evaluates to TRUE, and retains those rows only. In this case, the data set is filtering our `median_age` data set for counties that have a median age of 50 or older. 
 
 
-### Exercise 11
+### Exercise 10
 
 What if we want to separate the columns into county and state? The best tool for that is the `separate_wider_delim()` function. Pipe `median_age` to `separate_wider_delim()` with arguments `col = name`, `into = c("county","state")` and `sep = ", "`. (Note that it is `", "` with a space, not `","` without one.)
 
-```{r the-tidyverse-11, exercise = TRUE}
+```{r the-tidyverse-10, exercise = TRUE}
 
 ```
 
-```{r the-tidyverse-11-hint-1, eval = FALSE}
+```{r the-tidyverse-10-hint-1, eval = FALSE}
 median_age |> 
   separate(... = NAME,
   into = ...,
   ... = ", ")
 ```
 
-```{r the-tidyverse-11-test, include = FALSE}
+```{r the-tidyverse-10-test, include = FALSE}
 median_age |> 
   separate(col = NAME,
   into = c("county", "state"),
@@ -421,12 +404,12 @@ median_age |>
 `separate()` is an older **dplyr** function for accomplishing this same task. It has been superseded by [`separate_wider_position()`](https://tidyr.tidyverse.org/reference/separate_wider_delim.html) and [`separate_wider_delim()`](https://tidyr.tidyverse.org/reference/separate_wider_delim.html). 
 
 
-### Exercise 12
+### Exercise 11
 
 Data in Census and ACS tables, as in the example above, are frequently comprised of variables that individually constitute sub-categories such as the numbers of households in different household income bands. One limitation of the approach above, however, is that the data and the resulting analysis return estimated counts, which are difficult to compare across geographies. Press "Run Code".
 
 
-```{r the-tidyverse-12, exercise = TRUE}
+```{r the-tidyverse-11, exercise = TRUE}
 race_vars <- c(
   White = "B03002_003",
   Black = "B03002_004",
@@ -437,7 +420,7 @@ race_vars <- c(
 )
 ```
 
-```{r the-tidyverse-12-test, include = FALSE}
+```{r the-tidyverse-11-test, include = FALSE}
 race_vars <- c(
   White = "B03002_003",
   Black = "B03002_004",
@@ -452,16 +435,16 @@ race_vars <- c(
 
 We will make use of this variable in our next download request. 
 
-### Exercise 13
+### Exercise 12
 
 Call `get_acs()` with `geography = "county"`, `state = "AZ"`, `variables = race_vars`,  and `year = 2020`. This is similar to previous calls we have made to `get_acs()` except, instead of using a single variable code, we are providing a vector of codes.  
 
 
-```{r the-tidyverse-13, exercise = TRUE}
+```{r the-tidyverse-12, exercise = TRUE}
 
 ```
 
-```{r the-tidyverse-13-hint-1, eval = FALSE}
+```{r the-tidyverse-12-hint-1, eval = FALSE}
 get_acs(
   geography = "county",
   state = "AZ",
@@ -476,20 +459,20 @@ Note the wide range in raw numbers. Some categories are 100 or even 1,000 times 
 
 
 
-### Exercise 14
+### Exercise 13
 
 A solution to this issue might involve normalizing the estimated count data by dividing it by the overall population from which the sub-group is derived. Appropriate denominators for ACS tables are frequently found in the tables themselves as variables.
 
 Use the same code as in the last Exercise, but add `summary_var = "B03002_001"` as an argument to the call to `get_acs()`.
 
 
-```{r the-tidyverse-14, exercise = TRUE}
+```{r the-tidyverse-13, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r the-tidyverse-14-hint-1, eval = FALSE}
+```{r the-tidyverse-13-hint-1, eval = FALSE}
 get_acs(
   geography = "county",
   state = "AZ",
@@ -503,15 +486,15 @@ get_acs(
 
 Adding a variable ID to the `summary_var` parameter in `get_acs()`  will create two new columns: `summary_est` and `summary_moe`, representing the summary variable’s estimate and margin of error. In this case, the summary variable is the total population for each county. 
 
-### Exercise 15
+### Exercise 14
 
 In the background, we ran this same download and assigned the result to a new object: `az_race`. Type `az_race` and hit "Run Code".
 
-```{r the-tidyverse-15, exercise = TRUE}
+```{r the-tidyverse-14, exercise = TRUE}
 
 ```
 
-```{r the-tidyverse-15-hint-1, eval = FALSE}
+```{r the-tidyverse-14-hint-1, eval = FALSE}
 az_race
 ```
 
@@ -521,21 +504,21 @@ Look closely as the results for Apache County. Each of the variables which we re
 
 <!-- DK: Really ought to understand and explain why `sum(az_race$estimate[1:6])` does not equal `az_race$summary_est[1]`. -->
 
-### Exercise 16
+### Exercise 15
 
 Pipe `az_race` to `mutate(percent = 100 * (estimate / summary_est))` and continue the pipe with `select(NAME, variable, percent)`.
 
-```{r the-tidyverse-16, exercise = TRUE}
+```{r the-tidyverse-15, exercise = TRUE}
 
 ```
 
-```{r the-tidyverse-16-hint-1, eval = FALSE}
+```{r the-tidyverse-15-hint-1, eval = FALSE}
 az_race %>%
   ...(percent = 100 * (estimate / ...)) %>%
   select(..., variable, percent)
 ```
 
-```{r the-tidyverse-16-test, include = FALSE}
+```{r the-tidyverse-15-test, include = FALSE}
 az_race %>%
   mutate(percent = 100 * (estimate / summary_est)) %>%
   select(NAME, variable, percent)

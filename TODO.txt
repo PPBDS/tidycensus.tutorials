@@ -1,14 +1,8 @@
+Melissa: Write Chapter 2 tutorial
 
 
+Chapters 2 and 3 are the most important. They are a mess.
 
-Start with Chapter 3. Note that some (but not all!) of this material is in the three currently existing tutorials. Copy/paste the relevant material directly from there.
-
-
-Break up the current tutorials into sections which map directly onto different chapters.
-
-Make sure to only load the libraries which are needed in that chapter.
-
-Introduce all the necessary libraries with questions, telling students to load each of them by hand, each in a separate question.
 
 Use images from the book.
 
