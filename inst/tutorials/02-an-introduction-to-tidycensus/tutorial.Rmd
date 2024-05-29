@@ -21,6 +21,7 @@ knitr::opts_chunk$set(echo = FALSE)
 options(tutorial.exercise.timelimit = 60, 
         tutorial.storage = "local") 
 
+# TB question: does this code go here? library(tidycensus) # census_api_key("YOUR KEY GOES HERE", install = TRUE)
   
 ```
 
@@ -37,16 +38,18 @@ options(tutorial.exercise.timelimit = 60,
 
 This tutorial covers [Chapter 2: An introduction to tidycensus](https://walker-data.com/census-r/an-introduction-to-tidycensus.html) from [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You will learn about the [**tidycensus**](https://walker-data.com/tidycensus/index.html) package and some of its key functions, including [`get_decennial()`](https://walker-data.com/tidycensus/articles/basic-usage.html) and [`get_acs()`](https://walker-data.com/tidycensus/articles/basic-usage.html). 
 
-
-<!-- DK: This introduction is too similar to that for chapter 3. -->
-
+Why tidycensus? The US Census Bureau population data is a great source for researchers, and this packages facilitates your exploration of the Census data in the R environment.
 
 ## Getting started with tidycensus
 ### 
 
 ### Exercise 1
 
-Let's try accessing the Decennial Census database. In order to do this, we'll use the `get_decennial()` function with the `geography`, `variables`, and `year` arguments.
+Let's try accessing the Decennial Census database. In order to do this, we'll use the `get_decennial()` function. This allows us to access decennial Census data from the 2000, 2010, and 2020 decennial US Censuses.
+
+
+
+with the `geography`, `variables`, and `year` arguments.
 
 Let's try to find the total American population by state. First of all, we need to access the variable containing these populations, which is `P001001`.
 
@@ -412,6 +415,20 @@ This should return a tibble with 6 columns, one of them being "variable". We can
 
 ## Summary
 ### 
+
+Here's your cheat-sheet of the core functions in tidycensus:
+
+1. `get_decennial()`: requests data from the US Decennial Census APIs for 2000, 2010, and 2020.
+
+2. `get_acs()`: requests data from the 1-year and 5-year American Community Survey samples. Data are available from the 1-year ACS back to 2005 and the 5-year ACS back to 2005-2009.
+
+3. `get_estimates()`: an interface to the Population Estimates APIs. These datasets include yearly estimates of population characteristics by state, county, and metropolitan area, along with components of change demographic estimates like births, deaths, and migration rates.
+
+4. `get_pums()`: which accesses data from the ACS Public Use Microdata Sample APIs. These samples include anonymized individual-level records from the ACS organized by household and are highly useful for many different social science analyses. 
+
+5. `get_flows()`: an interface to the ACS Migration Flows APIs. Includes information on in- and out-flows from various geographies for the 5-year ACS samples, enabling origin-destination analyses.
+
+
 
 ```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
 ```
