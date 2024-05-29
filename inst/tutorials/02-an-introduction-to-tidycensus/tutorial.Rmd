@@ -21,6 +21,7 @@ knitr::opts_chunk$set(echo = FALSE)
 options(tutorial.exercise.timelimit = 60, 
         tutorial.storage = "local") 
 
+
 # TB question: does this code go here? library(tidycensus) # census_api_key("YOUR KEY GOES HERE", install = TRUE)
   
 ```
@@ -41,29 +42,26 @@ This tutorial covers [Chapter 2: An introduction to tidycensus](https://walker-d
 Why tidycensus? The US Census Bureau population data is a great source for researchers, and this packages facilitates your exploration of the Census data in the R environment.
 
 ## Getting started with tidycensus
+### 
 
-### Decennial Census
+<!-- DK: Intro -->
+
+### Exercise 1
 
 Let's try accessing the Decennial Census database. In order to do this, we'll use the `get_decennial()` function. This allows us to access decennial Census data from the 2000, 2010, and 2020 decennial US Censuses.
 
-#### Exercise 1
 
 First, type in the function `get_decennial()`.
-```{r getting-started-with-tidycensu-2-ex, exercise = TRUE}
+
+```{r getting-started-with-tidycensu-1, exercise = TRUE}
 
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r getting-started-with-tidycensu-2-hint, eval = FALSE}
+```{r getting-started-with-tidycensu-1-hint-1, eval = FALSE}
 get_decennial()
 ```
 
-```{r getting-started-with-tidycensu-2-test, include = FALSE}
-get_decennial()
-```
-
-####
+### 
 
 Just calling the function is not enough, we need to specify which data we are looking to extract. This is done via the use of three arguments: `geography`, `variables`, and `year`.
 
@@ -76,59 +74,47 @@ Just calling the function is not enough, we need to specify which data we are lo
 
 For this exercise, let's try to find the total American population by state in 2010. To do so, we need to access the variable `P001001`.
 
-#### Exercise 2
+### Exercise 2
 
 Under the previously in-puted function, set `geography` to `"state"`, `variables` to `"P001001"`, and `year` to `2010`.
-
-```{r getting-started-with-tidycensu-1, exercise = TRUE}
-
-```
-
-```{r getting-started-with-tidycensu-1-hint-1, eval = FALSE}
-get_decennial(... = "...", 
-              variables = "..."
-              ... = 2010)
-```
-
-```{r getting-started-with-tidycensu-1-test, include = FALSE}
-get_decennial(geography = "state", 
-              variables = "P001001",
-              year = 2010)
-```
-
-####
-
-This should return a tibble with 52 rows and 4 columns.
-
-Now, what if we want to see the data from 2020?
-
-#### Exercise 2
-
-Copy and paste your code from above. Change the `year` argument from `2010` to `2020`. Change the `variables` argument to `"P1_001N"`, because the `"P001001"` was renamed starting in 2020.
 
 ```{r getting-started-with-tidycensu-2, exercise = TRUE}
 
 ```
 
+```{r getting-started-with-tidycensu-2-hint-1, eval = FALSE}
+get_decennial(... = "...", 
+              variables = "...",
+              ... = 2010)
+```
+
+### 
+
+This should return a tibble with 52 rows and 4 columns.
+
+Now, what if we want to see the data from 2020?
+
+
+### Exercise 3
+
+Copy and paste your code from above. Change the `year` argument from `2010` to `2020`. Change the `variables` argument to `"P1_001N"`, because the `"P001001"` was renamed starting in 2020.
+
+```{r getting-started-with-tidycensu-3, exercise = TRUE}
+
+```
+
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r getting-started-with-tidycensu-2-hint-1, eval = FALSE}
+```{r getting-started-with-tidycensu-3-hint-1, eval = FALSE}
 get_decennial(... = "...", 
               variables = "...",
               year = ...)
 ```
 
-```{r getting-started-with-tidycensu-2-test, include = FALSE}
-get_decennial(geography = "state", 
-              variables = "P1_001N",
-              year = 2020)
-```
-
-####
+### 
 
 Now you get a different data set than that from Exercise 2. By changing the `year` argument, we can specify when we want our data to be from. 
 
-#### Summary files
 
 We should introduce another argument: `sumfile`, which stands for "summary file". 
 
@@ -150,21 +136,20 @@ Note that by default, `get_decennial()` uses the argument `sumfile = "sf1"`.
 
 If you wish to extract data from other sumfiles, you need to specify this argument under the function. Now let's practice. 
 
-####
 
 We want to retrieve information on the *American Indian & Alaska Native population* by *state* from the *2020* decennial Census.
 
-#### Exercise 3
+### Exercise 4
 
 Run the `get_decennial()` function below setting `geography` to `"state"`, `variables` to `"P1_005N"`, `year` to `2020`, and `sumfile` to `"pl"`.
 
-```{r getting-started-with-tidycensu-3, exercise = TRUE}
+```{r getting-started-with-tidycensu-4, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r getting-started-with-tidycensu-3-hint-1, eval = FALSE}
+```{r getting-started-with-tidycensu-4-hint-1, eval = FALSE}
 get_decennial(geography = "...",
         variables      = "...",
         year = ...,
@@ -172,7 +157,7 @@ get_decennial(geography = "...",
 )
 ```
 
-```{r getting-started-with-tidycensu-3-test, include = FALSE}
+```{r getting-started-with-tidycensu-4-test, include = FALSE}
 get_decennial(geography = "state",
         variables      = "P1_005N",
         year = 2020,
@@ -186,7 +171,7 @@ This retrieves information on the American Indian & Alaska Native population by 
 
 To learn more about the `sumfile`, refer to Walker's [book](https://walker-data.com/census-r/an-introduction-to-tidycensus.html#getting-started-with-tidycensus).
 
-### American Community Survey
+### Exercise 5
 
 Just as `get_decennial()` gets information from the Decennial Census, `get_acs()` gets information from the **A**merican **C**ommunity **S**urvey. 
 
@@ -194,44 +179,44 @@ The ACS includes a wide variety of variables detailing characteristics of the US
 
 The basic set-up of `get_acs()` is similar to that of `get_decennial()` as they all use the three arguments: `geography`, `variables` and `year`.
 
-#### Exercise 4
+### Exercise 6
 
 Let's look at the number of U.S. residents born in Mexico by state.
 
 Run the `get_acs()` function, setting `geography` to  `"state"`, `variables` to `"B05006_150"` and `year` to `2021`.
 
-```{r getting-started-with-tidycensu-4, exercise = TRUE}
+```{r getting-started-with-tidycensu-6, exercise = TRUE}
 
 ```
 
-```{r getting-started-with-tidycensu-4-hint-1, eval = FALSE}
+```{r getting-started-with-tidycensu-6-hint-1, eval = FALSE}
 get_acs(geography = "...",
         variables      = "...",
         year = ...
 )
 ```
 
-```{r getting-started-with-tidycensu-4-test, include = FALSE}
+```{r getting-started-with-tidycensu-6-test, include = FALSE}
 get_acs(geography = "state",
         variables = "B05006_150",
         year = 2021
 )
 ```
 
-####
+### Exercise 7
 
 Notice that the tibble produced has an `estimate` and a `moe` column rather than a `value` column like the Decennial Census data. 
 
 `estimate` column: ACS estimate.
 `moe` column: margin of error around that estimate.
 
-#### Knowledge drop
+### Exercise 8
 
 What if you didn't specify 'year'? 
 
 `get_acs()` will defaults to the most *recent five-year* ACS sample (ie. 2019-2023)
 
-####
+### Exercise 9
 
 Another important argument is `survey`. 
 
@@ -239,70 +224,71 @@ This argument defaults to 5 year periods if not specified.
 
 We can change it to a one-year period rather than a default 5-year period by adding `survey = "acs1"`.
 
-#### Exercise 5
+### Exercise 10
 
 Run `get_acs()`, setting `geography` to `"state"`, `variables` to `"B05006_150"`, `survey` to `"acs1"`, and `year` to `2021`.
 
 
-```{r getting-started-with-tidycensu-5, exercise = TRUE}
+```{r getting-started-with-tidycensu-10, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r getting-started-with-tidycensu-5-hint-1, eval = FALSE}
+```{r getting-started-with-tidycensu-10-hint-1, eval = FALSE}
 get_acs(... = "...", 
         variables = "...", 
         survey = "...",
         ... = 2019)
 ```
 
-```{r getting-started-with-tidycensu-5-test, include = FALSE}
+```{r getting-started-with-tidycensu-10-test, include = FALSE}
 get_acs(geography = "state", 
         variables = "B05006_150", 
         survey = "acs1",
         year = 2021)
 ```
 
-####
+### Exercise 11
 
 What do you think this code entails?
 
 Well, it yields data on the number of residents born in Mexico by state in the year of *just 2021* (instead of a 5-year period as earlier). 
 
-#### Knowledge drop
+### Exercise 12
 
 You should have seen some `NA` in the resulted table of the previous exercise. This is R’s notation representing missing data. 
 
 In this case, `NA` in the estimate column generally means that the estimate is too small for a given geography to be deemed reliable by the Census Bureau.
 
-####
+### Exercise 13
 
 Notice that the GEOID column contains the [FIPS code](https://transition.fcc.gov/oet/info/maps/census/fips/fips.txt#:~:text=FIPS%20codes%20are%20numbers%20which,to%20which%20the%20county%20belongs.) of the area the data covers. This code is a standardized way to identify different geographical areas. It gets larger as the area under consideration narrows. The FIPS for Massachusetts is 25. For Middlesex County within Massachusetts, the FIPS is 25017.
 
-## Geography and Variables
+## Geography and variables
+### 
 
 <!-- TB: start from here -->
 
-### Exercise 6
+### Exercise 1
 
 Rather than using the `variables` argument, you can supply a table name to the `table` parameter in `get_acs()`; this will return data for every variable in that table. 
 
 Run `get_acs()` below setting `geography` to `"state"`, `table` to `"B01001"`, and `year` to `2021`
 
-```{r getting-started-with-tidycensu-6, exercise = TRUE}
+```{r geography-and-variables-1, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r getting-started-with-tidycensu-6-hint-1, eval = FALSE}
+```{r geography-and-variables-1-hint-1, eval = FALSE}
 get_acs(... = "...", 
         table = "...",
         ... = ...)
 ```
 
-```{r getting-started-with-tidycensu-6-test, include = FALSE}
+```{r geography-and-variables-1-test, include = FALSE}
 get_acs(geography = "state", 
         table = "B01001",
         year = 2021)
@@ -312,19 +298,19 @@ get_acs(geography = "state",
 
 This code got all variables associated with table `B01001`, which covers sex broken down by age, from the 2017-2021 5-year ACS.
 
-### Exercise 7
+### Exercise 2
 
 Rather than using the `variables` argument, you can supply a table name to the `table` parameter in `get_acs()`; this will return data for every variable in that table. 
 
 Run `get_acs()` below setting `geography` to `"state"`, `table` to `"B01001"`, and `year` to `2021`
 
-```{r getting-started-with-tidycensu-7, exercise = TRUE}
+```{r geography-and-variables-2, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r getting-started-with-tidycensu-7-hint-1, eval = FALSE}
+```{r geography-and-variables-2-hint-1, eval = FALSE}
 get_acs(... = "...", 
         table = "...",
         ... = ...)
@@ -334,7 +320,7 @@ get_acs(... = "...",
 
 This code got all variables associated with table `B01001`, which covers sex broken down by age, from the 2017-2021 5-year ACS.
 
-### Exercise 8
+### Exercise 3
 
 What if we want to analyze a variable at the county level, but only in one state? We can use the `state` argument along with the geography argument.
 
@@ -342,13 +328,13 @@ What if we want to analyze a variable at the county level, but only in one state
 
 Run `get_acs()` below setting `geography` = `"county"`, `variables` to `"B19013_001"`, `state` to `"GA"`, and `year` to `2021`
 
-```{r getting-started-with-tidycensu-8, exercise = TRUE}
+```{r geography-and-variables-3, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r getting-started-with-tidycensu-8-hint-1, eval = FALSE}
+```{r geography-and-variables-3-hint-1, eval = FALSE}
 get_acs(... = "...", 
         variables = "...", 
         ... = "WI",
@@ -359,19 +345,19 @@ get_acs(... = "...",
 
 The example above returns average household income by county, but only in the state of Georgia. When using the `state` argument, you can use the state name (`"Georgia"`), the state postal code (`"GA"`), or the FIPS code (`"13"`).
 
-### Exercise 9
+### Exercise 4
 
 Smaller geographies, such as Census tracts, can be subsetted as well by the `county` argument. 
 
 Run `get_acs()` below setting `geography` = `"tract"`, `variables` to `"B19013_001"`, `state` to `"13"`, `county` to `"Gwinnett"`, and `year` to `2021`
 
-```{r getting-started-with-tidycensu-9, exercise = TRUE}
+```{r geography-and-variables-4, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r getting-started-with-tidycensu-9-hint-1, eval = FALSE}
+```{r geography-and-variables-4-hint-1, eval = FALSE}
 get_acs(geography = "...", 
         variables = "...", 
         state = "...", 
@@ -385,7 +371,7 @@ The above code retrieves the average household income for every tract in Gwinnet
 
 ### 
 
-### Exercise 10
+### Exercise 5
 
 Let's switch gears. What if we don't know what a variable ID means; after all, they're just a bunch of letters and numbers.
 
@@ -393,13 +379,13 @@ Luckily, the **tidycensus** packages offers the `load_variables()` function.
 
 Run `load_variables()` setting `year` to `2021`, and `dataset` to `"acs5"`
 
-```{r getting-started-with-tidycensu-10, exercise = TRUE}
+```{r geography-and-variables-5, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r getting-started-with-tidycensu-10-hint-1, eval = FALSE}
+```{r geography-and-variables-5-hint-1, eval = FALSE}
 load_variables(year = ..., dataset = "...")
 ```
 
@@ -407,19 +393,19 @@ load_variables(year = ..., dataset = "...")
 
 Notice the "label" and "concept" columns, providing information about each variable. To learn more about `load_variables()` and its arguments, go to [Kyle Walkers introduction to tidycensus](https://walker-data.com/census-r/an-introduction-to-tidycensus.html#searching-for-variables-in-tidycensus)
 
-### Exercise 11
+### Exercise 6
 
 Now we may know what a variable name means, but it's probably pretty annoying to type that every, single time you need it. So how can we rename it?
 
 Run `get_acs()` below setting `geography` to `"county"`, `state` = `"Utah"`, `variables` to a vector containing `medinc` which is assigned to `"B19013_001"` and `medage` which is assigned to `"B01002_001"`, and `year` to `2021`.  
 
-```{r getting-started-with-tidycensu-11, exercise = TRUE}
+```{r geography-and-variables-6, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r getting-started-with-tidycensu-11-hint-1, eval = FALSE}
+```{r geography-and-variables-6-hint-1, eval = FALSE}
 get_acs(geography = "...",
         state = "...",
         ... = c(medinc = "...",
@@ -431,20 +417,20 @@ get_acs(geography = "...",
 
 In the variable column, the values are "medinc" and "medage", not the complex ones we imported. 
 
-### Exercise 12
+### Exercise 7
 
 Now, let's learn about `get_estimates()`.
 This gets data from the **Population Estimates Program** (PEP). 
 
 Run `get_estimates` below setting `geography` to `"county"`, `product` to `"components"`, `state` to `"GA"`, `county` to `"Chatham"`, and `year` to `2019`
 
-```{r getting-started-with-tidycensu-12, exercise = TRUE}
+```{r geography-and-variables-7, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r getting-started-with-tidycensu-12-hint-1, eval = FALSE}
+```{r geography-and-variables-7-hint-1, eval = FALSE}
 get_estimates(geography = "...",
               product = "...",
               ... = "...",
@@ -460,20 +446,20 @@ The confusing part of this function is probably the `product` argument, which es
 
 Learn more about `get_estimates()` and its arguments [here](https://walker-data.com/census-r/an-introduction-to-tidycensus.html#other-census-bureau-datasets-in-tidycensus)
 
-### Exercise 13
+### Exercise 8
 
 `get_flows()` allows for analysis of immigrants, emigrants, and net migration for a given geography using data from a given 5-year ACS sample.
 
 Run `get_flows()` below setting `geography` to `"county"`, `state` to `"HI"`, `county` to `"Honolulu"`, and `year` to `2019`
 
-```{r getting-started-with-tidycensu-13, exercise = TRUE}
+```{r geography-and-variables-8, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 
-```{r getting-started-with-tidycensu-13-hint-1, eval = FALSE}
+```{r geography-and-variables-8-hint-1, eval = FALSE}
 get_flows(geography = "...",
           ... = "...",
           county = "...",
