@@ -41,21 +41,44 @@ This tutorial covers [Chapter 2: An introduction to tidycensus](https://walker-d
 Why tidycensus? The US Census Bureau population data is a great source for researchers, and this packages facilitates your exploration of the Census data in the R environment.
 
 ## Getting started with tidycensus
-### 
 
-### Exercise 1
+### Decennial Census
 
 Let's try accessing the Decennial Census database. In order to do this, we'll use the `get_decennial()` function. This allows us to access decennial Census data from the 2000, 2010, and 2020 decennial US Censuses.
 
+#### Exercise 1
 
+First, type in the function `get_decennial()`.
+```{r getting-started-with-tidycensu-2-ex, exercise = TRUE}
 
-with the `geography`, `variables`, and `year` arguments.
+```
 
-Let's try to find the total American population by state. First of all, we need to access the variable containing these populations, which is `P001001`.
+<button onclick = "transfer_code(this)">Copy previous code</button>
 
-### 
+```{r getting-started-with-tidycensu-2-hint, eval = FALSE}
+get_decennial()
+```
 
-Run `get_decennial()` below setting `geography` to  `"state"`, `variables` to `"P001001"`, and `year` to `2010`.
+```{r getting-started-with-tidycensu-2-test, include = FALSE}
+get_decennial()
+```
+
+####
+
+Just calling the function is not enough, we need to specify which data we are looking to extract. This is done via the use of three arguments: `geography`, `variables`, and `year`.
+
+`geography` argument: determines the scope of the data 
+    `us`: the entire country 
+    `county`: counties
+    `state`: states
+`variables` argument: defines which variables you want to use
+`year` argument: defines the year that our data comes from
+
+For this exercise, let's try to find the total American population by state in 2010. To do so, we need to access the variable `P001001`.
+
+#### Exercise 2
+
+Under the previously in-puted function, set `geography` to `"state"`, `variables` to `"P001001"`, and `year` to `2010`.
 
 ```{r getting-started-with-tidycensu-1, exercise = TRUE}
 
@@ -73,15 +96,15 @@ get_decennial(geography = "state",
               year = 2010)
 ```
 
-### 
+####
 
 This should return a tibble with 52 rows and 4 columns.
 
-The `geography` argument determines the scope of the data (such as `us` for the entire country and `county` for counties), the `variables` argument defines which variables you want to use, and the `year` argument defines the year that our data comes from.
+Now, what if we want to see the data from 2020?
 
-### Exercise 2
+#### Exercise 2
 
-Copy and paste your code from above and change the `year` argument, and set it to `2020`. Change the `variables` argument to `"P1_001N"`, because the `"P001001"` was renamed starting in 2020.
+Copy and paste your code from above. Change the `year` argument from `2010` to `2020`. Change the `variables` argument to `"P1_001N"`, because the `"P001001"` was renamed starting in 2020.
 
 ```{r getting-started-with-tidycensu-2, exercise = TRUE}
 
@@ -101,15 +124,37 @@ get_decennial(geography = "state",
               year = 2020)
 ```
 
-### 
+####
 
-By changing the `year` argument, we can specify when we want our data to be from. 
+Now you get a different data set than that from Exercise 2. By changing the `year` argument, we can specify when we want our data to be from. 
 
-### Exercise 3
+#### Summary files
 
-Along with the arguments we have already learned, there is also the `sumfile` argument, or "summary file". 
+We should introduce another argument: `sumfile`, which stands for "summary file". 
 
-### 
+Each version of the decennial US Censuses contain many summary files (`sf`), each containing different information.
+
+*"sf1"*: Summary File 1, core demographic characteristics for Census geographies.
+*"sf2"*: Summary File 2, information on a range of population and housing unit characteristics.
+*"sf3"* and *"sf4"*: Summary File 3 and 4, income and occupation (2000 census only).
+
+Island territories (except Puerto Rico) have their corresponding summary files.
+*"as"*: Summary File for American Samoa
+*"mp"*: Summary File for the Northern Mariana Islands
+*"gu"*: Summary File for Guam
+*"vi"*: Summary File for the US Virgin Islands.
+
+*"pl"*: Redistricting summary file (2020 and 2010 census), include total population and housing units; race and ethnicity; voting-age population; and group quarters population. 
+
+Note that by default, `get_decennial()` uses the argument `sumfile = "sf1"`. 
+
+If you wish to extract data from other sumfiles, you need to specify this argument under the function. Now let's practice. 
+
+####
+
+We want to retrieve information on the *American Indian & Alaska Native population* by *state* from the *2020* decennial Census.
+
+#### Exercise 3
 
 Run the `get_decennial()` function below setting `geography` to `"state"`, `variables` to `"P1_005N"`, `year` to `2020`, and `sumfile` to `"pl"`.
 
@@ -137,17 +182,23 @@ get_decennial(geography = "state",
 
 ### 
 
-This retrieves information on the American Indian & Alaska Native population by state from the 2020 decennial Census. The `pl` summary file is one type that is a limited subset of variables from the decennial US Census to be used for legislative redistricting. 
+This retrieves information on the American Indian & Alaska Native population by state from the 2020 decennial Census. 
 
-To learn more about the `sumfile`, we again recommend Walker's [book](https://walker-data.com/census-r/an-introduction-to-tidycensus.html#getting-started-with-tidycensus).
+To learn more about the `sumfile`, refer to Walker's [book](https://walker-data.com/census-r/an-introduction-to-tidycensus.html#getting-started-with-tidycensus).
 
-### Exercise 4
+### American Community Survey
 
 Just as `get_decennial()` gets information from the Decennial Census, `get_acs()` gets information from the **A**merican **C**ommunity **S**urvey. 
 
-### 
+The ACS includes a wide variety of variables detailing characteristics of the US population not found in the decennial Census. 
 
-Run the `get_acs()` function setting `geography` to  `"state"`, `variables` to `"B05006_150"` and `year` to `2021`.
+The basic set-up of `get_acs()` is similar to that of `get_decennial()` as they all use the three arguments: `geography`, `variables` and `year`.
+
+#### Exercise 4
+
+Let's look at the number of U.S. residents born in Mexico by state.
+
+Run the `get_acs()` function, setting `geography` to  `"state"`, `variables` to `"B05006_150"` and `year` to `2021`.
 
 ```{r getting-started-with-tidycensu-4, exercise = TRUE}
 
@@ -167,19 +218,28 @@ get_acs(geography = "state",
 )
 ```
 
-### 
+####
 
-The example above fetches data on the number of residents born in Mexico by state. Notice that the tibble produced has an `estimate` and a `moe` column rather than a `value` column like the Decennial Census data. 
+Notice that the tibble produced has an `estimate` and a `moe` column rather than a `value` column like the Decennial Census data. 
 
-<!-- DK: Awkward. -->
+`estimate` column: ACS estimate.
+`moe` column: margin of error around that estimate.
 
-**This is important.**
+#### Knowledge drop
 
-### Exercise 5
+What if you didn't specify 'year'? 
 
-Along with the arguments, we've already learned, there is also a `survey` argument. This argument defaults to 5 year periods if not specified. We can change it to a one-year period rather than a default 5-year period by adding `survey = "acs1"`.
+`get_acs()` will defaults to the most *recent five-year* ACS sample (ie. 2019-2023)
 
-### 
+####
+
+Another important argument is `survey`. 
+
+This argument defaults to 5 year periods if not specified. 
+
+We can change it to a one-year period rather than a default 5-year period by adding `survey = "acs1"`.
+
+#### Exercise 5
 
 Run `get_acs()`, setting `geography` to `"state"`, `variables` to `"B05006_150"`, `survey` to `"acs1"`, and `year` to `2021`.
 
@@ -204,14 +264,25 @@ get_acs(geography = "state",
         year = 2021)
 ```
 
-### 
+####
 
-The above function yields data on the number of residents born in Mexico by state in the year of just 2021 instead of a 5-year period as earlier. 
+What do you think this code entails?
 
-### 
+Well, it yields data on the number of residents born in Mexico by state in the year of *just 2021* (instead of a 5-year period as earlier). 
+
+#### Knowledge drop
+
+You should have seen some `NA` in the resulted table of the previous exercise. This is R’s notation representing missing data. 
+
+In this case, `NA` in the estimate column generally means that the estimate is too small for a given geography to be deemed reliable by the Census Bureau.
+
+####
 
 Notice that the GEOID column contains the [FIPS code](https://transition.fcc.gov/oet/info/maps/census/fips/fips.txt#:~:text=FIPS%20codes%20are%20numbers%20which,to%20which%20the%20county%20belongs.) of the area the data covers. This code is a standardized way to identify different geographical areas. It gets larger as the area under consideration narrows. The FIPS for Massachusetts is 25. For Middlesex County within Massachusetts, the FIPS is 25017.
 
+## Geography and Variables
+
+<!-- TB: start from here -->
 
 ### Exercise 6
 
