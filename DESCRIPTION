@@ -37,4 +37,6 @@ Suggests:
     tigris,
     tmap
 Config/testthat/edition: 3
+Remotes: 
+    PPBDS/tutorial.helpers
 URL: https://ppbds.github.io/tidycensus.tutorials/

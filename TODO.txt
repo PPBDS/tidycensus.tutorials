@@ -1,4 +1,4 @@
-Melissa: Write Chapter 2 tutorial
+Write Chapter 2 tutorial
 
 
 Chapters 2 and 3 are the most important. They are a mess.
@@ -6,4 +6,6 @@ Chapters 2 and 3 are the most important. They are a mess.
 
 Use images from the book.
 
+Need to add questions which load up needed libraries.
 
+Need to add test code chunks, especially those which load up needed libraries. A bunch of necessary libraries are not really included.

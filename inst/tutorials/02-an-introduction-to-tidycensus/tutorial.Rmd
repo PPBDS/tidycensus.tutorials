@@ -14,6 +14,7 @@ description: 'Tutorial for Chapter 2: An introduction to tidycensus'
 ```{r setup, include = FALSE}
 library(learnr)
 library(tutorial.helpers)
+library(knitr)
 library(tidycensus)
 library(tidyverse)
 
@@ -22,7 +23,14 @@ options(tutorial.exercise.timelimit = 60,
         tutorial.storage = "local") 
 
 
-# TB question: does this code go here? library(tidycensus) # census_api_key("YOUR KEY GOES HERE", install = TRUE)
+# Other Census Bureau
+
+# est_1 <- 
+#   get_estimates(geography = "state",
+#                 product = "components",
+#                 year = 2019)
+# write_rds(est_1, "data/est_1.rds")
+est_1 <- read_rds("data/est_1.rds")
   
 ```
 
@@ -32,57 +40,137 @@ options(tutorial.exercise.timelimit = 60,
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
 ```
 
-<!-- DK: This is a total mess! -->
+<!-- Note that I moved some of the text and images from Chapter 1 to here because that chapter had so little useful R code.  Much of this material could be spread out and better organized. More importantly, lots of important stuff from Chapter 1 has not yet been included at all. -->
 
 ## Introduction
 ### 
 
-This tutorial covers [Chapter 2: An introduction to tidycensus](https://walker-data.com/census-r/an-introduction-to-tidycensus.html) from [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You will learn about the [**tidycensus**](https://walker-data.com/tidycensus/index.html) package and some of its key functions, including [`get_decennial()`](https://walker-data.com/tidycensus/articles/basic-usage.html) and [`get_acs()`](https://walker-data.com/tidycensus/articles/basic-usage.html). 
+This tutorial covers [Chapter 1: The United States Census and the R programming language](https://walker-data.com/census-r/the-united-states-census-and-the-r-programming-language.html) and [Chapter 2: An introduction to tidycensus](https://walker-data.com/census-r/an-introduction-to-tidycensus.html) from [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You will learn about the [**tidycensus**](https://walker-data.com/tidycensus/index.html) package and some of its key functions, including [`get_decennial()`](https://walker-data.com/tidycensus/articles/basic-usage.html) and [`get_acs()`](https://walker-data.com/tidycensus/articles/basic-usage.html). 
 
-Why tidycensus? The US Census Bureau population data is a great source for researchers, and this packages facilitates your exploration of the Census data in the R environment.
 
-## Getting started with tidycensus
+
+## Getting started
 ### 
 
-<!-- DK: Intro -->
+The [**tidycensus** package](https://walker-data.com/tidycensus/) is designed to facilitate the process of acquiring and working with US Census Bureau population data in the R environment. The package has two distinct goals. First, **tidycensus** aims to make Census data available to R users in a **tidyverse**-friendly format, helping kick-start the process of generating insights from US Census data. Second, the package is designed to streamline the data wrangling process for spatial Census data analysts.
+
 
 ### Exercise 1
 
-Let's try accessing the Decennial Census database. In order to do this, we'll use the `get_decennial()` function. This allows us to access decennial Census data from the 2000, 2010, and 2020 decennial US Censuses.
+Go to the [Census website](https://api.census.gov/data/key_signup.html) to request a Census API key. The "Organization Name" you provide can be anything, including your current or former school. This key will allows you to download, for free, US Census data. The key will be emailed to you, but it may take a bit of time. You can still proceed with this tutorial without it.
+
+From the Console, run `Sys.getenv("CENSUS_API_KEY")`. CP/CR. 
+
+```{r getting-started-1}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+Note that, because we have not done anything with your key yet --- in fact, the Census may not have even emailed it back to you --- this command should return `""`.
+
+### 
+
+And that is OK! We have not created the `CENSUS_API_KEY` environment variable yet. We will create this variable at the end of this tutorial.
 
 
-First, type in the function `get_decennial()`.
+### Exercise 2
 
-```{r getting-started-with-tidycensu-1, exercise = TRUE}
+Load the **tidyverse** package.
+
+
+```{r getting-started-2, exercise = TRUE}
 
 ```
 
-```{r getting-started-with-tidycensu-1-hint-1, eval = FALSE}
-get_decennial()
+```{r getting-started-2-hint-1, eval = FALSE}
+library(...)
+```
+
+```{r getting-started-2-test, include = FALSE}
+library(tidyverse)
 ```
 
 ### 
 
-Just calling the function is not enough, we need to specify which data we are looking to extract. This is done via the use of three arguments: `geography`, `variables`, and `year`.
+Aggregate data from the decennial US Census, American Community Survey, and other Census surveys are made available to the public at different enumeration units. 
 
-`geography` argument: determines the scope of the data 
-    `us`: the entire country 
-    `county`: counties
-    `state`: states
-`variables` argument: defines which variables you want to use
-`year` argument: defines the year that our data comes from
+### 
 
-For this exercise, let's try to find the total American population by state in 2010. To do so, we need to access the variable `P001001`.
+Enumeration units are geographies at which Census data are tabulated. They include both legal entities such as states and counties, and statistical entities that are not official jurisdictions but used to standardize data tabulation. 
 
-### Exercise 2
+### Exercise 3
 
-Under the previously in-puted function, set `geography` to `"state"`, `variables` to `"P001001"`, and `year` to `2010`.
+Load the **tidycensus** package.
 
-```{r getting-started-with-tidycensu-2, exercise = TRUE}
+```{r getting-started-3, exercise = TRUE}
 
 ```
 
-```{r getting-started-with-tidycensu-2-hint-1, eval = FALSE}
+```{r getting-started-3-hint-1, eval = FALSE}
+library(...)
+```
+
+```{r getting-started-3-test, include = FALSE}
+library(tidycensus)
+```
+
+### 
+
+The smallest unit at which data are made available from the decennial US Census is the block, and the smallest unit available in the ACS is the block group, which represents a collection of blocks. Other surveys are generally available at higher levels of aggregation.
+
+### 
+
+Enumeration units represent different levels of the Census hierarchy. This hierarchy is summarized in the [graphic](https://www.census.gov/programs-surveys/geography/guidance/hierarchy.html):
+
+```{r echo = FALSE}
+include_graphics("images/census-hierarchies.png")
+```
+
+### Exercise 4
+
+Let's try accessing the Decennial Census database. In order to do this, we'll use the `get_decennial()` function. This allows us to access decennial Census data from the 2000, 2010, and 2020 decennial US Censuses.
+
+Run `get_decennial()`.
+
+```{r getting-started-4, exercise = TRUE}
+
+```
+
+```{r getting-started-4-hint-1, eval = FALSE}
+get_decennial()
+```
+
+You will get an error.
+
+### 
+
+`get_decenial()` requires three arguments: `geography`, `variables`, and `year`.
+
+### 
+
+`geography` argument: determines the scope of the data 
+    `us`: the entire country 
+    `state`: states
+    `county`: counties
+
+`variables` argument: defines which variables you want to use
+
+`year` argument: defines the year that our data comes from
+
+
+### Exercise 5
+
+Call `get_decenial()`, setting `geography` to `"state"`, `variables` to `"P001001"`, and `year` to `2010`.
+
+```{r getting-started-5, exercise = TRUE}
+
+```
+
+```{r getting-started-5-hint-1, eval = FALSE}
 get_decennial(... = "...", 
               variables = "...",
               ... = 2010)
@@ -90,31 +178,23 @@ get_decennial(... = "...",
 
 ### 
 
-This should return a tibble with 52 rows and 4 columns.
-
-Now, what if we want to see the data from 2020?
-
-
-### Exercise 3
+### Exercise 6
 
 Copy and paste your code from above. Change the `year` argument from `2010` to `2020`. Change the `variables` argument to `"P1_001N"`, because the `"P001001"` was renamed starting in 2020.
 
-```{r getting-started-with-tidycensu-3, exercise = TRUE}
+```{r getting-started-6, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r getting-started-with-tidycensu-3-hint-1, eval = FALSE}
+```{r getting-started-6-hint-1, eval = FALSE}
 get_decennial(... = "...", 
               variables = "...",
               year = ...)
 ```
 
 ### 
-
-Now you get a different data set than that from Exercise 2. By changing the `year` argument, we can specify when we want our data to be from. 
-
 
 We should introduce another argument: `sumfile`, which stands for "summary file". 
 
@@ -139,29 +219,21 @@ If you wish to extract data from other sumfiles, you need to specify this argume
 
 We want to retrieve information on the *American Indian & Alaska Native population* by *state* from the *2020* decennial Census.
 
-### Exercise 4
+### Exercise 7
 
 Run the `get_decennial()` function below setting `geography` to `"state"`, `variables` to `"P1_005N"`, `year` to `2020`, and `sumfile` to `"pl"`.
 
-```{r getting-started-with-tidycensu-4, exercise = TRUE}
+```{r getting-started-7, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r getting-started-with-tidycensu-4-hint-1, eval = FALSE}
+```{r getting-started-7-hint-1, eval = FALSE}
 get_decennial(geography = "...",
         variables      = "...",
         year = ...,
         sumfile = "..."
-)
-```
-
-```{r getting-started-with-tidycensu-4-test, include = FALSE}
-get_decennial(geography = "state",
-        variables      = "P1_005N",
-        year = 2020,
-        sumfile = "pl"
 )
 ```
 
@@ -171,52 +243,45 @@ This retrieves information on the American Indian & Alaska Native population by 
 
 To learn more about the `sumfile`, refer to Walker's [book](https://walker-data.com/census-r/an-introduction-to-tidycensus.html#getting-started-with-tidycensus).
 
-### Exercise 5
+### Exercise 8
 
 Just as `get_decennial()` gets information from the Decennial Census, `get_acs()` gets information from the **A**merican **C**ommunity **S**urvey. 
 
 The ACS includes a wide variety of variables detailing characteristics of the US population not found in the decennial Census. 
 
-The basic set-up of `get_acs()` is similar to that of `get_decennial()` as they all use the three arguments: `geography`, `variables` and `year`.
+The basic set-up of `get_acs()` is similar to that of `get_decennial()`: the key three arguments are `geography`, `variables` and `year`.
 
-### Exercise 6
+### Exercise 9
 
 Let's look at the number of U.S. residents born in Mexico by state.
 
 Run the `get_acs()` function, setting `geography` to  `"state"`, `variables` to `"B05006_150"` and `year` to `2021`.
 
-```{r getting-started-with-tidycensu-6, exercise = TRUE}
+```{r getting-started-9, exercise = TRUE}
 
 ```
 
-```{r getting-started-with-tidycensu-6-hint-1, eval = FALSE}
+```{r getting-started-9-hint-1, eval = FALSE}
 get_acs(geography = "...",
         variables      = "...",
         year = ...
 )
 ```
 
-```{r getting-started-with-tidycensu-6-test, include = FALSE}
-get_acs(geography = "state",
-        variables = "B05006_150",
-        year = 2021
-)
-```
-
-### Exercise 7
+### Exercise 10
 
 Notice that the tibble produced has an `estimate` and a `moe` column rather than a `value` column like the Decennial Census data. 
 
 `estimate` column: ACS estimate.
 `moe` column: margin of error around that estimate.
 
-### Exercise 8
+### Exercise 11
 
 What if you didn't specify 'year'? 
 
 `get_acs()` will defaults to the most *recent five-year* ACS sample (ie. 2019-2023)
 
-### Exercise 9
+### Exercise 12
 
 Another important argument is `survey`. 
 
@@ -224,44 +289,44 @@ This argument defaults to 5 year periods if not specified.
 
 We can change it to a one-year period rather than a default 5-year period by adding `survey = "acs1"`.
 
-### Exercise 10
+### Exercise 13
 
 Run `get_acs()`, setting `geography` to `"state"`, `variables` to `"B05006_150"`, `survey` to `"acs1"`, and `year` to `2021`.
 
 
-```{r getting-started-with-tidycensu-10, exercise = TRUE}
+```{r getting-started-13, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r getting-started-with-tidycensu-10-hint-1, eval = FALSE}
+```{r getting-started-13-hint-1, eval = FALSE}
 get_acs(... = "...", 
         variables = "...", 
         survey = "...",
         ... = 2019)
 ```
 
-```{r getting-started-with-tidycensu-10-test, include = FALSE}
+```{r getting-started-13-test, include = FALSE}
 get_acs(geography = "state", 
         variables = "B05006_150", 
         survey = "acs1",
         year = 2021)
 ```
 
-### Exercise 11
+### Exercise 14
 
 What do you think this code entails?
 
 Well, it yields data on the number of residents born in Mexico by state in the year of *just 2021* (instead of a 5-year period as earlier). 
 
-### Exercise 12
+### Exercise 15
 
 You should have seen some `NA` in the resulted table of the previous exercise. This is R’s notation representing missing data. 
 
 In this case, `NA` in the estimate column generally means that the estimate is too small for a given geography to be deemed reliable by the Census Bureau.
 
-### Exercise 13
+### Exercise 16
 
 Notice that the GEOID column contains the [FIPS code](https://transition.fcc.gov/oet/info/maps/census/fips/fips.txt#:~:text=FIPS%20codes%20are%20numbers%20which,to%20which%20the%20county%20belongs.) of the area the data covers. This code is a standardized way to identify different geographical areas. It gets larger as the area under consideration narrows. The FIPS for Massachusetts is 25. For Middlesex County within Massachusetts, the FIPS is 25017.
 
@@ -393,97 +458,344 @@ load_variables(year = ..., dataset = "...")
 
 Notice the "label" and "concept" columns, providing information about each variable. To learn more about `load_variables()` and its arguments, go to [Kyle Walkers introduction to tidycensus](https://walker-data.com/census-r/an-introduction-to-tidycensus.html#searching-for-variables-in-tidycensus)
 
-### Exercise 6
 
-Now we may know what a variable name means, but it's probably pretty annoying to type that every, single time you need it. So how can we rename it?
 
-Run `get_acs()` below setting `geography` to `"county"`, `state` = `"Utah"`, `variables` to a vector containing `medinc` which is assigned to `"B19013_001"` and `medage` which is assigned to `"B01002_001"`, and `year` to `2021`.  
+## Searching for variables
+### 
 
-```{r geography-and-variables-6, exercise = TRUE}
+## Data structure
+### 
+
+## Other Census Bureau datasets
+### 
+
+**tidycensus** does not grant access to all of the datasets available from the Census API. Look at the [**censusapi**](https://www.hrecht.com/censusapi/) package for that functionality. However, the Population Estimates and ACS Migration Flows APIs are accessible with the `get_estimates()` and `get_flows()` functions, respectively.
+
+
+### Exercise 1
+
+Run `get_estimates()` with `geography` equal to `"state"`, `product` equal to `"components"`, and `year` equal to `2019`.
+
+```{r other-census-bureau-datasets-1, exercise = TRUE}
+
+```
+
+```{r other-census-bureau-datasets-1-hint-1, eval = FALSE}
+get_estimates(geography = "...",
+              ... = "components",
+              year = ...)
+```
+
+### 
+
+The Population Estimates Program, or PEP, provides yearly estimates of the US population and its components between decennial Censuses. It differs from the ACS in that it is not directly based on a dedicated survey, but rather projects forward data from the most recent decennial Census based on birth, death, and migration rates. 
+
+
+### Exercise 2
+
+Behind the scenes, we took the result of that function call and assigned to to an object called `est_1`.
+
+Pipe `est_1` to `slice_sample(n = 10)`. 
+
+```{r other-census-bureau-datasets-2, exercise = TRUE}
+
+```
+
+```{r other-census-bureau-datasets-2-hint-1, eval = FALSE}
+... |> 
+  slice_sample(... = 10)
+```
+
+```{r other-census-bureau-datasets-2-test, include = FALSE}
+est_1 |> 
+  slice_sample(n = 10)
+```
+
+### 
+
+The returned variables include raw values for births and deaths (`BIRTHS` and `DEATHS`) during the previous 12 months, defined as mid-year 2018 (July 1) to mid-year 2019. 
+
+Estimates in the PEP will differ slightly from what you may see in data returned by `get_acs()`, as the estimates are produced using a different methodology.
+
+### Exercise 3
+
+Copy/paste the code from Exercise 1 into this code block, switching the value of `geography` from `"state"` to `"county"`. 
+
+```{r other-census-bureau-datasets-3, exercise = TRUE}
+
+```
+
+```{r other-census-bureau-datasets-3-hint-1, eval = FALSE}
+get_estimates(geography = "...",
+              product = "components",
+              year = 2019)
+```
+
+### 
+
+Note how much larger the resulting tibble is: tens of thousands of rows instead of hundreds. Instead of getting information on the state level, we are getting values for multiple variables for every county in the US.
+
+### Exercise 4
+
+Using the code from the last exercise, add another argument: `state = "NY"`.
+
+```{r other-census-bureau-datasets-4, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r geography-and-variables-6-hint-1, eval = FALSE}
-get_acs(geography = "...",
-        state = "...",
-        ... = c(medinc = "...",
-                      medage = "..."),
-        year = ...)
+```{r other-census-bureau-datasets-4-hint-1, eval = FALSE}
+get_estimates(geography = "county",
+              product = "components",
+              year = 2019,
+              state = "NY")
 ```
 
 ### 
 
-In the variable column, the values are "medinc" and "medage", not the complex ones we imported. 
+Alternatively, a single variable or vector of variables can be requested with the variable argument, and the `output = "wide"` argument can also be used to spread the variable names across the columns.
+
+### Exercise 5
+
+Using the code from the last exercise, add another argument: `county = "Queens"`.
+
+```{r other-census-bureau-datasets-5, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r other-census-bureau-datasets-5-hint-1, eval = FALSE}
+get_estimates(geography = "county",
+              product = "components",
+              year = 2019,
+              state = "NY",
+              county = "...")
+```
+
+### 
+
+Crude rates per 1000 people in Queens County are also available with `RBIRTH` and `RDEATH`. `NATURALINC`, the natural increase, then measures the number of births minus the number of deaths. Net domestic and international migration are also available as counts and rates, and the `NETMIG` variable accounts for the overall migration, domestic and international included. 
+
+
+### Exercise 6
+
+The `product`s available include "population", "components", "housing", and "characteristics". The `product = "characteristics"` argument has some unique options. 
+
+Run this code for an example.
+
+```{r other-census-bureau-datasets-6, exercise = TRUE}
+get_estimates(
+  geography = "state",
+  product = "characteristics",
+  breakdown = c("SEX", "HISP"),
+  breakdown_labels = TRUE,
+  state = "LA",
+  year = 2019
+)
+```
+
+### 
+
+The argument breakdown lets users get breakdowns of population estimates for the US, states, and counties by "AGEGROUP", "RACE", "SEX", or "HISP" (Hispanic origin). If set to TRUE, the breakdown_labels argument will return informative labels for the population estimates. 
+
+### 
+
+The value column gives the estimate characterized by the population labels in the `SEX` and `HISP` columns. For example, the estimated population value in 2019 for Hispanic males in Louisiana was 131,071.
 
 ### Exercise 7
 
-Now, let's learn about `get_estimates()`.
-This gets data from the **Population Estimates Program** (PEP). 
+**tidycensus** also includes support for the ACS Migration Flows API via the `get_flows()` function. The flows API returns information on both in- and out-migration for states, counties, and metropolitan areas. 
 
-Run `get_estimates` below setting `geography` to `"county"`, `product` to `"components"`, `state` to `"GA"`, `county` to `"Chatham"`, and `year` to `2019`
+Run `get_flows()` with `geography = "county"`, `state = "HI"`, `county = "Honolulu"`, and `year = 2019`.
 
-```{r geography-and-variables-7, exercise = TRUE}
+```{r other-census-bureau-datasets-7, exercise = TRUE}
+
+```
+
+```{r other-census-bureau-datasets-7-hint-1, eval = FALSE}
+get_flows(
+  ... = "county",
+  ... = "HI",
+  county = "...",
+  year = 2019
+)
+```
+
+### 
+
+By default, the function allows for analysis of in-migrants, emigrants, and net migration for a given geography using data from a given 5-year ACS sample.
+
+
+
+## Debugging tidycensus errors
+### 
+
+At times, you may think that you’ve formatted your use of a tidycensus function correctly but the Census API doesn’t return the data you expected. Whenever possible, tidycensus carries through the error message from the Census API or translates common errors for the user.
+
+
+### Exercise 1
+
+Hit "Run Code." Note that there is a typo in the variable ID.
+
+```{r debugging-tidycensus-errors-1, exercise = TRUE}
+state_pop <- get_decennial(
+  geography = "state",
+  variables = "P01001",
+  year = 2010
+)
+```
+
+### 
+
+The “unknown variable” error message from the Census API is carried through to the user.
+
+### Exercise 2
+
+Hit "Run Code." 
+
+```{r debugging-tidycensus-errors-2, exercise = TRUE}
+cbsa_ohio <- get_acs(
+  geography = "cbsa",
+  variables = "DP02_0068P",
+  state = "OH",
+  year = 2019
+)
+```
+
+### 
+
+The code has attempted to get bachelor’s degree attainment by CBSA in Ohio from the ACS Data Profile. However, CBSA geographies are not available by state given that many CBSAs cross state boundaries. In response, the API returns an “unsupported geography hierarchy” error.
+
+### Exercise 3
+
+To assist with debugging errors, or more generally to help users understand how **tidycensus** functions are being translated to Census API calls, **tidycensus** offers a parameter `show_call` that when set to `TRUE` prints out the actual API call that tidycensus is making to the Census API.
+
+Hit "Run Code".
+
+```{r debugging-tidycensus-errors-3, exercise = TRUE}
+cbsa_bachelors <- get_acs(
+  geography = "cbsa",
+  variables = "DP02_0068P",
+  year = 2019,
+  show_call = TRUE
+)
+```
+
+### 
+
+The printed URL can be copy-pasted into a web browser where users can see the raw JSON returned by the Census API and inspect the results.
+
+### Exercise 4
+
+In your browser, go to the URL provided in response to the previous exercise. Copy/paste the top 5 lines of that file here.
+
+
+```{r debugging-tidycensus-errors-4}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+A common use-case for `show_call = TRUE` is to understand what data is available from the API, especially if functions in **tidycensus** are returning NA in certain rows. If the raw API call itself contains missing values for given variables, this will confirm that the requested data are not available from the API at a given geography.
+
+
+### Exercise 5
+
+```{r debugging-tidycensus-errors-5, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r geography-and-variables-7-hint-1, eval = FALSE}
-get_estimates(geography = "...",
-              product = "...",
-              ... = "...",
-              county = "...",
-              ... = ...)
+```{r debugging-tidycensus-errors-5-hint-1, eval = FALSE}
+
+```
+
+```{r debugging-tidycensus-errors-5-test, include = FALSE}
+
 ```
 
 ### 
 
-The code above requested all components of change population estimates for 2019 for Chatham County in Georgia. 
+### Exercise 6
 
-The confusing part of this function is probably the `product` argument, which essentially allows the user to access the indicators used to produce the intercensal population estimates. 
+At the Console, run `?census_api_key`. Copy/paste the Description.
 
-Learn more about `get_estimates()` and its arguments [here](https://walker-data.com/census-r/an-introduction-to-tidycensus.html#other-census-bureau-datasets-in-tidycensus)
+```{r debugging-tidycensus-errors-6}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 5)
+```
+
+### 
+
+You will probably only use the `census_api_key()` function once. 
+
+### Exercise 7
+
+At the Console, run `census_api_key("xx", install = TRUE)`, where `xx` is replaced by the key which you should received by now from the Census.
+
+```{r debugging-tidycensus-errors-7}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+Nothing gets returned by this command but, with luck, your `.Renviron` file now includes the value of your Census API key.
 
 ### Exercise 8
 
-`get_flows()` allows for analysis of immigrants, emigrants, and net migration for a given geography using data from a given 5-year ACS sample.
+Restart your R session. (This is not the same thing as restarting the RStudio session.) The easiest way to do so is with the shortcut key: `Command/Ctrl + Shift + 0`.
 
-Run `get_flows()` below setting `geography` to `"county"`, `state` to `"HI"`, `county` to `"Honolulu"`, and `year` to `2019`
+From the Console, run `Sys.getenv("CENSUS_API_KEY")`. CP/CR.
 
-```{r geography-and-variables-8, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-
-```{r geography-and-variables-8-hint-1, eval = FALSE}
-get_flows(geography = "...",
-          ... = "...",
-          county = "...",
-          ... = ...)
+```{r debugging-tidycensus-errors-8}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
 ```
 
 ### 
 
-This should return a tibble with 6 columns, one of them being "variable". We can see variables such as "MOVEDIN" and the corresponding estimate of 152 as the number of people who moved from Africa (look at the `FULL2_NAME` variable) to Honolulu in 2019
+If `census_api_key()` worked correctly, your `.Renviron` file now sets your key automatically. (Recall that your `.Renviron` file is loaded every time you restart R.)
+
+If `Sys.getenv("CENSUS_API_KEY")` returns `""`, then something has gone wrong.
+
+
+
 
 ## Summary
 ### 
 
-Here's your cheat-sheet of the core functions in tidycensus:
+This tutorial covered [Chapter 1: The United States Census and the R programming language](https://walker-data.com/census-r/the-united-states-census-and-the-r-programming-language.html) and [Chapter 2: An introduction to tidycensus](https://walker-data.com/census-r/an-introduction-to-tidycensus.html) from [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You learned about the [**tidycensus**](https://walker-data.com/tidycensus/index.html) package and some of its key functions, including [`get_decennial()`](https://walker-data.com/tidycensus/articles/basic-usage.html) and [`get_acs()`](https://walker-data.com/tidycensus/articles/basic-usage.html). 
 
-1. `get_decennial()`: requests data from the US Decennial Census APIs for 2000, 2010, and 2020.
+As a reminder:
 
-2. `get_acs()`: requests data from the 1-year and 5-year American Community Survey samples. Data are available from the 1-year ACS back to 2005 and the 5-year ACS back to 2005-2009.
+`get_decennial()`: requests data from the US Decennial Census APIs for 2000, 2010, and 2020.
 
-3. `get_estimates()`: an interface to the Population Estimates APIs. These datasets include yearly estimates of population characteristics by state, county, and metropolitan area, along with components of change demographic estimates like births, deaths, and migration rates.
+`get_acs()`: requests data from the 1-year and 5-year American Community Survey samples. Data are available from the 1-year ACS back to 2005 and the 5-year ACS back to 2005-2009.
 
-4. `get_pums()`: which accesses data from the ACS Public Use Microdata Sample APIs. These samples include anonymized individual-level records from the ACS organized by household and are highly useful for many different social science analyses. 
+`get_estimates()`: an interface to the Population Estimates APIs. These datasets include yearly estimates of population characteristics by state, county, and metropolitan area, along with components of change demographic estimates like births, deaths, and migration rates.
 
-5. `get_flows()`: an interface to the ACS Migration Flows APIs. Includes information on in- and out-flows from various geographies for the 5-year ACS samples, enabling origin-destination analyses.
+`get_pums()`: which accesses data from the ACS Public Use Microdata Sample APIs. These samples include anonymized individual-level records from the ACS organized by household and are highly useful for many different social science analyses. 
+
+`get_flows()`: an interface to the ACS Migration Flows APIs. Includes information on in- and out-flows from various geographies for the 5-year ACS samples, enabling origin-destination analyses.
 
 
 
