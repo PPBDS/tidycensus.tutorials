@@ -23,7 +23,11 @@ options(tutorial.exercise.timelimit = 60,
         tutorial.storage = "local") 
 
 
-# Other Census Bureau
+# Saved objects
+
+# v16 <- load_variables(2016, "acs5")
+# write_rds(v16, "data/v16.rds")
+v16 <- read_rds("data/v16.rds")
 
 # est_1 <- 
 #   get_estimates(geography = "state",
@@ -333,7 +337,6 @@ Notice that the GEOID column contains the [FIPS code](https://transition.fcc.gov
 ## Geography and variables
 ### 
 
-<!-- TB: start from here -->
 
 ### Exercise 1
 
@@ -463,8 +466,249 @@ Notice the "label" and "concept" columns, providing information about each varia
 ## Searching for variables
 ### 
 
+One additional challenge when searching for Census variables is understanding variable IDs, which are required to fetch data from the Census and ACS APIs. There are thousands of variables available across the different datasets and summary files. **tidycensus** offers the `load_variables()` function. This function obtains a dataset of variables from the Census Bureau website and formats it for fast searching, ideally in RStudio.
+
+
+### Exercise 1
+
+`load_vatriables()` takes two required arguments: `year`, which takes the year or endyear of the Census dataset or ACS sample, and `dataset`, which references the dataset name. 
+
+Run `load_variables(2010, "sf1")`.
+
+
+```{r searching-for-variables-1, exercise = TRUE}
+
+```
+
+```{r searching-for-variables-1-hint-1, eval = FALSE}
+load_variables(..., "...")
+```
+
+### 
+
+For the 2000 or 2010 Decennial Census, use `"sf1"` or `"sf2"` as the dataset name to access variables from Summary Files 1 and 2, respectively. The 2000 Decennial Census also accepts `"sf3"` and `"sf4"` for Summary Files 3 and 4.
+
+
+### Exercise 2
+
+For variables from the American Community Survey, users should specify the dataset as `"acs1"` for the 1-year ACS or `"acs5"` for the 5-year ACS. If no suffix to these dataset names is specified, users will retrieve data from the ACS Detailed Tables.
+
+Run `load_variables(2016, "acs5")`
+
+```{r searching-for-variables-2, exercise = TRUE}
+
+```
+
+```{r searching-for-variables-2-hint-1, eval = FALSE}
+load_variables(..., "...")
+```
+
+### 
+
+Variables from the ACS Data Profile, Summary Tables, and Comparison Profile are also available by appending the suffixes /profile, /summary, or /cprofile, respectively.
+
+### Exercise 3
+
+Run `load_variables(year = 2020, dataset = "acs5/profile")`.
+
+
+```{r searching-for-variables-3, exercise = TRUE}
+
+```
+
+```{r searching-for-variables-3-hint-1, eval = FALSE}
+load_variables(year = ..., 
+               dataset = "...")
+```
+
+### 
+
+`load_variables(0)` requires processing thousands of variables from the Census Bureau which may take a few moments depending on the user’s internet connection, the user can specify `cache = TRUE` in the function call to store the data in the user’s cache directory for future access.
+
+### Exercise 4
+
+We have assigned the results of the call `load_variables(2016, "acs5")` to a new object, `v16`.
+
+Type `v16` and hit "Run Code".
+
+```{r searching-for-variables-4, exercise = TRUE}
+
+```
+
+```{r searching-for-variables-4-hint-1, eval = FALSE}
+v16
+```
+
+```{r searching-for-variables-4-test, include = FALSE}
+v16
+```
+
+### 
+
+The tibble returned by `load_variables()` has three columns: 
+
+* `name`, which refers to the Census variable ID; 
+
+* `label`, which is a descriptive data label for the variable; and 
+
+* `concept`, which refers to the topic of the data and often corresponds to a table of Census data.
+
+### Exercise 5
+
+There are lots of interesting variables. You can explore the tibble (outside of this tutorial) using `view()`. 
+
+Pipe `v16` to `slice_sample(n = 10)`.
+
+```{r searching-for-variables-5, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r searching-for-variables-5-hint-1, eval = FALSE}
+v16 |> 
+  ...(n = 10)
+```
+
+```{r searching-for-variables-5-test, include = FALSE}
+v16 |> 
+  slice_sample(n = 10)
+```
+
+### 
+
+You can identify the appropriate variable IDs (found in the name column) that can be passed to the variables parameter in `get_acs()` or `get_decennial()`. Note that the raw variable IDs in the ACS, as consumed by the API, require a suffix of E or M. **tidycensus** does not require this suffix, as it will automatically return both the estimate and margin of error for a given requested variable.
+
+
 ## Data structure
 ### 
+
+By default, tidycensus returns a tibble of ACS or decennial Census data in “tidy” format. For decennial Census data, this will include four columns:
+
+`GEOID`, representing the Census ID code that uniquely identifies the geographic unit;
+
+`NAME`, which represents a descriptive name of the unit;
+
+`variable`, which contains information on the Census variable name corresponding to that row;
+
+`value`, which contains the data values for each unit-variable combination. For ACS data, two columns replace the value column: `estimate`, which represents the ACS estimate, and `moe`, representing the margin of error around that estimate.
+
+### Exercise 1
+
+Given the terminology used by the Census Bureau to distinguish data, it is important to provide some clarifications of nomenclature here. Census or ACS variables, which are specific series of data available by enumeration unit, are interpreted in tidycensus as characteristics of those enumeration units. 
+
+Run `get_acs()` with `geography = "state"`, `table = "B19001"`, `survey = "acs1"`, and `year = 2016`.
+
+
+```{r data-structure-1, exercise = TRUE}
+
+```
+
+```{r data-structure-1-hint-1, eval = FALSE}
+get_acs(
+  ... = "state", 
+  table = "...", 
+  survey = "...",
+  ... = 2016
+)
+```
+
+### 
+
+Rows in datasets returned when `output = "tidy"`, which is the default setting in the `get_acs()` and `get_decennial()` functions, represent data for unique unit-variable combinations.
+
+### Exercise 2
+
+In the previous example, each row represented state-characteristic combinations, consistent with the tidy data model. Alternatively, if a user desires the variables spread across the columns of the dataset, the setting `output = "wide"` will enable this. For ACS data, estimates and margins of error for each ACS variable will be found in their own columns.
+
+Run `get_decennial()` with `geography = "block"`, `variables = "H1_001N"`, `state = "OK"`, `county = "Cimarron"`, `year = 2020`, and `sumfile = "pl"`.
+
+```{r data-structure-2, exercise = TRUE}
+
+```
+
+```{r data-structure-2-hint-1, eval = FALSE}
+...(
+  geography = "block",
+  ... = "H1_001N",
+  state = "OK",
+  ... = "Cimarron",
+  year = ...,
+  ... = "pl"
+)
+```
+
+### 
+
+The mapping between the GEOID and NAME columns in the returned 2020 Census block data offers some insight into how GEOIDs work for geographies within the core Census hierarchy. Take the first block in the table, Block 1110, which has a GEOID of 400259503001110. The GEOID value breaks down as follows:
+
+### 
+
+* The first two digits, 40, correspond to the Federal Information Processing Series (FIPS) code for the state of Oklahoma. All states and US territories, along with other geographies at which the Census Bureau tabulates data, will have a FIPS code that can uniquely identify that geography.
+
+* Digits 3 through 5, 025, are representative of Cimarron County. These three digits will uniquely identify Cimarron County within Oklahoma. County codes are generally combined with their corresponding state codes to uniquely identify a county within the United States, as three-digit codes will be repeated across states. Cimarron County’s code in this example would be 40025.
+
+* The next six digits, 950300, represent the block’s Census tract. The tract name in the NAME column is Census Tract 9503; the six-digit tract ID is right-padded with zeroes.
+
+* The twelfth digit, 1, represents the parent block group of the Census block. As there are no more than nine block groups in any Census tract, the block group name will not exceed 9.
+
+* The last three digits, 110, represent the individual Census block, though these digits are combined with the parent block group digit to form the block’s name.
+
+### 
+
+For geographies outside the core Census hierarchy, GEOIDs will uniquely identify geographic units but will only include IDs of parent geographies to the degree to which they nest within them. For example, a geography that nests within states but may cross county boundaries like school districts will include the state GEOID in its GEOID but unique digits after that. Geographies like core-based statistical areas that do not nest within states will have fully unique GEOIDs, independent of any other geographic level of aggregation such as states.
+
+### Exercise 3
+
+Census variables IDs can be cumbersome to type and remember in the course of an R session. As such, **tidycensus** has built-in tools to automatically rename the variable IDs if requested by a user.
+
+Run `get_acs()` with `geography = "county"`, `state = "Georgia"`, `variables = c(medinc = "B19013_001", medage = "B01002_001"),` and  `year = 2020`.
+
+```{r data-structure-3, exercise = TRUE}
+
+```
+
+```{r data-structure-3-hint-1, eval = FALSE}
+get_acs(
+  geography = "county",
+  state = "Georgia",
+  ... = c(... = "B19013_001",
+                medage = "..."),
+  year = 2020
+)
+```
+
+### 
+
+In this case, we wanted median household income (variable ID `B19013_001`) and median age (variable ID `B01002_001`). By passing a named vector to the variables parameter in `get_acs()` or `get_decennial()`, the functions will return the desired names rather than the Census variable IDs.
+
+### Exercise 4
+
+When a wide-form dataset is requested, tidycensus will still append E and M to the specified column names. Run the same code as the previous exercise while adding `output = "wide"`.
+
+
+```{r data-structure-4, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r data-structure-4-hint-1, eval = FALSE}
+get_acs(
+  geography = "county",
+  state = "Georgia",
+  variables = c(medinc = "B19013_001",
+                medage = "B01002_001"),
+  ... = "wide",
+  year = 2020
+)
+```
+
+### 
+
+Median household income for each county is represented by `medincE`, for the estimate, and `medincM`, for the margin of error.
+
+
 
 ## Other Census Bureau datasets
 ### 
