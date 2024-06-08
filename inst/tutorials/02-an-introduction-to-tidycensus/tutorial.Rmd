@@ -126,14 +126,6 @@ library(tidycensus)
 
 The smallest unit at which data are made available from the decennial US Census is the block, and the smallest unit available in the ACS is the block group, which represents a collection of blocks. Other surveys are generally available at higher levels of aggregation.
 
-### 
-
-Enumeration units represent different levels of the Census hierarchy. This hierarchy is summarized in the [graphic](https://www.census.gov/programs-surveys/geography/guidance/hierarchy.html):
-
-```{r echo = FALSE}
-include_graphics("images/census-hierarchies.png")
-```
-
 ### Exercise 4
 
 Let's try accessing the Decennial Census database. In order to do this, we'll use the `get_decennial()` function. This allows us to access decennial Census data from the 2000, 2010, and 2020 decennial US Censuses.
@@ -163,7 +155,7 @@ You will get an error.
 
 `variables` argument: defines which variables you want to use
 
-`year` argument: defines the year that our data comes from
+`year` argument: defines the year that the data comes from
 
 
 ### Exercise 5
@@ -181,6 +173,14 @@ get_decennial(... = "...",
 ```
 
 ### 
+
+The function returns a tibble of data from the 2010 US Census with information on total population by state. We could also get population data for other "enumeration units."
+
+Enumeration units represent different levels of the Census hierarchy. This hierarchy is summarized in the [graphic](https://www.census.gov/programs-surveys/geography/guidance/hierarchy.html):
+
+```{r echo = FALSE}
+include_graphics("images/census-hierarchies.png")
+```
 
 ### Exercise 6
 
@@ -200,30 +200,23 @@ get_decennial(... = "...",
 
 ### 
 
-We should introduce another argument: `sumfile`, which stands for "summary file". 
+Consider another argument: `sumfile`, which stands for "summary file". 
 
 Each version of the decennial US Censuses contain many summary files (`sf`), each containing different information.
 
 *"sf1"*: Summary File 1, core demographic characteristics for Census geographies.
+
 *"sf2"*: Summary File 2, information on a range of population and housing unit characteristics.
+
 *"sf3"* and *"sf4"*: Summary File 3 and 4, income and occupation (2000 census only).
-
-Island territories (except Puerto Rico) have their corresponding summary files.
-*"as"*: Summary File for American Samoa
-*"mp"*: Summary File for the Northern Mariana Islands
-*"gu"*: Summary File for Guam
-*"vi"*: Summary File for the US Virgin Islands.
-
-*"pl"*: Redistricting summary file (2020 and 2010 census), include total population and housing units; race and ethnicity; voting-age population; and group quarters population. 
 
 Note that by default, `get_decennial()` uses the argument `sumfile = "sf1"`. 
 
-If you wish to extract data from other sumfiles, you need to specify this argument under the function. Now let's practice. 
-
-
-We want to retrieve information on the *American Indian & Alaska Native population* by *state* from the *2020* decennial Census.
+If you wish to extract data from other sumfiles, you need to specify this argument under the function.
 
 ### Exercise 7
+
+Let's retrieves information on the American Indian & Alaska Native population by state from the 2020 decennial Census. 
 
 Run the `get_decennial()` function below setting `geography` to `"state"`, `variables` to `"P1_005N"`, `year` to `2020`, and `sumfile` to `"pl"`.
 
@@ -235,17 +228,15 @@ Run the `get_decennial()` function below setting `geography` to `"state"`, `vari
 
 ```{r getting-started-7-hint-1, eval = FALSE}
 get_decennial(geography = "...",
-        variables      = "...",
-        year = ...,
-        sumfile = "..."
-)
+              variables = "...",
+              year = ...,
+              sumfile = "...")
 ```
 
 ### 
 
-This retrieves information on the American Indian & Alaska Native population by state from the 2020 decennial Census. 
+You probably got a message concerning "differential privacy." This message alerts users that 2020 decennial Census data use differential privacy as a method to preserve confidentiality of individuals who responded to the Census. This can lead to inaccuracies in small area analyses using 2020 Census data and also can make comparisons of small counts across years difficult. 
 
-To learn more about the `sumfile`, refer to Walker's [book](https://walker-data.com/census-r/an-introduction-to-tidycensus.html#getting-started-with-tidycensus).
 
 ### Exercise 8
 
@@ -253,215 +244,174 @@ Just as `get_decennial()` gets information from the Decennial Census, `get_acs()
 
 The ACS includes a wide variety of variables detailing characteristics of the US population not found in the decennial Census. 
 
-The basic set-up of `get_acs()` is similar to that of `get_decennial()`: the key three arguments are `geography`, `variables` and `year`.
+### 
 
-### Exercise 9
+The basic set-up of `get_acs()` is similar to that of `get_decennial()`: the key three arguments are `geography`, `variables` and `year`.
 
 Let's look at the number of U.S. residents born in Mexico by state.
 
-Run the `get_acs()` function, setting `geography` to  `"state"`, `variables` to `"B05006_150"` and `year` to `2021`.
+Run the `get_acs()` function, setting `geography` to  `"state"` and `variables` to `"B05006_150"`.
+
+```{r getting-started-8, exercise = TRUE}
+
+```
+
+```{r getting-started-8-hint-1, eval = FALSE}
+get_acs(geography = "...",
+        variables      = "...")
+```
+
+### 
+
+If the year is not specified, `get_acs()` defaults to the most recent five-year ACS sample. The data returned is similar in structure to that returned by `get_decennial()`, but includes an `estimate` column (for the ACS estimate) and `moe` column (for the margin of error around that estimate) instead of a value column.
+
+### Exercise 9
+
+Re-run the code from the previous question, adding `year = "2021"`.
 
 ```{r getting-started-9, exercise = TRUE}
 
 ```
 
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
 ```{r getting-started-9-hint-1, eval = FALSE}
-get_acs(geography = "...",
-        variables      = "...",
-        year = ...
-)
-```
-
-### Exercise 10
-
-Notice that the tibble produced has an `estimate` and a `moe` column rather than a `value` column like the Decennial Census data. 
-
-`estimate` column: ACS estimate.
-`moe` column: margin of error around that estimate.
-
-### Exercise 11
-
-What if you didn't specify 'year'? 
-
-`get_acs()` will defaults to the most *recent five-year* ACS sample (ie. 2019-2023)
-
-### Exercise 12
-
-Another important argument is `survey`. 
-
-This argument defaults to 5 year periods if not specified. 
-
-We can change it to a one-year period rather than a default 5-year period by adding `survey = "acs1"`.
-
-### Exercise 13
-
-Run `get_acs()`, setting `geography` to `"state"`, `variables` to `"B05006_150"`, `survey` to `"acs1"`, and `year` to `2021`.
-
-
-```{r getting-started-13, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r getting-started-13-hint-1, eval = FALSE}
-get_acs(... = "...", 
-        variables = "...", 
-        survey = "...",
-        ... = 2019)
-```
-
-```{r getting-started-13-test, include = FALSE}
-get_acs(geography = "state", 
-        variables = "B05006_150", 
-        survey = "acs1",
-        year = 2021)
-```
-
-### Exercise 14
-
-What do you think this code entails?
-
-Well, it yields data on the number of residents born in Mexico by state in the year of *just 2021* (instead of a 5-year period as earlier). 
-
-### Exercise 15
-
-You should have seen some `NA` in the resulted table of the previous exercise. This is R’s notation representing missing data. 
-
-In this case, `NA` in the estimate column generally means that the estimate is too small for a given geography to be deemed reliable by the Census Bureau.
-
-### Exercise 16
-
-Notice that the GEOID column contains the [FIPS code](https://transition.fcc.gov/oet/info/maps/census/fips/fips.txt#:~:text=FIPS%20codes%20are%20numbers%20which,to%20which%20the%20county%20belongs.) of the area the data covers. This code is a standardized way to identify different geographical areas. It gets larger as the area under consideration narrows. The FIPS for Massachusetts is 25. For Middlesex County within Massachusetts, the FIPS is 25017.
-
-## Geography and variables
-### 
-
-
-### Exercise 1
-
-Rather than using the `variables` argument, you can supply a table name to the `table` parameter in `get_acs()`; this will return data for every variable in that table. 
-
-Run `get_acs()` below setting `geography` to `"state"`, `table` to `"B01001"`, and `year` to `2021`
-
-```{r geography-and-variables-1, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r geography-and-variables-1-hint-1, eval = FALSE}
-get_acs(... = "...", 
-        table = "...",
-        ... = ...)
-```
-
-```{r geography-and-variables-1-test, include = FALSE}
-get_acs(geography = "state", 
-        table = "B01001",
-        year = 2021)
-```
-
-### 
-
-This code got all variables associated with table `B01001`, which covers sex broken down by age, from the 2017-2021 5-year ACS.
-
-### Exercise 2
-
-Rather than using the `variables` argument, you can supply a table name to the `table` parameter in `get_acs()`; this will return data for every variable in that table. 
-
-Run `get_acs()` below setting `geography` to `"state"`, `table` to `"B01001"`, and `year` to `2021`
-
-```{r geography-and-variables-2, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r geography-and-variables-2-hint-1, eval = FALSE}
-get_acs(... = "...", 
-        table = "...",
-        ... = ...)
-```
-
-### 
-
-This code got all variables associated with table `B01001`, which covers sex broken down by age, from the 2017-2021 5-year ACS.
-
-### Exercise 3
-
-What if we want to analyze a variable at the county level, but only in one state? We can use the `state` argument along with the geography argument.
-
-### 
-
-Run `get_acs()` below setting `geography` = `"county"`, `variables` to `"B19013_001"`, `state` to `"GA"`, and `year` to `2021`
-
-```{r geography-and-variables-3, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r geography-and-variables-3-hint-1, eval = FALSE}
-get_acs(... = "...", 
-        variables = "...", 
-        ... = "WI",
+get_acs(geography = "state",
+        variables = "B05006_150",
         year = ...)
 ```
 
 ### 
 
-The example above returns average household income by county, but only in the state of Georgia. When using the `state` argument, you can use the state name (`"Georgia"`), the state postal code (`"GA"`), or the FIPS code (`"13"`).
+We are still pulling data from a five year ACS sample, but this time from one that ends on 2021.
 
-### Exercise 4
+Notice that the GEOID column contains the [FIPS code](https://transition.fcc.gov/oet/info/maps/census/fips/fips.txt#:~:text=FIPS%20codes%20are%20numbers%20which,to%20which%20the%20county%20belongs.) of the area the data covers. This code is a standardized way to identify different geographical areas. It gets larger as the area under consideration narrows. The FIPS for Massachusetts is 25. For Middlesex County within Massachusetts, the FIPS is 25017.
 
-Smaller geographies, such as Census tracts, can be subsetted as well by the `county` argument. 
+### Exercise 10
 
-Run `get_acs()` below setting `geography` = `"tract"`, `variables` to `"B19013_001"`, `state` to `"13"`, `county` to `"Gwinnett"`, and `year` to `2021`
+Different years and different surveys are available by adjusting the `year` and `survey` parameters. `survey` defaults to the 5-year ACS; however this can be changed to the 1-year ACS by using the argument `survey = "acs1"`.
 
-```{r geography-and-variables-4, exercise = TRUE}
+Re-run the code, adding the argument `survey = "acs1"`.
 
-```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r geography-and-variables-4-hint-1, eval = FALSE}
-get_acs(geography = "...", 
-        variables = "...", 
-        state = "...", 
-        ... = "Dane",
-        ... = ...)
-```
-
-### 
-
-The above code retrieves the average household income for every tract in Gwinnett County in Georgia. Subsetting is extremely useful, as it allows you to download only the data which is relevant to you.
-
-### 
-
-### Exercise 5
-
-Let's switch gears. What if we don't know what a variable ID means; after all, they're just a bunch of letters and numbers.
-
-Luckily, the **tidycensus** packages offers the `load_variables()` function. 
-
-Run `load_variables()` setting `year` to `2021`, and `dataset` to `"acs5"`
-
-```{r geography-and-variables-5, exercise = TRUE}
+```{r getting-started-10, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r geography-and-variables-5-hint-1, eval = FALSE}
-load_variables(year = ..., dataset = "...")
+```{r getting-started-10-hint-1, eval = FALSE}
+get_acs(geography = "state",
+        variables = "B05006_150",
+        year = 2021,
+        survey = "...")
 ```
 
 ### 
 
-Notice the "label" and "concept" columns, providing information about each variable. To learn more about `load_variables()` and its arguments, go to [Kyle Walkers introduction to tidycensus](https://walker-data.com/census-r/an-introduction-to-tidycensus.html#searching-for-variables-in-tidycensus)
+Note the differences between the 5-year ACS estimates and the 1-year ACS estimates shown. For states with larger Mexican-born populations like Arizona, California, and Colorado, the 1-year ACS data will represent the most up-to-date estimates, albeit characterized by larger margins of error relative to their estimates. For states with smaller Mexican-born populations like Alabama, Alaska, and Arkansas, however, the estimate returns NA, R’s notation representing missing data. If you encounter this in your data’s estimate column, it will generally mean that the estimate is too small for a given geography to be deemed reliable by the Census Bureau.
+
+### Exercise 11
+
+Variables from the ACS detailed tables, data profiles, summary tables, comparison profile, and supplemental estimates are available through **tidycensus**’s `get_acs()` function; the function will auto-detect from which dataset to look for variables based on their names. Alternatively, users can supply a table name to the table parameter in `get_acs()`; this will return data for every variable in that table.
+
+Run `get_acs()` with `geography = "state"`, `table = "B01001"`, and `year = 2020`.
+
+```{r getting-started-11, exercise = TRUE}
+
+```
+
+```{r getting-started-11-hint-1, eval = FALSE}
+get_acs(geography = "state", 
+        ... = "B01001",
+        year = 2020)
+```
+
+### 
+
+To find all of the variables associated with a given ACS table, tidycensus downloads a dataset of variables from the Census Bureau website and looks up the variable codes for download. If the cache_table parameter is set to TRUE, the function instructs tidycensus to cache this dataset on the user’s computer for faster future access.
 
 
+## Geography and variables
+### 
+
+The geography parameter in `get_acs()` and `get_decennial()` allows users to request data aggregated to common Census enumeration units.
+
+Census blocks are available in `get_decennial()` but not in `get_acs()` as block-level data are not available from the American Community Survey. To request data within states and/or counties, state and county names can be supplied to the state and county parameters, respectively, [formatted in the way that they are accepted by the US Census Bureau API](https://walker-data.com/census-r/an-introduction-to-tidycensus.html#geography-and-variables-in-tidycensus).
+
+### Exercise 1
+
+For core-based statistical areas and zip code tabulation areas, two heavily-requested geographies, the aliases "cbsa" and "zcta" can be used, respectively, to fetch data for those geographies.
+
+Run `get_acs()` with `geography = "cbsa"`, `variables = "B01003_001"`, and `year = 2020`.
+
+
+```{r geography-and-variables-1, exercise = TRUE}
+
+```
+
+```{r geography-and-variables-1-hint-1, eval = FALSE}
+get_acs(geography = "...",
+        ... = "B01003_001",
+        year = 2020)
+```
+
+### 
+
+For many geographies, **tidycensus** supports more granular requests that are subsetted by state or even by county, if supported by the API
+
+
+### Exercise 2
+
+What if we want to analyze a variable at the county level, but only in one state? We can use the `state` argument along with the geography argument.
+
+Run `get_acs()` with `geography = "county"`, `variables = "B19013_001"`, `state = "WI"`, and `year = 2020`.
+
+
+```{r geography-and-variables-2, exercise = TRUE}
+
+```
+
+```{r geography-and-variables-2-hint-1, eval = FALSE}
+get_acs(
+  geography = "...", 
+  ... = "B19013_001", 
+  ... = "WI",
+  year = 2020
+)
+```
+
+### 
+
+**tidycensus** accepts state names (e.g. "Wisconsin"), state postal codes (e.g. "WI"), and state FIPS codes (e.g. "55"), so an analyst can use what they are most comfortable with.
+
+
+### Exercise 3
+
+Smaller geographies like Census tracts can also be subsetted by county. Given that Census tracts nest neatly within counties (and do not cross county boundaries), we can request all Census tracts for a given county by using the optional county parameter.
+
+Run `get_acs()` with `geography = "tract"`, `variables = "B19013_001"`, `state = "WI"`, `county = "Dane"`, and `year = 2020`
+
+```{r geography-and-variables-3, exercise = TRUE}
+
+```
+
+```{r geography-and-variables-3-hint-1, eval = FALSE}
+get_acs(
+  geography = "...", 
+  variables = "...", 
+  ... = "WI", 
+  county = "Dane",
+  year = 2020
+)
+```
+
+
+### 
+
+Note that the name of the county can be supplied as well as the FIPS code. If a state has two counties with similar names (e.g. “Collin” and “Collingsworth” in Texas) you’ll need to spell out the full county string and type "Collin County".
+
+<!-- DK: Skipped a call or two. -->
 
 ## Searching for variables
 ### 
