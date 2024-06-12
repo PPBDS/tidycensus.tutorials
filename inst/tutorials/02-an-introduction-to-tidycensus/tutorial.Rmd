@@ -267,7 +267,7 @@ If the year is not specified, `get_acs()` defaults to the most recent five-year 
 
 ### Exercise 9
 
-Re-run the code from the previous question, adding `year = "2021"`.
+Re-run the code from the previous question, adding `year = 2021`.
 
 ```{r getting-started-9, exercise = TRUE}
 
