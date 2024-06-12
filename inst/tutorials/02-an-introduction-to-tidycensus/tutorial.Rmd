@@ -406,7 +406,6 @@ get_acs(
 )
 ```
 
-
 ### 
 
 Note that the name of the county can be supplied as well as the FIPS code. If a state has two counties with similar names (e.g. “Collin” and “Collingsworth” in Texas) you’ll need to spell out the full county string and type "Collin County".
@@ -902,27 +901,9 @@ A common use-case for `show_call = TRUE` is to understand what data is available
 
 ### Exercise 5
 
-```{r debugging-tidycensus-errors-5, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r debugging-tidycensus-errors-5-hint-1, eval = FALSE}
-
-```
-
-```{r debugging-tidycensus-errors-5-test, include = FALSE}
-
-```
-
-### 
-
-### Exercise 6
-
 At the Console, run `?census_api_key`. Copy/paste the Description.
 
-```{r debugging-tidycensus-errors-6}
+```{r debugging-tidycensus-errors-5}
 question_text(NULL,
 	answer(NULL, correct = TRUE),
 	allow_retry = TRUE,
@@ -935,11 +916,11 @@ question_text(NULL,
 
 You will probably only use the `census_api_key()` function once. 
 
-### Exercise 7
+### Exercise 6
 
 At the Console, run `census_api_key("xx", install = TRUE)`, where `xx` is replaced by the key which you should received by now from the Census.
 
-```{r debugging-tidycensus-errors-7}
+```{r debugging-tidycensus-errors-6}
 question_text(NULL,
 	answer(NULL, correct = TRUE),
 	allow_retry = TRUE,
@@ -950,13 +931,13 @@ question_text(NULL,
 
 Nothing gets returned by this command but, with luck, your `.Renviron` file now includes the value of your Census API key.
 
-### Exercise 8
+### Exercise 7
 
 Restart your R session. (This is not the same thing as restarting the RStudio session.) The easiest way to do so is with the shortcut key: `Command/Ctrl + Shift + 0`.
 
 From the Console, run `Sys.getenv("CENSUS_API_KEY")`. CP/CR.
 
-```{r debugging-tidycensus-errors-8}
+```{r debugging-tidycensus-errors-7}
 question_text(NULL,
 	answer(NULL, correct = TRUE),
 	allow_retry = TRUE,
