@@ -144,7 +144,7 @@ You will get an error.
 
 ### 
 
-`get_decenial()` requires three arguments: `geography`, `variables`, and `year`.
+`get_decennial()` requires three arguments: `geography`, `variables`, and `year`.
 
 ### 
 
@@ -160,7 +160,7 @@ You will get an error.
 
 ### Exercise 5
 
-Call `get_decenial()`, setting `geography` to `"state"`, `variables` to `"P001001"`, and `year` to `2010`.
+Call `get_decennial()`, setting `geography` to `"state"`, `variables` to `"P001001"`, and `year` to `2010`.
 
 ```{r getting-started-5, exercise = TRUE}
 
@@ -420,7 +420,7 @@ One additional challenge when searching for Census variables is understanding va
 
 ### Exercise 1
 
-`load_vatriables()` takes two required arguments: `year`, which takes the year or endyear of the Census dataset or ACS sample, and `dataset`, which references the dataset name. 
+`load_variables()` takes two required arguments: `year`, which takes the year or endyear of the Census dataset or ACS sample, and `dataset`, which references the dataset name. 
 
 Run `load_variables(2010, "sf1")`.
 
