@@ -20,7 +20,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Imports:
     tidycensus,
-    tutorial.helpers
+    tutorial.helpers (>= 0.3.0)
 Suggests: 
     ggthemes,
     ipumsr,
@@ -37,6 +37,4 @@ Suggests:
     tigris,
     tmap
 Config/testthat/edition: 3
-Remotes: 
-    PPBDS/tutorial.helpers
 URL: https://ppbds.github.io/tidycensus.tutorials/
