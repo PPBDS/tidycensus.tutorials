@@ -841,20 +841,6 @@
       ],
       "Hash": "d6db1667059d027da730decdc214b959"
     },
-    "gridExtra": {
-      "Package": "gridExtra",
-      "Version": "2.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "grDevices",
-        "graphics",
-        "grid",
-        "gtable",
-        "utils"
-      ],
-      "Hash": "7d7f283939f563670a697165b2cf5560"
-    },
     "gtable": {
       "Package": "gtable",
       "Version": "0.3.5",
@@ -2313,19 +2299,12 @@
     },
     "tutorial.helpers": {
       "Package": "tutorial.helpers",
-      "Version": "0.2.7.9010",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "tutorial.helpers",
-      "RemoteUsername": "PPBDS",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "2ec47b90c76a0c94865698f0a7261b8c2f4d2db9",
+      "Version": "0.3.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
       "Requirements": [
         "R",
         "dplyr",
-        "grDevices",
-        "gridExtra",
         "learnr",
         "mime",
         "parsermd",
@@ -2338,7 +2317,7 @@
         "stringr",
         "tibble"
       ],
-      "Hash": "9d0481bb7d27c14b580120d9f0db92a6"
+      "Hash": "71a946cd8b16f9c98b7f60b1fd25b500"
     },
     "tzdb": {
       "Package": "tzdb",
