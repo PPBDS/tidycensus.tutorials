@@ -1,21 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://ppbds.github.io/tidycensus.tutorials/404.html</loc>
-  </url>
-  <url>
-    <loc>https://ppbds.github.io/tidycensus.tutorials/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://ppbds.github.io/tidycensus.tutorials/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://ppbds.github.io/tidycensus.tutorials/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://ppbds.github.io/tidycensus.tutorials/index.html</loc>
-  </url>
-  <url>
-    <loc>https://ppbds.github.io/tidycensus.tutorials/reference/index.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://ppbds.github.io/tidycensus.tutorials/404.html</loc></url>
+<url><loc>https://ppbds.github.io/tidycensus.tutorials/LICENSE-text.html</loc></url>
+<url><loc>https://ppbds.github.io/tidycensus.tutorials/LICENSE.html</loc></url>
+<url><loc>https://ppbds.github.io/tidycensus.tutorials/authors.html</loc></url>
+<url><loc>https://ppbds.github.io/tidycensus.tutorials/index.html</loc></url>
+<url><loc>https://ppbds.github.io/tidycensus.tutorials/reference/index.html</loc></url>
 </urlset>
+
