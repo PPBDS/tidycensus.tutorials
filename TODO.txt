@@ -1,4 +1,8 @@
-Satvika Upperla
+Satvika:
+  write tutorial for chapter 3
+
+
+
 Write Chapter 2 tutorial
 
 

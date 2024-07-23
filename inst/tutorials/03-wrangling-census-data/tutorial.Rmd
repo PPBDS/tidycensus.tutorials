@@ -1,6 +1,6 @@
 ---
 title: Wrangling Census data with tidyverse tools
-author: David Kane
+author: David Kane and Satvika Upperla
 tutorial:
   id: wrangling-census-data-with-tidyverse-tools
 output:
@@ -894,7 +894,8 @@ college_by_year <- map_dfr(years, ~{
 
 Let's go over the code so that you can understand. A numeric vector of `years` is defined with the syntax 2010:2019. This will create a vector of `years` at 1-year intervals. 
 
-Then the function map_dfr() takes three arguments. The first argument, `years` is the object that the function will iterate over. The second argument uses the formula to create data for each element of `years` and then outputs the data into a single data frame. The third argument makes a new column that will output the data for `year`. 
+Then the function `map_dfr()` takes three arguments. The first argument, `years` is the object that the function will iterate over. The second argument uses the formula to create data for each element of `years` and then outputs the data into a single data frame. The third argument makes a new column that will output the data for `year`. 
+
 
 ### Exercise 12
 
