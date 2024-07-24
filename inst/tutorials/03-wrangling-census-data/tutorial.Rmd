@@ -18,7 +18,6 @@ library(tidycensus)
 library(tidyverse)
 library(knitr)
 
-
 knitr::opts_chunk$set(echo = FALSE)
 options(tutorial.exercise.timelimit = 60, 
         tutorial.storage = "local") 
@@ -250,7 +249,7 @@ This should contain your Census API key. If you want to see where the key is sto
 
 ### Exercise 5
 
-For a first example, let’s request data on median age from the 2016-2020 ACS with `get_acs()` for all counties in the United States. Run `get_acs()` with `geography` = `"county"`, `variables` = `"B01002_001"`, and the `year` = `2020`.
+For a first example, let’s request data on median age from the 2016-2020 ACS with `get_acs()` for all counties in the United States. Run `get_acs()` with `geography` = `"county"`, `variables` = `"B01002_001"`, and the `year` = `2020` as arguments.
 
 ```{r the-tidyverse-5, exercise = TRUE}
 
@@ -271,7 +270,7 @@ The default method for printing data used by the **tibble** package shows the fi
 
 ### Exercise 6
 
-Behind the scenes, we assigned the resuls of this call to `get_acs()` to a new object, `median_age`.
+Behind the scenes, we assigned the results of this call to `get_acs()` to a new object, `median_age`.
 
 We almost always assign the results of a function call which retrieves data from a source like the Census to a permanent object, `median_age` in this case. Strictly speaking, we don't need to do this. We could just start a pipe with this function call. But, first, this is sometimes annoyingly slow and, second, we don't want to be abusive and query an online source every time we make a tiny change.
 
@@ -300,7 +299,7 @@ Note that the key variable is called `estimate` rather than `age` or `median_age
 
 ### Exercise 7
 
-`arrange()` sorts a dataset by values in one or more columns and returns the sorted result. Pipe `median_age` to the `arrange()` with the argument `estimate`.
+`arrange()` sorts a dataset by values in one or more columns and returns the sorted result. Pipe `median_age` to `arrange()` with the argument `estimate`.
 
 ```{r the-tidyverse-7, exercise = TRUE}
 
@@ -321,8 +320,8 @@ median_age |>
 ### 
 
 Per the 2016-2020 ACS, the youngest county is De Baca County, New Mexico. Two of the five youngest “counties” in the United States are independent cities in Virginia, which are treated as county-equivalents. 
-
-We would normally do this analysis by justing piping `median_age` into `arrange(estimate)`, producing the same answer as here.
+<!-- SU: Is the bottom paragraph needed? it contradicts itself -->
+We would normally do this analysis by just piping `median_age` into `arrange(estimate)`, producing the same answer as here.
 
 
 ### Exercise 8
@@ -643,7 +642,7 @@ When looking at the two datasets, you may notice that the `GEOID` column changed
 
  Let’s say that we are interested in analyzing the percentage of residents age 25 and up with a 4-year college degree for counties in Colorado from the 2019 1-year ACS. 
  
- Set the dataset `co_college` to the function `get_acs()`. Inside the function, set `geography` = `"county"`, `variables` = `"DP02_0068P"`, `state` = `"CO"`, `survey` = `"acs1"` and `year` = `2019`.  
+ Set the dataset `co_college19` to the function `get_acs()`. Inside the function, set `geography` = `"county"`, `variables` = `"DP02_0068P"`, `state` = `"CO"`, `survey` = `"acs1"` and `year` = `2019`.  
  
 
 ```{r comparing-acs-estimates-over-t-5, exercise = TRUE}
@@ -678,7 +677,7 @@ Notice how Boulder County, home to the University of Colorado, has a very high p
 
 ### Exercise 6
 
-Copying the code above, lets change the `year` to `2018`. 
+Copying the code above, lets change the `year` to `2018`, and `19` to `18`. 
 
 ```{r comparing-acs-estimates-over-t-6, exercise = TRUE}
 
@@ -687,7 +686,7 @@ Copying the code above, lets change the `year` to `2018`.
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r comparing-acs-estimates-over-t-6-hint-1, eval = FALSE}
-co_college19 <- get_acs(
+co_college18 <- get_acs(
   geography = "county",
   variables = "DP02_0068P",
   state = "CO",
@@ -697,7 +696,7 @@ co_college19 <- get_acs(
 ```
 
 ```{r comparing-acs-estimates-over-t-6-test, include = FALSE}
-co_college19 <- get_acs(
+co_college18 <- get_acs(
   geography = "county",
   variables = "DP02_0068P",
   state = "CO",
@@ -754,7 +753,7 @@ These tables are available for both the 1-year and 5-year ACS, and allow for com
 
 Let’s re-engineer the analysis above on educational attainment in Colorado counties, which below will be computed for a time series from 2010 to 2019. We only need a few variables (representing estimates of populations age 25+ who have finished a 4-year degree or graduate degrees, by sex), we’ll request those variables directly rather than the entire B15002 table. 
 
-Set `college_wars` equal to a vector of `"B15002_015"`, `"B15002_016"`, `"B15002_017"`, `"B15002_018"`, `"B15002_032"`, `"B15002_033"`, `"B15002_034"`, and `"B15002_035"`. 
+Set `college_vars` equal to a vector of `"B15002_015"`, `"B15002_016"`, `"B15002_017"`, `"B15002_018"`, `"B15002_032"`, `"B15002_033"`, `"B15002_034"`, and `"B15002_035"`. 
 
 
 
@@ -786,7 +785,7 @@ college_vars <- c("B15002_015",
 
 ### 
 
-If we want data on college career holders from 2010 to 2019, we will have a lot of `get_acs()` functions. To reduce the unnecessary work, we will use iterations to avoid repetitive coding. This is similar to the loop operators `for` an `while` 
+If we want data on college career holders from 2010 to 2019, we will have a lot of `get_acs()` functions. To reduce the unnecessary work, we will use iterations to avoid repetitive coding. This is similar to the loop operators `for` and `while` 
 
 
 ### Exercise 9
@@ -850,7 +849,7 @@ The tilde (`~`) operator and the curly brackets (`{}`) means that the code will 
 
 ### Exercise 11
 
-Copy the code above. Within the `get_acs()` function, set `geography` = `"county"`, `variables` = `collge_vars`, `state` = `"CO"`, `summary_var` = `"B15002_001"`, `survey` = `"acs1"` and `year` = `.x`. Within the `map_dfr()` function, set the third argument `.id` equal to `"year"`
+Copy the code above. Within the `get_acs()` function, set `geography` = `"county"`, `variables` = `college_vars`, `state` = `"CO"`, `summary_var` = `"B15002_001"`, `survey` = `"acs1"` and `year` = `.x`. Within the `map_dfr()` function, set the third argument `.id` equal to `"year"`
 
 ```{r comparing-acs-estimates-over-t-11, exercise = TRUE}
 
@@ -936,7 +935,8 @@ percent_college_by_year <- ... %>%
 ```
 
 ```{r comparing-acs-estimates-over-t-13-test, include = FALSE}
-percent_college_by_year
+percent_college_by_year <- college_by_year %>%
+  group_by(NAME, year)
 ```
 
 ### 
@@ -959,7 +959,10 @@ Copy the code above. Continue using the pipe `%>%` to the function `summarize()`
 ```
 
 ```{r comparing-acs-estimates-over-t-14-test, include = FALSE}
-percent_college_by_year
+percent_college_by_year <- college_by_year %>%
+  group_by(NAME, year) %>%
+  summarize(numerator = sum(estimate),
+            denominator = first(summary_est))
 ```
 
 ### 
@@ -986,7 +989,11 @@ percent_college_by_year <- college_by_year %>%
 ```
 
 ```{r comparing-acs-estimates-over-t-15-test, include = FALSE}
-percent_college_by_year
+percent_college_by_year <- college_by_year %>%
+  group_by(NAME, year) %>%
+  summarize(numerator = sum(estimate),
+            denominator = first(summary_est)) %>%
+  mutate(pct_college = 100 * (numerator / denominator))
 ```
 
 ### 
@@ -995,7 +1002,7 @@ The `mutate()` function allows us the create, modify and delete columns. More in
 
 ### Exercise 16
 
-Copy the code above. Continue the pipe `%>%` to the function `pivot_wider()`. Within the function, set `id_cols` = `NAME`, `names_from` = `year`, and `values_from` = `pct_college`. 
+Copy the code above. Continue the pipe `%>%` to the function `pivot_wider()`. Within the function, set `id_cols` to `NAME`, `names_from` to `year`, and `values_from` to `pct_college`. 
 
 ```{r comparing-acs-estimates-over-t-16, exercise = TRUE}
 
@@ -1015,7 +1022,14 @@ percent_college_by_year <- college_by_year %>%
 ```
 
 ```{r comparing-acs-estimates-over-t-16-test, include = FALSE}
-percent_college_by_year
+percent_college_by_year <- college_by_year %>%
+  group_by(NAME, year) %>%
+  summarize(numerator = sum(estimate),
+            denominator = first(summary_est)) %>%
+  mutate(pct_college = 100 * (numerator / denominator)) %>%
+  pivot_wider(id_cols = NAME,
+              names_from = year,
+              values_from = pct_college)
 ```
 
 ### 
@@ -1033,7 +1047,7 @@ The American Community Survey is based on a sample with estimates characterized 
 
 Lets look at data on median household income by county in Rhode Island using the default `moe_level` of 90. 
 
-Type the function `get_acs()`. Within this function, set `geography` = `"county"`, `state` = `"Rhode Island"`, `variables` = `"B19013_001"`, and `year` = `2020`. 
+Type the function `get_acs()`. Within this function, set `geography` to `"county"`, `state` to `"Rhode Island"`, `variables` to `"B19013_001"`, and `year` to `2020`. 
 
 ```{r handling-margins-of-error-with-1, exercise = TRUE}
 
@@ -1073,7 +1087,7 @@ In other words, the ACS calculated that a good estimate of the median household 
 
 Rather than using the default 90% margin of error, let's change the argument using the `get_acs()` function. Side note, the `moe_level` argument can only be either 90, 95 or 99.
 
-Copy the code above and add an argument `moe_level` = `99`. 
+Copy the code above and add an argument setting `moe_level` to `99`. 
 
 ```{r handling-margins-of-error-with-2, exercise = TRUE}
 
@@ -1125,7 +1139,7 @@ In the examples earlier, as confidence level increased, so did margin of error b
 
 For small geographies or small populations, margins of error can get quite large, in some cases exceeding their corresponding estimates. Let's examine data on age groups by sex for the population age 65 and older for Census tracts in Salt Lake County, Utah.
 
-Set `vars` to the function `paste0()`. Within the function, set the first argument as `"B01001_0"` and the second arguement as a vector of `20:25` and `44:49`. On the next line print out `vars`. 
+Set `vars` to the function `paste0()`. Within the function, set the first argument as `"B01001_0"` and the second argument as a vector of `20:25` and `44:49`. On the next line print out `vars`. 
 
 ```{r handling-margins-of-error-with-3, exercise = TRUE}
 
@@ -1209,15 +1223,14 @@ example_tract %>%
 
 ### 
 
-In many cases, the ma
-rgins of error exceed their corresponding estimates. For example, for the variable `B01001_0025` it suggests that or the male population age 85 and up, there are anywhere between 0 and 45 people in that Census tract. This can make ACS data for small geographies problematic for planning and analysis purposes.
+In many cases, the margins of error exceed their corresponding estimates. For example, for the variable `B01001_0025` it suggests that or the male population age 85 and up, there are anywhere between 0 and 45 people in that Census tract. This can make ACS data for small geographies problematic for planning and analysis purposes.
 
 
 ### Exercise 6
 
 A potential solution to large margins of error for small estimates in the ACS is to aggregate data upwards until a satisfactory margin of error to estimate ratio is reached.
 
-The `moe_prop()` function calculates a margin of error for a derived proportion. Type the function, then set the arguements to `25`, `100`, `5`, and `3`. 
+The `moe_prop()` function calculates a margin of error for a derived proportion. Type the function, then set the arguments to `25`, `100`, `5`, and `3`. 
 
 ```{r handling-margins-of-error-with-6, exercise = TRUE}
 
