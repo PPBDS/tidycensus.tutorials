@@ -959,7 +959,10 @@ Copy the code above. Continue using the pipe `%>%` to the function `summarize()`
 ```
 
 ```{r comparing-acs-estimates-over-t-14-test, include = FALSE}
-percent_college_by_year
+percent_college_by_year <- college_by_year %>%
+  group_by(NAME, year) %>%
+  summarize(numerator = sum(estimate),
+            denominator = first(summary_est))
 ```
 
 ### 
@@ -986,7 +989,11 @@ percent_college_by_year <- college_by_year %>%
 ```
 
 ```{r comparing-acs-estimates-over-t-15-test, include = FALSE}
-percent_college_by_year
+percent_college_by_year <- college_by_year %>%
+  group_by(NAME, year) %>%
+  summarize(numerator = sum(estimate),
+            denominator = first(summary_est)) %>%
+  mutate(pct_college = 100 * (numerator / denominator))
 ```
 
 ### 
@@ -995,7 +1002,7 @@ The `mutate()` function allows us the create, modify and delete columns. More in
 
 ### Exercise 16
 
-Copy the code above. Continue the pipe `%>%` to the function `pivot_wider()`. Within the function, set `id_cols` = `NAME`, `names_from` = `year`, and `values_from` = `pct_college`. 
+Copy the code above. Continue the pipe `%>%` to the function `pivot_wider()`. Within the function, set `id_cols` to `NAME`, `names_from` to `year`, and `values_from` to `pct_college`. 
 
 ```{r comparing-acs-estimates-over-t-16, exercise = TRUE}
 
@@ -1015,7 +1022,14 @@ percent_college_by_year <- college_by_year %>%
 ```
 
 ```{r comparing-acs-estimates-over-t-16-test, include = FALSE}
-percent_college_by_year
+percent_college_by_year <- college_by_year %>%
+  group_by(NAME, year) %>%
+  summarize(numerator = sum(estimate),
+            denominator = first(summary_est)) %>%
+  mutate(pct_college = 100 * (numerator / denominator)) %>%
+  pivot_wider(id_cols = NAME,
+              names_from = year,
+              values_from = pct_college)
 ```
 
 ### 
@@ -1033,7 +1047,7 @@ The American Community Survey is based on a sample with estimates characterized 
 
 Lets look at data on median household income by county in Rhode Island using the default `moe_level` of 90. 
 
-Type the function `get_acs()`. Within this function, set `geography` = `"county"`, `state` = `"Rhode Island"`, `variables` = `"B19013_001"`, and `year` = `2020`. 
+Type the function `get_acs()`. Within this function, set `geography` to `"county"`, `state` to `"Rhode Island"`, `variables` to `"B19013_001"`, and `year` to `2020`. 
 
 ```{r handling-margins-of-error-with-1, exercise = TRUE}
 
@@ -1073,7 +1087,7 @@ In other words, the ACS calculated that a good estimate of the median household 
 
 Rather than using the default 90% margin of error, let's change the argument using the `get_acs()` function. Side note, the `moe_level` argument can only be either 90, 95 or 99.
 
-Copy the code above and add an argument `moe_level` = `99`. 
+Copy the code above and add an argument setting `moe_level` to `99`. 
 
 ```{r handling-margins-of-error-with-2, exercise = TRUE}
 
@@ -1125,7 +1139,7 @@ In the examples earlier, as confidence level increased, so did margin of error b
 
 For small geographies or small populations, margins of error can get quite large, in some cases exceeding their corresponding estimates. Let's examine data on age groups by sex for the population age 65 and older for Census tracts in Salt Lake County, Utah.
 
-Set `vars` to the function `paste0()`. Within the function, set the first argument as `"B01001_0"` and the second arguement as a vector of `20:25` and `44:49`. On the next line print out `vars`. 
+Set `vars` to the function `paste0()`. Within the function, set the first argument as `"B01001_0"` and the second argument as a vector of `20:25` and `44:49`. On the next line print out `vars`. 
 
 ```{r handling-margins-of-error-with-3, exercise = TRUE}
 
@@ -1209,15 +1223,14 @@ example_tract %>%
 
 ### 
 
-In many cases, the ma
-rgins of error exceed their corresponding estimates. For example, for the variable `B01001_0025` it suggests that or the male population age 85 and up, there are anywhere between 0 and 45 people in that Census tract. This can make ACS data for small geographies problematic for planning and analysis purposes.
+In many cases, the margins of error exceed their corresponding estimates. For example, for the variable `B01001_0025` it suggests that or the male population age 85 and up, there are anywhere between 0 and 45 people in that Census tract. This can make ACS data for small geographies problematic for planning and analysis purposes.
 
 
 ### Exercise 6
 
 A potential solution to large margins of error for small estimates in the ACS is to aggregate data upwards until a satisfactory margin of error to estimate ratio is reached.
 
-The `moe_prop()` function calculates a margin of error for a derived proportion. Type the function, then set the arguements to `25`, `100`, `5`, and `3`. 
+The `moe_prop()` function calculates a margin of error for a derived proportion. Type the function, then set the arguments to `25`, `100`, `5`, and `3`. 
 
 ```{r handling-margins-of-error-with-6, exercise = TRUE}
 
