@@ -293,7 +293,7 @@ median_age
 
 ### 
 
-Note that the key variable is called `estimate` rather than `age` or `median_age`. The default behavior of `get_acs()` is for the variable of interest to be labelled `estimate` since, in fact, it is an estimate. 
+Note that the key variable is called `estimate` rather than `age` or `median_age`. The default behavior of `get_acs()` is for the variable we are interested in to be labelled `estimate` since, in fact, it is an estimate. 
 
 
 
@@ -378,7 +378,8 @@ The `filter()` function queries a data set for rows where a given condition eval
 
 ### Exercise 10
 
-What if we want to separate the columns into county and state? The best tool for that is the `separate_wider_delim()` function. Pipe `median_age` to `separate_wider_delim()` with arguments `col = name`, `into = c("county","state")` and `sep = ", "`. (Note that it is `", "` with a space, not `","` without one.)
+What if we want to separate the columns into county and state? The best tool for that is the `separate` function. Pipe `median_age` to `separate` with arguments `col = NAME`,
+`into = c("county","state")` and `sep = ", "`. (Note that it is `", "` with a space, not `","` without one.)
 
 ```{r the-tidyverse-10, exercise = TRUE}
 
@@ -445,16 +446,16 @@ Call `get_acs()` with `geography = "county"`, `state = "AZ"`, `variables = race_
 
 ```{r the-tidyverse-12-hint-1, eval = FALSE}
 get_acs(
-  geography = "county",
-  state = "AZ",
-  variables = race_vars,
-  year = 2020
+  geography = ...,
+  ... = "AZ",
+  variables = ...,
+  ... = 2020
 ) 
 ```
 
 ### 
 
-Note the wide range in raw numbers. Some categories are 100 or even 1,000 times more common than others. We often want to "normalize" these values so that everything is on a more similar scale.
+Note the wide range in raw numbers in the "estimate" column. Some categories are 100 or even 1,000 times more common than others. We often want to "normalize" these values so that everything is on a more similar scale.
 
 
 
@@ -538,7 +539,7 @@ A common task when working with Census data is to examine demographic change ove
 Before engaging in any sort of time series analysis of Census data, analysts need to account for potential problems that can emerge when using Census data longitudinally. One major issue that can emerge is geography changes over time.
  
 
-Use `get_acts()` to create the dataset `oglala_lakota_age`. Within `get_acts()`, set `geography` = `"county"`, `state` = `"SD"`, `county` = `"Oglala Lakota"`, `table` =  `"B01001"` and `year` = `2020`. 
+Use `get_acs()` to create the dataset `oglala_lakota_age`. Within `get_acs()`, set `geography` = `"county"`, `state` = `"SD"`, `county` = `"Oglala Lakota"`, `table` =  `"B01001"` and `year` = `2020`. 
 
 ```{r comparing-acs-estimates-over-t-1, exercise = TRUE}
 
@@ -553,6 +554,7 @@ oglala_lakota_age <- ...(
   year = ...
 )
 ```
+
 
 ### 
 
@@ -599,6 +601,7 @@ oglala_lakota_age <- get_acs(
 )
 ```
 
+<!-- added this to see if it would make the copy previous code button work on exercise 4 -->
 ### 
 
 We get an error because ten years ago, this county was named "Shannon". 
@@ -610,7 +613,7 @@ Using the same code as above, change the `county` name to `"Shannon"`.
 ```{r comparing-acs-estimates-over-t-4, exercise = TRUE}
 
 ```
-
+<!-- this "copy previous code button" does not work -->
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r comparing-acs-estimates-over-t-4-hint-1, eval = FALSE}
@@ -677,7 +680,7 @@ Notice how Boulder County, home to the University of Colorado, has a very high p
 
 ### Exercise 6
 
-Copying the code above, lets change the `year` to `2018`, and `19` to `18`. 
+Copying the code above, lets change the `year` to `2018`, and `co_college19` to `co_college18`. 
 
 ```{r comparing-acs-estimates-over-t-6, exercise = TRUE}
 
