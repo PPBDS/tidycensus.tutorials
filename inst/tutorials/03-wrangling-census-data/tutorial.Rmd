@@ -320,8 +320,7 @@ median_age |>
 ### 
 
 Per the 2016-2020 ACS, the youngest county is De Baca County, New Mexico. Two of the five youngest “counties” in the United States are independent cities in Virginia, which are treated as county-equivalents. 
-<!-- SU: Is the bottom paragraph needed? it contradicts itself -->
-We would normally do this analysis by just piping `median_age` into `arrange(estimate)`, producing the same answer as here.
+
 
 
 ### Exercise 8
