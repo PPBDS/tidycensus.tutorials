@@ -264,13 +264,6 @@ get_acs(
 ```
 
 
-```{r the-tidyverse-5-test, include=FALSE}
-get_acs(
-  geography = "county",
-  variables = "B01002_001",
-  year = 2020
-)
-```
 
 
 ### 
@@ -462,14 +455,7 @@ get_acs(
 ) 
 ```
 
-```{r the-tidyverse-12-test, eval = FALSE}
-get_acs(
-  geography = "county",
-  state = "AZ",
-  variables = race_vars,
-  year = 2020
-) 
-```
+
 ### 
 
 Note the wide range in raw numbers in the "estimate" column. Some categories are 100 or even 1,000 times more common than others. We often want to "normalize" these values so that everything is on a more similar scale.
@@ -499,15 +485,6 @@ get_acs(
 ) 
 ```
 
-```{r the-tidyverse-13-test, include = FALSE}
-get_acs(
-  geography = "county",
-  state = "AZ",
-  variables = race_vars,
-  summary_var = "B03002_001",
-  year = 2020
-) 
-```
 ### 
 
 Adding a variable ID to the `summary_var` parameter in `get_acs()`  will create two new columns: `summary_est` and `summary_moe`, representing the summary variable’s estimate and margin of error. In this case, the summary variable is the total population for each county. 
@@ -587,16 +564,6 @@ oglala_lakota_age <- ...(
 ```
 
 
-```{r comparing-acs-estimates-over-t-1-test, include = FALSE}
-oglala_lakota_age <- get_acs(
-  geography = "county",
-  state = "SD",
-  county = "Oglala Lakota",
-  table = "B01001",
-  year = 2020
-)
-```
-
 ### 
 
 The `get_acs()` function allows us obtain data from the American Community Survey. More information on this function can be found [here](https://www.rdocumentation.org/packages/tidycensus/versions/1.5/topics/get_acs).  
@@ -643,6 +610,7 @@ oglala_lakota_age <- get_acs(
 ```
 
 
+
 ### 
 
 We get an error because ten years ago, this county was named "Shannon". 
@@ -667,15 +635,7 @@ oglala_lakota_age <- get_acs(
 )
 ```
 
-```{r comparing-acs-estimates-over-t-4-test, include = FALSE}
-oglala_lakota_age <- get_acs(
-  geography = "county",
-  state = "SD",
-  county = "Shannon",
-  table = "B01001",
-  year = 2010
-)
-```
+
 
 ### 
 
@@ -705,15 +665,7 @@ When looking at the two datasets, you may notice that the `GEOID` column changed
 )
 ```
 
-```{r comparing-acs-estimates-over-t-5-test, include = FALSE}
-co_college19 <- get_acs(
-  geography = "county",
-  variables = "DP02_0068P",
-  state = "CO",
-  survey = "acs1",
-  year = 2019
-)
-```
+
 
 ### 
 
@@ -739,15 +691,7 @@ co_college18 <- get_acs(
 )
 ```
 
-```{r comparing-acs-estimates-over-t-6-test, include = FALSE}
-co_college18 <- get_acs(
-  geography = "county",
-  variables = "DP02_0068P",
-  state = "CO",
-  survey = "acs1",
-  year = 2018
-)
-```
+
 
 ### 
 
@@ -777,17 +721,7 @@ Set the dataset `ak_income_compare` to the function `get_acs()`. Inside the func
 )
 ```
 
-```{r comparing-acs-estimates-over-t-7-test, include = FALSE}
-ak_income_compare <- get_acs(
-  geography = "county",
-  variables = c(
-    income15 = "CP03_2015_062",
-    income20 = "CP03_2020_062"
-  ),
-  state = "AK",
-  year = 2020
-)
-```
+
 
 ### 
 
@@ -878,13 +812,6 @@ college_by_year <- ...(..., ~{
   get_acs() })
 ```
 
-```{r comparing-acs-estimates-over-t-10-test, include = FALSE, eval = FALSE}
-years <- 2010:2019
-names(years) <- years
-
-college_by_year <- map_dfr(years, ~{
-  get_acs() })
-```
 
 ### 
 
@@ -916,21 +843,6 @@ college_by_year <- map_dfr(years, ~{
 }, .id = "...")
 ```
 
-```{r comparing-acs-estimates-over-t-11-test, include = FALSE}
-years <- 2010:2019
-names(years) <- years
-
-college_by_year <- map_dfr(years, ~{
-  get_acs(
-    geography = "county",
-    variables = college_vars,
-    state = "CO",
-    summary_var = "B15002_001",
-    survey = "acs1",
-    year = .x
-  )
-}, .id = "year")
-```
 
 ### 
 
@@ -1105,15 +1017,6 @@ get_acs(
 )
 ```
 
-```{r handling-margins-of-error-with-1-test, include = FALSE}
-get_acs(
-  geography = "county",
-  state = "Rhode Island",
-  variables = "B19013_001",
-  year = 2020
-)
-```
-
 ### 
 
 The data can be translated to saying, "We are 90% confident that the median household income in the county of Rhode Island falls within the range of the `estimate` plus or minus the `moe`." For example, our estimate of the average household income in Bristol County, Rhode Island is $85,413 with a 90% confidence interval of +/- $6,122.
@@ -1148,15 +1051,7 @@ get_acs(
 )
 ```
 
-```{r handling-margins-of-error-with-2-test, include = FALSE}
-get_acs(
-  geography = "county",
-  state = "Rhode Island",
-  variables = "B19013_001",
-  year = 2020,
-  moe_level = 99
-)
-```
+
 
 ### 
 
@@ -1219,15 +1114,6 @@ Set `salt_lake` to the function `get_acs()`. Within the function, set `geography
 )
 ```
 
-```{r handling-margins-of-error-with-4-test, include = FALSE}
-salt_lake <- get_acs(
-  geography = "tract",
-  variables = vars,
-  state = "Utah",
-  county = "Salt Lake",
-  year = 2020
-)
-```
 
 ### 
 
