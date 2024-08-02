@@ -141,6 +141,8 @@ dekalb_years <- read_rds("data/dekalb_years.rds")
 
 <!-- DK Everything after the initial section needs a thorough review and clean up. -->
 
+<!-- DK: Delete test cases which download data. -->
+
 <!-- A better workflow is to have the student run the download code. Then, tell them that we have assigned the result of that download to an object. Then, next question, she prints out the object. This is better than having them assign to an object themselves since that task does not result in any output which we can then talk about. -->
 
 
@@ -532,7 +534,7 @@ az_race
 
 Look closely as the results for Apache County. Each of the variables which we requested gets its own row. Instead of just having one row for the county, we have 6 rows, one for each race. The `summary_est` is the total population of the county. (Note that, for technical reasons, the sum of the estimated populations for each race may not exactly equal the estimated population for the whole county.)
 
-<!-- DK: Really ought to understand and explain why `sum(az_race$estimate[1:6])` does not equal `az_race$summary_est[1]`. -->
+<!-- Someday, it might be useful to understand and explain why `sum(az_race$estimate[1:6])`, which is the sum of the different racial/ethnic subpopulations does not equal `az_race$summary_est[1]`, which is the town total population. Maybe there is a "two or more races" or "other" bucket? -->
 
 ### Exercise 15
 
@@ -558,7 +560,7 @@ az_race %>%
 
 This is the typical workflow. First, we figure out what variables we need and download them using a function like `get_acs()` or `get_decennial()`. We save the result to a permanent object like `az_race`. Then, we build pipes starting from that saved object.
 
-<!-- SU: over here it completely skips sections 3.3 Group-wise Census Data analysis. Come back to add completely new code exercise chunks and info -->
+<!-- DK: over here it completely skips sections 3.3 Group-wise Census Data analysis. Come back to add completely new code exercise chunks and info -->
 
 ## Comparing ACS estimates over time
 ### 
@@ -1415,7 +1417,7 @@ Your “best bet” is to first search the ACS tables to see if your data are fo
 ### 
 
 This tutorial covered [Chapter 3: Wrangling Census data with tidyverse tools](https://walker-data.com/census-r/wrangling-census-data-with-tidyverse-tools.html) from [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You learned about the [**tidycensus**](https://walker-data.com/tidycensus/index.html) package and some of its key functions, including [`get_decennial()`](https://walker-data.com/tidycensus/articles/basic-usage.html) and [`get_acs()`](https://walker-data.com/tidycensus/articles/basic-usage.html). We discussed margins of error (MOEs) in the American Community Survey and how to wrangle and interpret MOEs appropriately.
-<!-- SU: I think theres an error with the LaTeX. Came up while I was running check -->
+
 
 ```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
 ```
