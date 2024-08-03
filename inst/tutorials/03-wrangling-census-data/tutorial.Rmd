@@ -130,6 +130,21 @@ percent_college_by_year <- college_by_year %>%
               values_from = pct_college)
 
 dekalb_years <- read_rds("data/dekalb_years.rds")
+vars <- paste0("B01001_0", c(20:25, 44:49))
+salt_lake <- get_acs(
+ geography = "tract",
+ variables = vars,
+  state = "Utah",
+  county = "Salt Lake",
+  year = 2020
+)
+write_rds(salt_lake, "data/salt_lake.rds")
+salt_lake <- read_rds("data/salt_lake.rds")
+example_tract <- salt_lake %>%
+  filter(GEOID == "49035100100")
+
+example_tract %>% 
+  select(-NAME)
   
 ```
 
@@ -266,13 +281,6 @@ get_acs(
 ```
 
 
-```{r the-tidyverse-5-test, include=FALSE}
-get_acs(
-  geography = "county",
-  variables = "B01002_001",
-  year = 2020
-)
-```
 
 
 ### 
@@ -464,14 +472,7 @@ get_acs(
 ) 
 ```
 
-```{r the-tidyverse-12-test, eval = FALSE}
-get_acs(
-  geography = "county",
-  state = "AZ",
-  variables = race_vars,
-  year = 2020
-) 
-```
+
 ### 
 
 Note the wide range in raw numbers in the "estimate" column. Some categories are 100 or even 1,000 times more common than others. We often want to "normalize" these values so that everything is on a more similar scale.
@@ -501,15 +502,6 @@ get_acs(
 ) 
 ```
 
-```{r the-tidyverse-13-test, include = FALSE}
-get_acs(
-  geography = "county",
-  state = "AZ",
-  variables = race_vars,
-  summary_var = "B03002_001",
-  year = 2020
-) 
-```
 ### 
 
 Adding a variable ID to the `summary_var` parameter in `get_acs()`  will create two new columns: `summary_est` and `summary_moe`, representing the summary variable’s estimate and margin of error. In this case, the summary variable is the total population for each county. 
@@ -560,7 +552,202 @@ az_race %>%
 
 This is the typical workflow. First, we figure out what variables we need and download them using a function like `get_acs()` or `get_decennial()`. We save the result to a permanent object like `az_race`. Then, we build pipes starting from that saved object.
 
+## Group-wise Census Data analysis
+###
+
+The split-apply-combine model of data analysis, is a powerful framework for analyzing demographic data.
+
+The analyst identifies salient groups in a dataset between which they want to make comparisons. The dataset is then split into multiple pieces, one for each group.
+
+A function is then applied to each group in turn. Finally, the results of the function applied to each group are combined back into a single dataset, allowing the analyst to compare the results by group.
+
+###Exercise 1
+
 <!-- DK: over here it completely skips sections 3.3 Group-wise Census Data analysis. Come back to add completely new code exercise chunks and info -->
+In the tidyverse, split-apply-combine is implemented with the group_by() function. The az_race_percent dataset is an example of a dataset suitable for group-wise data analysis.  Pipe the dataset `az_race_percent` to the function `group_by()` passing in `NAME` as an argument
+```{r group-wise-census-data-analysis-1, exercise = TRUE}
+
+```
+
+```{r group-wise-census-data-analysis-1-hint-1, eval = FALSE}
+az_race_percent %>%
+  group_by(...)
+```
+
+```{r group-wise-census-data-analysis-1-test, include = FALSE}
+az_race_percent %>%
+  group_by(NAME)
+```
+
+We can deploy group-wise data analysis to identify the largest racial or ethnic group in each county in Arizona.
+
+###Exercise 2
+Pipe the previous code into the function `filter()` setting `percent` to `max()` `percent` as an argument
+```{r group-wise-census-data-analysis-2, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r group-wise-census-data-analysis-2-hint-1, eval = FALSE}
+az_race_percent %>%
+  group_by(NAME) %>% 
+  filter(... == max(...))
+```
+
+```{r group-wise-census-data-analysis-2-test, include = FALSE}
+az_race_percent %>%
+  group_by(NAME) %>% 
+  filter(percent == max(percent))
+```
+
+We can read the analytic pipeline as “Create a new dataset, largest_group, by using the az_race_dataset THEN grouping the dataset by the NAME column THEN filtering for rows that are equal to the maximum value of percent for each group.
+
+### Exercise 3
+Pipe the dataset `az_race_percent` to the function `group_by()` passing in `variabe` as an argument.
+```{r group-wise-census-data-analysis-3, exercise = TRUE}
+
+```
+
+```{r group-wise-census-data-analysis-3-hint-1, eval = FALSE}
+az_race_percent %>%
+  group_by(...) 
+```
+
+```{r group-wise-census-data-analysis-3-test, include = FALSE}
+az_race_percent %>%
+  group_by(variable) 
+```
+
+###Exercise 4
+Pipe the previous code into the function `summarize` setting `median_pct` to the `median()` of `percent` as an argument. The result of this operation tells us the median county percentage of each racial and ethnic group for the state of Arizona. 
+
+```{r group-wise-census-data-analysis-4, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r group-wise-census-data-analysis-4-hint-1, eval = FALSE}
+az_race_percent %>%
+  group_by(variable)%>%
+  summarize(... = median(...)) 
+```
+
+```{r group-wise-census-data-analysis-4-test, include = FALSE}
+az_race_percent %>%
+  group_by(variable) %>%
+  summarize(median_pct = median(percent))
+```
+
+group_by() is commonly paired with the summarize() function in data analysis pipelines. summarize() generates a new, condensed dataset that by default returns a column for the grouping variable(s) and columns representing the results of  functions applied to those groups.
+
+### Exercise 5
+Commonly, analysts will need to calculate new custom groups to address specific analytic questions. As such, an analyst might take the following steps: 1) recode the ACS variables into wider income bands; 2) group the data by the wider income bands; 3) calculate grouped sums to generate new estimates.Pass the function `get_acs()` passing in these arguments: geography = `"county"`,
+  `table = "B19001"`,`state = "MN"`, and `year = 2016`
+```{r group-wise-census-data-analysis-5, exercise = TRUE}
+
+```
+
+```{r group-wise-census-data-analysis-5-hint-1, eval = FALSE}
+ get_acs(
+  geography = ...,
+  ... = "B19001",
+  state = "MN",
+  year = ...
+)
+```
+
+### Exercise 6
+Pipe the dataset `mn_hh_income` to the function `filter()` passing in `variable` is not equal to `"B19001_001"` as an argument
+```{r group-wise-census-data-analysis-6, exercise = TRUE}
+
+```
+
+```{r group-wise-census-data-analysis-6-hint-1, eval = FALSE}
+ mn_hh_income %>%
+  filter(... != "B19001_001") 
+  
+```
+
+```{r group-wise-census-data-analysis-6-test, include = FALSE}
+mn_hh_income %>%
+  filter(variable != "B19001_001") 
+  
+```
+
+### Exercise 7
+Pipe the previous code into the function `mutate()` setting `incgroup` to `case_when()` as an argument. Within `case_when()` pass in `variable < "B19001_008" ~ "below35k"`, 
+    `variable < "B19001_013" ~ "bw35kand75k"`, and
+    `TRUE ~ "above75k"` as arguments. Set the whole thing equal to `mn_hh_income_recode`.
+```{r group-wise-census-data-analysis-7, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r group-wise-census-data-analysis-7-hint-1, eval = FALSE}
+ mn_hh_income_recode <- mn_hh_income %>%
+  filter(... != "B19001_001")  %>%
+  mutate(incgroup = case_when(
+    variable < "B19001_008" ~ ..., 
+    variable < ... ~ "bw35kand75k", 
+    ... ~ "above75k"
+  ))
+```
+
+```{r group-wise-census-data-analysis-7-test, include = FALSE}
+mn_hh_income_recode <- mn_hh_income %>%
+  filter(variable != "B19001_001")  %>%
+  mutate(incgroup = case_when(
+    variable < "B19001_008" ~ "below35k", 
+    variable < "B19001_013" ~ "bw35kand75k", 
+    TRUE ~ "above75k"
+  ))
+```
+ 
+ Within `case-when()` the first condition is evaluated, telling the function to assign the value of below35k to all rows with a variable value that comes before `"B19001_008"` - which in this case will be `B19001_002` (income less than $10,000) through `B19001_007` (income between $30,000 and $34,999). The second condition is then evaluated for all those rows not accounted for by the first condition. This means that case_when() knows not to assign `"bw35kand75k"` to the income group of $10,000 and below even though its variable comes before B19001_013. The final condition in `case_when()` can be set to `TRUE` which in this scenario translates as “all other values.”
+ 
+###Exercise 8
+Pipe the dataset `mn_hh_income_recode` into the function `group_by`. Pass in argument `GEOID` and `incgroup`
+```{r group-wise-census-data-analysis-8, exercise = TRUE}
+
+```
+
+```{r group-wise-census-data-analysis-8-hint-1, eval = FALSE}
+ mn_hh_income_recode %>%
+  ...(GEOID, ...)
+  
+```
+
+```{r group-wise-census-data-analysis8-test, include = FALSE}
+mn_hh_income_recode %>%
+  group_by(GEOID, incgroup)
+  
+```
+ 
+###Exercise 9
+Pipe the previous code into the function `summarize()` setting `estimate` to the `sum()` of `estimate` as an argument.
+```{r group-wise-census-data-analysis-9, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r group-wise-census-data-analysis-9-hint-1, eval = FALSE}
+mn_hh_income_recode %>%
+  group_by(GEOID, incgroup) %>%
+  summarize(... = sum(...))
+  
+```
+
+```{r group-wise-census-data-analysis-9-test, include = FALSE}
+mn_hh_income_recode %>%
+  group_by(GEOID, incgroup) %>%
+  summarize(estimate = sum(estimate))
+```
+
+Our result illustrates how the different variable IDs are mapped to the new, recoded categories that we specified in case_when(). 
 
 ## Comparing ACS estimates over time
 ### 
@@ -588,16 +775,6 @@ oglala_lakota_age <- ...(
 )
 ```
 
-
-```{r comparing-acs-estimates-over-t-1-test, include = FALSE}
-oglala_lakota_age <- get_acs(
-  geography = "county",
-  state = "SD",
-  county = "Oglala Lakota",
-  table = "B01001",
-  year = 2020
-)
-```
 
 ### 
 
@@ -645,6 +822,7 @@ oglala_lakota_age <- get_acs(
 ```
 
 
+
 ### 
 
 We get an error because ten years ago, this county was named "Shannon". 
@@ -669,15 +847,7 @@ oglala_lakota_age <- get_acs(
 )
 ```
 
-```{r comparing-acs-estimates-over-t-4-test, include = FALSE}
-oglala_lakota_age <- get_acs(
-  geography = "county",
-  state = "SD",
-  county = "Shannon",
-  table = "B01001",
-  year = 2010
-)
-```
+
 
 ### 
 
@@ -707,15 +877,7 @@ When looking at the two datasets, you may notice that the `GEOID` column changed
 )
 ```
 
-```{r comparing-acs-estimates-over-t-5-test, include = FALSE}
-co_college19 <- get_acs(
-  geography = "county",
-  variables = "DP02_0068P",
-  state = "CO",
-  survey = "acs1",
-  year = 2019
-)
-```
+
 
 ### 
 
@@ -741,15 +903,7 @@ co_college18 <- get_acs(
 )
 ```
 
-```{r comparing-acs-estimates-over-t-6-test, include = FALSE}
-co_college18 <- get_acs(
-  geography = "county",
-  variables = "DP02_0068P",
-  state = "CO",
-  survey = "acs1",
-  year = 2018
-)
-```
+
 
 ### 
 
@@ -779,17 +933,7 @@ Set the dataset `ak_income_compare` to the function `get_acs()`. Inside the func
 )
 ```
 
-```{r comparing-acs-estimates-over-t-7-test, include = FALSE}
-ak_income_compare <- get_acs(
-  geography = "county",
-  variables = c(
-    income15 = "CP03_2015_062",
-    income20 = "CP03_2020_062"
-  ),
-  state = "AK",
-  year = 2020
-)
-```
+
 
 ### 
 
@@ -880,13 +1024,6 @@ college_by_year <- ...(..., ~{
   get_acs() })
 ```
 
-```{r comparing-acs-estimates-over-t-10-test, include = FALSE, eval = FALSE}
-years <- 2010:2019
-names(years) <- years
-
-college_by_year <- map_dfr(years, ~{
-  get_acs() })
-```
 
 ### 
 
@@ -918,21 +1055,6 @@ college_by_year <- map_dfr(years, ~{
 }, .id = "...")
 ```
 
-```{r comparing-acs-estimates-over-t-11-test, include = FALSE}
-years <- 2010:2019
-names(years) <- years
-
-college_by_year <- map_dfr(years, ~{
-  get_acs(
-    geography = "county",
-    variables = college_vars,
-    state = "CO",
-    summary_var = "B15002_001",
-    survey = "acs1",
-    year = .x
-  )
-}, .id = "year")
-```
 
 ### 
 
@@ -1107,15 +1229,6 @@ get_acs(
 )
 ```
 
-```{r handling-margins-of-error-with-1-test, include = FALSE}
-get_acs(
-  geography = "county",
-  state = "Rhode Island",
-  variables = "B19013_001",
-  year = 2020
-)
-```
-
 ### 
 
 The data can be translated to saying, "We are 90% confident that the median household income in the county of Rhode Island falls within the range of the `estimate` plus or minus the `moe`." For example, our estimate of the average household income in Bristol County, Rhode Island is $85,413 with a 90% confidence interval of +/- $6,122.
@@ -1150,15 +1263,7 @@ get_acs(
 )
 ```
 
-```{r handling-margins-of-error-with-2-test, include = FALSE}
-get_acs(
-  geography = "county",
-  state = "Rhode Island",
-  variables = "B19013_001",
-  year = 2020,
-  moe_level = 99
-)
-```
+
 
 ### 
 
@@ -1221,15 +1326,6 @@ Set `salt_lake` to the function `get_acs()`. Within the function, set `geography
 )
 ```
 
-```{r handling-margins-of-error-with-4-test, include = FALSE}
-salt_lake <- get_acs(
-  geography = "tract",
-  variables = vars,
-  state = "Utah",
-  county = "Salt Lake",
-  year = 2020
-)
-```
 
 ### 
 
