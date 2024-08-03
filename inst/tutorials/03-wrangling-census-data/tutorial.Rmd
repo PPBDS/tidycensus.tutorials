@@ -130,16 +130,19 @@ percent_college_by_year <- college_by_year %>%
               values_from = pct_college)
 
 dekalb_years <- read_rds("data/dekalb_years.rds")
-vars <- paste0("B01001_0", c(20:25, 44:49))
-salt_lake <- get_acs(
- geography = "tract",
- variables = vars,
-  state = "Utah",
-  county = "Salt Lake",
-  year = 2020
-)
-write_rds(salt_lake, "data/salt_lake.rds")
+
+# vars <- paste0("B01001_0", c(20:25, 44:49))
+# salt_lake <- get_acs(
+#  geography = "tract",
+#  variables = vars,
+#   state = "Utah",
+#   county = "Salt Lake",
+#   year = 2020
+# )
+# write_rds(salt_lake, "data/salt_lake.rds")
+
 salt_lake <- read_rds("data/salt_lake.rds")
+
 example_tract <- salt_lake %>%
   filter(GEOID == "49035100100")
 
@@ -153,6 +156,14 @@ example_tract %>%
 
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
 ```
+
+<!-- DK: Discuss group_by() -->
+
+<!-- DK: Use the modern pipe |> throughout. -->
+
+<!-- DK: Don't use group_by unless you have to. With most dplyr commands, you can just drop the group_by and add .by to the next dplyr step in the pipe. But this is not guaranteed to always work, so you need to test. And don't worry about keeping around a group_by, but then highlight that you did so. -->
+
+<!-- DK: Fix formatting. Space between ### and Topic title. One blank row around titles, and code chunk and text. -->
 
 <!-- DK Everything after the initial section needs a thorough review and clean up. -->
 
@@ -561,10 +572,12 @@ The analyst identifies salient groups in a dataset between which they want to ma
 
 A function is then applied to each group in turn. Finally, the results of the function applied to each group are combined back into a single dataset, allowing the analyst to compare the results by group.
 
-###Exercise 1
+### Exercise 1
 
 <!-- DK: over here it completely skips sections 3.3 Group-wise Census Data analysis. Come back to add completely new code exercise chunks and info -->
-In the tidyverse, split-apply-combine is implemented with the group_by() function. The az_race_percent dataset is an example of a dataset suitable for group-wise data analysis.  Pipe the dataset `az_race_percent` to the function `group_by()` passing in `NAME` as an argument
+
+In the *Tidyverse*, split-apply-combine is implemented with the `group_by()` function. The `az_race_percent` tibble is an example of a data set suitable for group-wise data analysis.  Pipe `az_race_percent` to the function `group_by()` passing in `NAME` as an argument:
+
 ```{r group-wise-census-data-analysis-1, exercise = TRUE}
 
 ```
@@ -581,8 +594,10 @@ az_race_percent %>%
 
 We can deploy group-wise data analysis to identify the largest racial or ethnic group in each county in Arizona.
 
-###Exercise 2
+### Exercise 2
+
 Pipe the previous code into the function `filter()` setting `percent` to `max()` `percent` as an argument
+
 ```{r group-wise-census-data-analysis-2, exercise = TRUE}
 
 ```
@@ -596,15 +611,16 @@ az_race_percent %>%
 ```
 
 ```{r group-wise-census-data-analysis-2-test, include = FALSE}
-az_race_percent %>%
-  group_by(NAME) %>% 
-  filter(percent == max(percent))
+az_race_percent |> 
+  filter(percent == max(percent), .by = NAME)
 ```
 
 We can read the analytic pipeline as “Create a new dataset, largest_group, by using the az_race_dataset THEN grouping the dataset by the NAME column THEN filtering for rows that are equal to the maximum value of percent for each group.
 
 ### Exercise 3
+
 Pipe the dataset `az_race_percent` to the function `group_by()` passing in `variabe` as an argument.
+
 ```{r group-wise-census-data-analysis-3, exercise = TRUE}
 
 ```
