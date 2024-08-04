@@ -57,8 +57,8 @@ race_vars <- c(
 
 az_race <- read_rds("data/az_race.rds")
 
-az_race_percent <- az_race %>%
-  mutate(percent = 100 * (estimate / summary_est)) %>%
+az_race_percent <- az_race |>
+  mutate(percent = 100 * (estimate / summary_est)) |>
   select(NAME, variable, percent)
 
 # Groupwise
@@ -73,8 +73,8 @@ az_race_percent <- az_race %>%
 
 mn_hh_income <- read_rds("data/mn_hh_income.rds")
 
-mn_hh_income_recode <- mn_hh_income %>%
-  filter(variable != "B19001_001") %>%
+mn_hh_income_recode <- mn_hh_income |>
+  filter(variable != "B19001_001") |>
   mutate(incgroup = case_when(
     variable < "B19001_008" ~ "below35k", 
     variable < "B19001_013" ~ "bw35kand75k", 
@@ -120,11 +120,11 @@ names(years) <- years
 
 college_by_year <- read_rds("data/college_by_year.rds")
   
-percent_college_by_year <- college_by_year %>%
-  group_by(NAME, year) %>%
+percent_college_by_year <- college_by_year |>
+  group_by(NAME, year) |>
   summarize(numerator = sum(estimate),
-            denominator = first(summary_est)) %>%
-  mutate(pct_college = 100 * (numerator / denominator)) %>%
+            denominator = first(summary_est)) |>
+  mutate(pct_college = 100 * (numerator / denominator)) |>
   pivot_wider(id_cols = NAME,
               names_from = year,
               values_from = pct_college)
@@ -143,10 +143,10 @@ dekalb_years <- read_rds("data/dekalb_years.rds")
 
 salt_lake <- read_rds("data/salt_lake.rds")
 
-example_tract <- salt_lake %>%
+example_tract <- salt_lake |>
   filter(GEOID == "49035100100")
 
-example_tract %>% 
+example_tract |> 
   select(-NAME)
   
 ```
@@ -159,15 +159,15 @@ example_tract %>%
 
 <!-- DK: Discuss group_by() -->
 
-<!-- DK: Use the modern pipe |> throughout. -->
+<!-- DK: Use the modern pipe |> throughout. DONE -->
 
 <!-- DK: Don't use group_by unless you have to. With most dplyr commands, you can just drop the group_by and add .by to the next dplyr step in the pipe. But this is not guaranteed to always work, so you need to test. And don't worry about keeping around a group_by, but then highlight that you did so. -->
 
-<!-- DK: Fix formatting. Space between ### and Topic title. One blank row around titles, and code chunk and text. -->
+<!-- DK: Fix formatting. Space between ### and Topic title. One blank row around titles, and code chunk and text. DONE -->
 
 <!-- DK Everything after the initial section needs a thorough review and clean up. -->
 
-<!-- DK: Delete test cases which download data. -->
+<!-- DK: Delete test cases which download data. DONE-->
 
 <!-- A better workflow is to have the student run the download code. Then, tell them that we have assigned the result of that download to an object. Then, next question, she prints out the object. This is better than having them assign to an object themselves since that task does not result in any output which we can then talk about. -->
 
@@ -548,14 +548,14 @@ Pipe `az_race` to `mutate(percent = 100 * (estimate / summary_est))` and continu
 ```
 
 ```{r the-tidyverse-15-hint-1, eval = FALSE}
-az_race %>%
-  ...(percent = 100 * (estimate / ...)) %>%
+az_race |>
+  ...(percent = 100 * (estimate / ...)) |>
   select(..., variable, percent)
 ```
 
 ```{r the-tidyverse-15-test, include = FALSE}
-az_race %>%
-  mutate(percent = 100 * (estimate / summary_est)) %>%
+az_race |>
+  mutate(percent = 100 * (estimate / summary_est)) |>
   select(NAME, variable, percent)
 ```
 
@@ -583,12 +583,12 @@ In the *Tidyverse*, split-apply-combine is implemented with the `group_by()` fun
 ```
 
 ```{r group-wise-census-data-analysis-1-hint-1, eval = FALSE}
-az_race_percent %>%
+az_race_percent |>
   group_by(...)
 ```
 
 ```{r group-wise-census-data-analysis-1-test, include = FALSE}
-az_race_percent %>%
+az_race_percent |>
   group_by(NAME)
 ```
 
@@ -596,7 +596,7 @@ We can deploy group-wise data analysis to identify the largest racial or ethnic 
 
 ### Exercise 2
 
-Pipe the previous code into the function `filter()` setting `percent` to `max()` `percent` as an argument
+Pipe the previous code into the function `filter()` setting `percent` to `max()` `percent` as an argument. `group_by()` is an older dplyr function that is seldom used now. Instead its use it superseded by `.by`. Delete the `group_by()` and instead pass in another argument to `filter()`, `.by` = `NAME`.
 
 ```{r group-wise-census-data-analysis-2, exercise = TRUE}
 
@@ -605,8 +605,8 @@ Pipe the previous code into the function `filter()` setting `percent` to `max()`
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r group-wise-census-data-analysis-2-hint-1, eval = FALSE}
-az_race_percent %>%
-  group_by(NAME) %>% 
+az_race_percent |>
+  group_by(NAME) |> 
   filter(... == max(...))
 ```
 
@@ -626,16 +626,17 @@ Pipe the dataset `az_race_percent` to the function `group_by()` passing in `vari
 ```
 
 ```{r group-wise-census-data-analysis-3-hint-1, eval = FALSE}
-az_race_percent %>%
+az_race_percent |>
   group_by(...) 
 ```
 
 ```{r group-wise-census-data-analysis-3-test, include = FALSE}
-az_race_percent %>%
+az_race_percent |>
   group_by(variable) 
 ```
 
-###Exercise 4
+### Exercise 4
+
 Pipe the previous code into the function `summarize` setting `median_pct` to the `median()` of `percent` as an argument. The result of this operation tells us the median county percentage of each racial and ethnic group for the state of Arizona. 
 
 ```{r group-wise-census-data-analysis-4, exercise = TRUE}
@@ -645,20 +646,21 @@ Pipe the previous code into the function `summarize` setting `median_pct` to the
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r group-wise-census-data-analysis-4-hint-1, eval = FALSE}
-az_race_percent %>%
-  group_by(variable)%>%
+az_race_percent |>
+  group_by(variable)|>
   summarize(... = median(...)) 
 ```
 
 ```{r group-wise-census-data-analysis-4-test, include = FALSE}
-az_race_percent %>%
-  group_by(variable) %>%
+az_race_percent |>
+  group_by(variable) |>
   summarize(median_pct = median(percent))
 ```
 
 group_by() is commonly paired with the summarize() function in data analysis pipelines. summarize() generates a new, condensed dataset that by default returns a column for the grouping variable(s) and columns representing the results of  functions applied to those groups.
 
 ### Exercise 5
+
 Commonly, analysts will need to calculate new custom groups to address specific analytic questions. As such, an analyst might take the following steps: 1) recode the ACS variables into wider income bands; 2) group the data by the wider income bands; 3) calculate grouped sums to generate new estimates.Pass the function `get_acs()` passing in these arguments: geography = `"county"`,
   `table = "B19001"`,`state = "MN"`, and `year = 2016`
 ```{r group-wise-census-data-analysis-5, exercise = TRUE}
@@ -675,27 +677,31 @@ Commonly, analysts will need to calculate new custom groups to address specific 
 ```
 
 ### Exercise 6
+
 Pipe the dataset `mn_hh_income` to the function `filter()` passing in `variable` is not equal to `"B19001_001"` as an argument
+
 ```{r group-wise-census-data-analysis-6, exercise = TRUE}
 
 ```
 
 ```{r group-wise-census-data-analysis-6-hint-1, eval = FALSE}
- mn_hh_income %>%
+ mn_hh_income |>
   filter(... != "B19001_001") 
   
 ```
 
 ```{r group-wise-census-data-analysis-6-test, include = FALSE}
-mn_hh_income %>%
+mn_hh_income |>
   filter(variable != "B19001_001") 
   
 ```
 
 ### Exercise 7
+
 Pipe the previous code into the function `mutate()` setting `incgroup` to `case_when()` as an argument. Within `case_when()` pass in `variable < "B19001_008" ~ "below35k"`, 
     `variable < "B19001_013" ~ "bw35kand75k"`, and
     `TRUE ~ "above75k"` as arguments. Set the whole thing equal to `mn_hh_income_recode`.
+    
 ```{r group-wise-census-data-analysis-7, exercise = TRUE}
 
 ```
@@ -703,8 +709,8 @@ Pipe the previous code into the function `mutate()` setting `incgroup` to `case_
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r group-wise-census-data-analysis-7-hint-1, eval = FALSE}
- mn_hh_income_recode <- mn_hh_income %>%
-  filter(... != "B19001_001")  %>%
+ mn_hh_income_recode <- mn_hh_income |>
+  filter(... != "B19001_001")  |>
   mutate(incgroup = case_when(
     variable < "B19001_008" ~ ..., 
     variable < ... ~ "bw35kand75k", 
@@ -713,8 +719,8 @@ Pipe the previous code into the function `mutate()` setting `incgroup` to `case_
 ```
 
 ```{r group-wise-census-data-analysis-7-test, include = FALSE}
-mn_hh_income_recode <- mn_hh_income %>%
-  filter(variable != "B19001_001")  %>%
+mn_hh_income_recode <- mn_hh_income |>
+  filter(variable != "B19001_001")  |>
   mutate(incgroup = case_when(
     variable < "B19001_008" ~ "below35k", 
     variable < "B19001_013" ~ "bw35kand75k", 
@@ -724,26 +730,30 @@ mn_hh_income_recode <- mn_hh_income %>%
  
  Within `case-when()` the first condition is evaluated, telling the function to assign the value of below35k to all rows with a variable value that comes before `"B19001_008"` - which in this case will be `B19001_002` (income less than $10,000) through `B19001_007` (income between $30,000 and $34,999). The second condition is then evaluated for all those rows not accounted for by the first condition. This means that case_when() knows not to assign `"bw35kand75k"` to the income group of $10,000 and below even though its variable comes before B19001_013. The final condition in `case_when()` can be set to `TRUE` which in this scenario translates as “all other values.”
  
-###Exercise 8
+### Exercise 8
+
 Pipe the dataset `mn_hh_income_recode` into the function `group_by`. Pass in argument `GEOID` and `incgroup`
+
 ```{r group-wise-census-data-analysis-8, exercise = TRUE}
 
 ```
 
 ```{r group-wise-census-data-analysis-8-hint-1, eval = FALSE}
- mn_hh_income_recode %>%
+ mn_hh_income_recode |>
   ...(GEOID, ...)
   
 ```
 
 ```{r group-wise-census-data-analysis8-test, include = FALSE}
-mn_hh_income_recode %>%
+mn_hh_income_recode |>
   group_by(GEOID, incgroup)
   
 ```
  
-###Exercise 9
-Pipe the previous code into the function `summarize()` setting `estimate` to the `sum()` of `estimate` as an argument.
+### Exercise 9
+
+Pipe the previous code into the function `summarize()` setting `estimate` to the `sum()` of `estimate` as an argument. 
+
 ```{r group-wise-census-data-analysis-9, exercise = TRUE}
 
 ```
@@ -751,15 +761,15 @@ Pipe the previous code into the function `summarize()` setting `estimate` to the
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r group-wise-census-data-analysis-9-hint-1, eval = FALSE}
-mn_hh_income_recode %>%
-  group_by(GEOID, incgroup) %>%
+mn_hh_income_recode |>
+  group_by(GEOID, incgroup) |>
   summarize(... = sum(...))
   
 ```
 
 ```{r group-wise-census-data-analysis-9-test, include = FALSE}
-mn_hh_income_recode %>%
-  group_by(GEOID, incgroup) %>%
+mn_hh_income_recode |>
+  group_by(GEOID, incgroup) |>
   summarize(estimate = sum(estimate))
 ```
 
@@ -1083,19 +1093,19 @@ Then the function `map_dfr()` takes three arguments. The first argument, `years`
 
 Lets look at the results! 
 
-Pipe `college_by_year` using `%>%` to the function `arrange()`. Within `arrange()`, set the first argument as `NAME`, the second as `variable` and the third as `year`. 
+Pipe `college_by_year` using `|>` to the function `arrange()`. Within `arrange()`, set the first argument as `NAME`, the second as `variable` and the third as `year`. 
 
 ```{r comparing-acs-estimates-over-t-12, exercise = TRUE}
 
 ```
 
 ```{r comparing-acs-estimates-over-t-12-hint-1, eval = FALSE}
-... %>% 
+... |> 
   arrange(NAME, ..., ...)
 ```
 
 ```{r comparing-acs-estimates-over-t-12-test, include = FALSE}
-college_by_year %>% 
+college_by_year |> 
   arrange(NAME, variable, year)
 ```
 
@@ -1107,18 +1117,18 @@ The result is a long-form data set that contains a time series of each requested
 
 Let's calculate the percentage of the population age 25 and up with a 4-year college degree using our data from before.  
 
-Set `percent_college_by_year` to `college_by_year`. Then pipe `college_by_year` using `%>%` to the `group_by()` function with the first argument as `NAME` and the second argument as `year`. 
+Set `percent_college_by_year` to `college_by_year`. Then pipe `college_by_year` using `|>` to the `group_by()` function with the first argument as `NAME` and the second argument as `year`. 
 ```{r comparing-acs-estimates-over-t-13, exercise = TRUE}
 
 ```
 
 ```{r comparing-acs-estimates-over-t-13-hint, eval = FALSE }
-percent_college_by_year <- ... %>%
+percent_college_by_year <- ... |>
   group_by(..., year)
 ```
 
 ```{r comparing-acs-estimates-over-t-13-test, include = FALSE}
-percent_college_by_year <- college_by_year %>%
+percent_college_by_year <- college_by_year |>
   group_by(NAME, year)
 ```
 
@@ -1126,7 +1136,7 @@ percent_college_by_year <- college_by_year %>%
 
 ### Exercise 14
 
-Copy the code above. Continue using the pipe `%>%` to the function `summarize()`. For the first argument of `summarize()`, set `numerator` equal to `sum(estimate)`. For the second argument of `summarize()`, set `denominator` to `first(summary_est)`. 
+Copy the code above. Continue using the pipe `|>` to the function `summarize()`. For the first argument of `summarize()`, set `numerator` equal to `sum(estimate)`. For the second argument of `summarize()`, set `denominator` to `first(summary_est)`. 
 
 ```{r comparing-acs-estimates-over-t-14, exercise = TRUE}
 
@@ -1135,15 +1145,15 @@ Copy the code above. Continue using the pipe `%>%` to the function `summarize()`
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r comparing-acs-estimates-over-t-14-hint-1, eval = FALSE}
-... <- college_by_year %>%
-  group_by(..., year) %>%
+... <- college_by_year |>
+  group_by(..., year) |>
   summarize(... = sum(estimate),
             ... = first(...))
 ```
 
 ```{r comparing-acs-estimates-over-t-14-test, include = FALSE}
-percent_college_by_year <- college_by_year %>%
-  group_by(NAME, year) %>%
+percent_college_by_year <- college_by_year |>
+  group_by(NAME, year) |>
   summarize(numerator = sum(estimate),
             denominator = first(summary_est))
 ```
@@ -1154,7 +1164,7 @@ The function `summarize()` creates a new data frame. More information can be fou
 
 ### Exercise 15
 
-Copy the code above. Continue the pipe `%>%` to the function `mutate()`. Within the function, set `pct_college` = `100` times `(numerator/denominator)`. 
+Copy the code above. Continue the pipe `|>` to the function `mutate()`. Within the function, set `pct_college` = `100` times `(numerator/denominator)`. 
 
 ```{r comparing-acs-estimates-over-t-15, exercise = TRUE}
 
@@ -1163,19 +1173,19 @@ Copy the code above. Continue the pipe `%>%` to the function `mutate()`. Within 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r comparing-acs-estimates-over-t-15-hint-1, eval = FALSE}
-percent_college_by_year <- college_by_year %>%
-  group_by(NAME, year) %>%
+percent_college_by_year <- college_by_year |>
+  group_by(NAME, year) |>
   summarize(numerator = sum(estimate),
-            denominator = first(summary_est)) %>%
+            denominator = first(summary_est)) |>
   mutate(... = ... * (numerator / ...)) 
 
 ```
 
 ```{r comparing-acs-estimates-over-t-15-test, include = FALSE}
-percent_college_by_year <- college_by_year %>%
-  group_by(NAME, year) %>%
+percent_college_by_year <- college_by_year |>
+  group_by(NAME, year) |>
   summarize(numerator = sum(estimate),
-            denominator = first(summary_est)) %>%
+            denominator = first(summary_est)) |>
   mutate(pct_college = 100 * (numerator / denominator))
 ```
 
@@ -1185,7 +1195,7 @@ The `mutate()` function allows us the create, modify and delete columns. More in
 
 ### Exercise 16
 
-Copy the code above. Continue the pipe `%>%` to the function `pivot_wider()`. Within the function, set `id_cols` to `NAME`, `names_from` to `year`, and `values_from` to `pct_college`. 
+Copy the code above. Continue the pipe `|>` to the function `pivot_wider()`. Within the function, set `id_cols` to `NAME`, `names_from` to `year`, and `values_from` to `pct_college`. 
 
 ```{r comparing-acs-estimates-over-t-16, exercise = TRUE}
 
@@ -1194,22 +1204,22 @@ Copy the code above. Continue the pipe `%>%` to the function `pivot_wider()`. Wi
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r comparing-acs-estimates-over-t-16-hint-1, eval = FALSE}
-percent_college_by_year <- college_by_year %>%
-  group_by(NAME, year) %>%
+percent_college_by_year <- college_by_year |>
+  group_by(NAME, year) |>
   summarize(numerator = sum(estimate),
-            denominator = first(summary_est)) %>%
-  mutate(pct_college = 100 * (numerator / denominator)) %>%
+            denominator = first(summary_est)) |>
+  mutate(pct_college = 100 * (numerator / denominator)) |>
   ...(... = NAME,
               names_from = ...,
               ... = pct_college)
 ```
 
 ```{r comparing-acs-estimates-over-t-16-test, include = FALSE}
-percent_college_by_year <- college_by_year %>%
-  group_by(NAME, year) %>%
+percent_college_by_year <- college_by_year |>
+  group_by(NAME, year) |>
   summarize(numerator = sum(estimate),
-            denominator = first(summary_est)) %>%
-  mutate(pct_college = 100 * (numerator / denominator)) %>%
+            denominator = first(summary_est)) |>
+  mutate(pct_college = 100 * (numerator / denominator)) |>
   pivot_wider(id_cols = NAME,
               names_from = year,
               values_from = pct_college)
@@ -1217,7 +1227,7 @@ percent_college_by_year <- college_by_year %>%
 
 ### 
 
-The code outlines a `group_by() %>% summarize()` workflow for calculating the percentage of the population age 25 and up with a 4-year college degree, then uses the `pivot_wider()` function from the tidyr package to spread the years across the columns for tabular data display. If you want to know more information about the `pivot_wider()` function click [here](https://tidyr.tidyverse.org/reference/pivot_wider.html)
+The code outlines a `group_by() |> summarize()` workflow for calculating the percentage of the population age 25 and up with a 4-year college degree, then uses the `pivot_wider()` function from the tidyr package to spread the years across the columns for tabular data display. If you want to know more information about the `pivot_wider()` function click [here](https://tidyr.tidyverse.org/reference/pivot_wider.html)
 
 ## Handling margins of error with tidycensus
 ### 
@@ -1351,25 +1361,25 @@ The `paste0()` function we used for the `vars` object allows us to concatenate v
 
 Now we should examine our data using the `filter()` function. 
 
-Set `example_tract` to the `salt_lake` object we used above. Now pipe the `salt_lake` object using `%>%` to the function `filter()`. Within `filter()`, set `GEOID` equals to `"49035100100"`. On a separate line, pipe `example_tract` to the `select()` function and pass `-NAME` in as an argument.  
+Set `example_tract` to the `salt_lake` object we used above. Now pipe the `salt_lake` object using `|>` to the function `filter()`. Within `filter()`, set `GEOID` equals to `"49035100100"`. On a separate line, pipe `example_tract` to the `select()` function and pass `-NAME` in as an argument.  
 
 ```{r handling-margins-of-error-with-5, exercise = TRUE}
 
 ```
 
 ```{r handling-margins-of-error-with-5-hint-1, eval = FALSE}
-example_tract <- ... %>%
+example_tract <- ... |>
   filter(GEOID == ...)
 
-example_tract %>% 
+example_tract |> 
   select(...)
 ```
 
 ```{r handling-margins-of-error-with-5-test, include = FALSE}
-example_tract <- salt_lake %>%
+example_tract <- salt_lake |>
   filter(GEOID == "49035100100")
 
-example_tract %>% 
+example_tract |> 
   select(-NAME)
 ```
 
@@ -1408,7 +1418,8 @@ we had an ACS estimate of 25 with a margin of error of 5 around that estimate. T
 
 Margin of error functions in tidycensus can be integrated into tidyverse-centric analytic pipelines to handle large margins of error around estimates.
 
-##Exercise 1
+### Exercise 1
+
 If datasets are characterized by too much uncertainty for our analysis, we decide in this scenario to aggregate our data upwards 
 
 Pipe the data `salt_lake` to the function mutate()
@@ -1425,7 +1436,8 @@ salt_lake |> ...
 salt_lake |> mutate()
 ```
 
-##Exercise 2
+### Exercise 2
+
 Copy and paste the previous code. Set `sex` to `case_when()` as an argument of `mutate()`. 
 
 We can use the `case_when()` function to create a new column, sex, that represents a mapping of the variables we pulled from the ACS to their sex categories. 
@@ -1439,7 +1451,7 @@ Inside `case_when` pass `str_sub` as an argument. Within `str_sub` pass the argu
 <button onclick = "transfer_code(this)">Copy previous code</button> 
 
 ```{r calculating-margins-of-error-with-2-hint-1, eval = FALSE}
-salt_lake %>%
+salt_lake |>
   mutate(sex = case_when(
     str_sub(..., start = ...) < "26" ~ ...,
     ... ~ "Female"
@@ -1447,14 +1459,15 @@ salt_lake %>%
 ```
 
 ```{r calculating-margins-of-error-with-2-test, include = FALSE}
-salt_lake %>%
+salt_lake |>
   mutate(sex = case_when(
     str_sub(variable, start = -2) < "26" ~ "Male",
     TRUE ~ "Female"
   ))
 ```
 
-##Exercise 3
+### Exercise 3
+
  Pipe the previou code into the function `group_by()` setting `GEOID` and `sex` as arguments
 
 ```{r calculating-margins-of-error-with-3, exercise = TRUE}
@@ -1464,24 +1477,25 @@ salt_lake %>%
 <button onclick = "transfer_code(this)">Copy previous code</button> 
 
 ```{r calculating-margins-of-error-with-3-hint-1, eval = FALSE}
-salt_lake %>%
+salt_lake |>
   mutate(sex = case_when(
     str_sub(variable, start = -2) < "26" ~ "Male",
     TRUE ~ "Female"
-  )) %>% 
+  )) |> 
   group_by(GEOID, ...)
 ```
 
 ```{r calculating-margins-of-error-with-3-test, include = FALSE}
-salt_lake %>%
+salt_lake |>
   mutate(sex = case_when(
     str_sub(variable, start = -2) < "26" ~ "Male",
     TRUE ~ "Female"
-  )) %>%
+  )) |>
   group_by(GEOID, sex)
 ```
 
-##Exercise 4
+### Exercise 4
+
 Pipe the previous code into the function `summarize()` passing in the argument setting `sum_est` to the `sum()` of `estimate`. Add another argument setting `sum_moe` to `moe_sum()` with argument `moe` and `estimate`
 
 ```{r calculating-margins-of-error-with-4, exercise = TRUE}
@@ -1491,28 +1505,28 @@ Pipe the previous code into the function `summarize()` passing in the argument s
 <button onclick = "transfer_code(this)">Copy previous code</button> 
 
 ```{r calculating-margins-of-error-with-4-hint-1, eval = FALSE}
-salt_lake %>%
+salt_lake |>
   mutate(sex = case_when(
     str_sub(variable, start = -2) < "26" ~ "Male",
     TRUE ~ "Female"
-  )) %>% 
-  group_by(GEOID, sex)  %>%
+  )) |> 
+  group_by(GEOID, sex)  |>
   summarize(... = ...(estimate), 
             ... = moe_sum(..., estimate))
 ```
 
 ```{r calculating-margins-of-error-with-4-test, include = FALSE}
-salt_lake %>%
+salt_lake |>
   mutate(sex = case_when(
     str_sub(variable, start = -2) < "26" ~ "Male",
     TRUE ~ "Female"
-  )) %>%
-  group_by(GEOID, sex)  %>%
+  )) |>
+  group_by(GEOID, sex)  |>
   summarize(sum_est = sum(estimate), 
             sum_moe = moe_sum(moe, estimate))
 ```
 
-We employed a familiar group_by() %>% summarize() method to aggregate our data by Census tract and sex. Notably, the call to summarize() includes a call to tidycensus’s moe_sum() function, which will generate a new column that represents the margin of error around the derived sum.
+We employed a familiar group_by() |> summarize() method to aggregate our data by Census tract and sex. Notably, the call to summarize() includes a call to tidycensus’s moe_sum() function, which will generate a new column that represents the margin of error around the derived sum.
 
 ###
 The margins of error relative to their estimates are now much more reasonable than in the disaggregated data.
