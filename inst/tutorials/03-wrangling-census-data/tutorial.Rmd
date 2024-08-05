@@ -570,7 +570,6 @@ Behind the scenes we have assigned the previous code to the variable `az_race_pe
 
 ```
 
-
 ```{r groupwise-census-data-analysis-1-hint-1, eval = FALSE}
 az_race_percent
 ```
@@ -601,36 +600,35 @@ az_race_percent |>
 
 We can read the analytic pipeline grouping the dataset by the NAME column THEN filtering for rows that are equal to the maximum value of percent for each group."
 
-### Exercise 4
+### Exercise 3
 
 Pipe `az_race_percent` into the function `summarize` setting `median_pct` to the `median()` of `percent` as an argument. Pass in another argument, setting `.by` equal to `variable` The result of this operation tells us the median county percentage of each racial and ethnic group for the state of Arizona. 
 
-```{r groupwise-census-data-analysis-4, exercise = TRUE}
+```{r groupwise-census-data-analysis-3, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r groupwise-census-data-analysis-4-hint-1, eval = FALSE}
+```{r groupwise-census-data-analysis-3-hint-1, eval = FALSE}
 az_race_percent |>
   summarize(... = median(...)) 
 ```
 
-```{r groupwise-census-data-analysis-4-test, include = FALSE}
+```{r groupwise-census-data-analysis-3-test, include = FALSE}
 az_race_percent |>
   summarize(median_pct = median(percent), .by = variable)
 ```
 
-
-### Exercise 5
+### Exercise 4
 
 Commonly, analysts will need to calculate new custom groups to address specific analytic questions. As such, an analyst might take the following steps: 1) recode the ACS variables into wider income bands; 2) group the data by the wider income bands; 3) calculate grouped sums to generate new estimates.Pass the function `get_acs()` passing in these arguments: geography = `"county"`, `table = "B19001"`,`state = "MN"`, and `year = 2016`.
   
-```{r groupwise-census-data-analysis-5, exercise = TRUE}
+```{r groupwise-census-data-analysis-4, exercise = TRUE}
 
 ```
 
-```{r groupwise-census-data-analysis-5-hint-1, eval = FALSE}
+```{r groupwise-census-data-analysis-4-hint-1, eval = FALSE}
 get_acs(
   geography = ...,
   ... = "B19001",
@@ -639,37 +637,37 @@ get_acs(
 )
 ```
 
-### Exercise 6
+### Exercise 5
 
 Pipe the dataset `mn_hh_income` to the function `filter()` passing in `variable` is not equal to `"B19001_001"` as an argument
 
-```{r groupwise-census-data-analysis-6, exercise = TRUE}
+```{r groupwise-census-data-analysis-5, exercise = TRUE}
 
 ```
 
-```{r groupwise-census-data-analysis-6-hint-1, eval = FALSE}
+```{r groupwise-census-data-analysis-5-hint-1, eval = FALSE}
  mn_hh_income |>
   filter(... != "B19001_001") 
   
 ```
 
-```{r groupwise-census-data-analysis-6-test, include = FALSE}
+```{r groupwise-census-data-analysis-5-test, include = FALSE}
 mn_hh_income |>
   filter(variable != "B19001_001") 
   
 ```
 
-### Exercise 7
+### Exercise 6
 
 Pipe the previous code into the function `mutate()` setting `incgroup` to `case_when()` as an argument. Within `case_when()` pass in `variable < "B19001_008" ~ "below35k"`,  `variable < "B19001_013" ~ "bw35kand75k"`, and `TRUE ~ "above75k"` as arguments. 
     
-```{r groupwise-census-data-analysis-7, exercise = TRUE}
+```{r groupwise-census-data-analysis-6, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r groupwise-census-data-analysis-7-hint-1, eval = FALSE}
+```{r groupwise-census-data-analysis-6-hint-1, eval = FALSE}
 mn_hh_income |>
   filter(... != "B19001_001")  |>
   mutate(incgroup = case_when(
@@ -679,7 +677,7 @@ mn_hh_income |>
   ))
 ```
 
-```{r groupwise-census-data-analysis-7-test, include = FALSE}
+```{r groupwise-census-data-analysis-6-test, include = FALSE}
 mn_hh_income |>
   filter(variable != "B19001_001")  |>
   mutate(incgroup = case_when(
@@ -693,40 +691,40 @@ mn_hh_income |>
  Within `case-when()` the first condition is evaluated, telling the function to assign the value of below35k to all rows with a variable value that comes before `"B19001_008"` - which in this case will be `B19001_002` (income less than $10,000) through `B19001_007` (income between $30,000 and $34,999). The second condition is then evaluated for all those rows not accounted for by the first condition. This means that case_when() knows not to assign `"bw35kand75k"` to the income group of $10,000 and below even though its variable comes before B19001_013. The final condition in `case_when()` can be set to `TRUE` which in this scenario translates as “all other values.”
  
 
-### Exercise 8
+### Exercise 7
 
 We have assigned the result of the previous pipe to a new object, `mn_hh_income_recode`. Type `mn_hh_income_recode` in the box and hit "Run Code." 
 
-```{r groupwise-census-data-analysis-8, exercise = TRUE}
+```{r groupwise-census-data-analysis-7, exercise = TRUE}
 
 ```
 
-```{r groupwise-census-data-analysis-8-hint-1, eval = FALSE}
+```{r groupwise-census-data-analysis-7-hint-1, eval = FALSE}
 mn_hh_income_recode
 ```
 
-```{r groupwise-census-data-analysis-8-test, include = FALSE}
+```{r groupwise-census-data-analysis-7-test, include = FALSE}
 mn_hh_income_recode
 ```
 
 ### 
 
-### Exercise 9
+### Exercise 8
 
 Pipe `mn_hh_income_recode` to `summarize()` setting `estimate` to the `sum()` of `estimate` as an argument, with `.by` equal to `c(GEOID, incgroup)`. 
 
-```{r groupwise-census-data-analysis-9, exercise = TRUE}
+```{r groupwise-census-data-analysis-8, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r groupwise-census-data-analysis-9-hint-1, eval = FALSE}
+```{r groupwise-census-data-analysis-8-hint-1, eval = FALSE}
 mn_hh_income_recode |>
   summarize(... = sum(estimate), .by = c(GEOID, ...))
 ```
 
-```{r groupwise-census-data-analysis-9-test, include = FALSE}
+```{r groupwise-census-data-analysis-8-test, include = FALSE}
 mn_hh_income_recode |>
   summarize(estimate = sum(estimate), .by = c(GEOID, incgroup))
 ```
@@ -1049,23 +1047,22 @@ college_by_year
 college_by_year
 ```
 
-
 ### Exercise 13
 
 Lets look at the results! 
 
 Pipe `college_by_year` using `|>` to the function `arrange()`. Within `arrange()`, set the first argument as `NAME`, the second as `variable` and the third as `year`. 
 
-```{r comparing-acs-estimates-over-t-12, exercise = TRUE}
+```{r comparing-acs-estimates-over-t-13, exercise = TRUE}
 
 ```
 
-```{r comparing-acs-estimates-over-t-12-hint-1, eval = FALSE}
+```{r comparing-acs-estimates-over-t-13-hint-1, eval = FALSE}
 ... |> 
   arrange(NAME, ..., ...)
 ```
 
-```{r comparing-acs-estimates-over-t-12-test, include = FALSE}
+```{r comparing-acs-estimates-over-t-13-test, include = FALSE}
 college_by_year |> 
   arrange(NAME, variable, year)
 ```
@@ -1294,34 +1291,33 @@ The `paste0()` function we used for the `vars` object allows us to concatenate v
 
 We have assigned the code above to the variable `salt_lake`. Type `salt_lake` and run code to make sure it works.
 
-```{r handling-margins-of-error-with-5-ex, exercise = TRUE}
+```{r handling-margins-of-error-with-5, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r handling-margins-of-error-with-5-hint, eval = FALSE}
+```{r handling-margins-of-error-with-5-hint-1, eval = FALSE}
 salt_lake
 ```
 
 ```{r handling-margins-of-error-with-5-test, include = FALSE}
-sale_lake
+salt_lake
 ```
 
-###
+### 
 
-
-### Exercise 5
+### Exercise 6
 
 Now we should examine our data using the `filter()` function. 
 
 Set `example_tract` to the `salt_lake` object we used above. Now pipe the `salt_lake` object using `|>` to the function `filter()`. Within `filter()`, set `GEOID` equals to `"49035100100"`. On a separate line, pipe `example_tract` to the `select()` function and pass `-NAME` in as an argument.  
 
-```{r handling-margins-of-error-with-5, exercise = TRUE}
+```{r handling-margins-of-error-with-6, exercise = TRUE}
 
 ```
 
-```{r handling-margins-of-error-with-5-hint-1, eval = FALSE}
+```{r handling-margins-of-error-with-6-hint-1, eval = FALSE}
 example_tract <- ... |>
   filter(GEOID == ...)
 
@@ -1329,7 +1325,7 @@ example_tract |>
   select(...)
 ```
 
-```{r handling-margins-of-error-with-5-test, include = FALSE}
+```{r handling-margins-of-error-with-6-test, include = FALSE}
 example_tract <- salt_lake |>
   filter(GEOID == "49035100100")
 
@@ -1342,23 +1338,23 @@ example_tract |>
 In many cases, the margins of error exceed their corresponding estimates. For example, for the variable `B01001_0025` it suggests that or the male population age 85 and up, there are anywhere between 0 and 45 people in that Census tract. This can make ACS data for small geographies problematic for planning and analysis purposes.
 
 
-### Exercise 6
+### Exercise 7
 
 A potential solution to large margins of error for small estimates in the ACS is to aggregate data upwards until a satisfactory margin of error to estimate ratio is reached.
 
 The `moe_prop()` function calculates a margin of error for a derived proportion. Type the function, then set the arguments to `25`, `100`, `5`, and `3`. 
 
-```{r handling-margins-of-error-with-6, exercise = TRUE}
+```{r handling-margins-of-error-with-7, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r handling-margins-of-error-with-6-hint-1, eval = FALSE}
+```{r handling-margins-of-error-with-7-hint-1, eval = FALSE}
 moe_prop(25, ..., 5, ...)
 ```
 
-```{r handling-margins-of-error-with-6-test, include = FALSE}
+```{r handling-margins-of-error-with-7-test, include = FALSE}
 moe_prop(25, 100, 5, 3)
 ```
 
@@ -1420,18 +1416,17 @@ salt_lake |>
   ))
 ```
 
-
-### Exercise 4
+### Exercise 3
 
 Pipe the previous code into the function `summarize()` passing in the argument setting `sum_est` to the `sum()` of `estimate`. Add another argument setting `sum_moe` to `moe_sum()` with argument `moe` and `estimate` and on setting `.by` equal to both `GEOID` and `sex`.
 
-```{r calculating-groupwise-margins-4, exercise = TRUE}
+```{r calculating-groupwise-margins-3, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button> 
 
-```{r calculating-groupwise-margins-4-hint-1, eval = FALSE}
+```{r calculating-groupwise-margins-3-hint-1, eval = FALSE}
 salt_lake |>
   mutate(sex = case_when(
     str_sub(variable, start = -2) < "26" ~ "Male",
@@ -1441,7 +1436,7 @@ salt_lake |>
             ... = moe_sum(..., estimate), .by = c(..., ...))
 ```
 
-```{r calculating-groupwise-margins-4-test, include = FALSE}
+```{r calculating-groupwise-margins-3-test, include = FALSE}
 salt_lake |>
   mutate(sex = case_when(
     str_sub(variable, start = -2) < "26" ~ "Male",
