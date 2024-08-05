@@ -1,6 +1,6 @@
 ---
-title: Wrangling Census data with tidyverse tools
-author: David Kane and Satvika Upperla
+title: XX
+author: Satvika Upperla
 tutorial:
   id: wrangling-census-data-with-tidyverse-tools
 output:
@@ -8,7 +8,7 @@ output:
     progressive: yes
     allow_skip: yes
 runtime: shiny_prerendered
-description: 'Tutorial for Chapter 3: Wrangling Census data with tidyverse tools'
+description: 'Tutorial for Chapter 4: Wrangling Census data with tidyverse tools'
 ---
 
 ```{r setup, include = FALSE}
