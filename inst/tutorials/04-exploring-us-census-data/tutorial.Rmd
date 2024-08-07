@@ -26,8 +26,83 @@ options(tutorial.exercise.timelimit = 60,
 # connection, so we need to save all the downloaded data. Save the creation code
 # to make replication/improvements easier.
 
+# maine_income <- get_acs(
+#  state = "Maine",
+#  geography = "county",
+#  variables = c(hhincome = "B19013_001"),
+#  year = 2020
+#) |>
+#  mutate(NAME = str_remove(NAME, " County, Maine"))
+# write_rds(maine_income, "data/main_income.rds")
+ maine_income <- read_rds( "data/main_income.rds")
+
+
+# years <- 2005:2019
+#names(years) <- years
+
+#deschutes_value <- map_dfr(years, ~{
+ # get_acs(
+ #   geography = "county",
+ #   variables = "B25077_001",
+  #  state = "OR",
+  #  county = "Deschutes",
+ #   year = .x,
+ #   survey = "acs1"
+ # )
+#}, .id = "year")
+#  write_rds(deschutes_value, "data/deschutes_value.rds")
+ read_rds("data/deschutes_value.rds")
+  
+  
 
   
+  
+   # utah <- get_estimates(
+ # geography = "state",
+ #  state = "UT",
+ # product = "characteristics",
+ # breakdown = c("SEX", "AGEGROUP"),
+ # breakdown_labels = TRUE,
+ # year = 2019
+#) 
+ # write_rds(utah, "data/utah.rds")
+  read_rds("data/utah.rds")
+  
+ # utah_filtered <- filter(utah, str_detect(AGEGROUP, "^Age"), 
+ #                SEX != "Both sexes") |>
+  #mutate(value = ifelse(SEX == "Male", -value, value))
+  
+#  write_rds(utah_filtered, "data/utah_filtered.rds")
+  read_rds("data/utah_filtered.rds")
+  
+  
+  
+ # housing_val <- get_acs(
+  #geography = "tract", 
+  #variables = "B25077_001", 
+  #state = "OR", 
+#  county = c(
+ #   "Multnomah", 
+  #  "Clackamas", 
+   # "Washington",
+    #"Yamhill", 
+  #  "Marion", 
+  #  "Columbia"
+  #),
+  #year = 2020
+#)
+  
+#write_rds(housing_val, "data/housing_val.rds")
+read_rds("data/housing_val.rds")
+
+#housing_val2 <- separate(
+ # housing_val, 
+  #NAME, 
+  #into = c("tract", "county", "state"), 
+  #sep = ", "
+#)
+#write_rds(housing_val2, "data/housing_val2.rds")
+read_rds("data/housing_val2.rds")
 ```
 
 ```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
@@ -35,6 +110,73 @@ options(tutorial.exercise.timelimit = 60,
 
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
 ```
+
+This tutorial covers [Chapter 4: Exploring US Census data with visualization](https://walker-data.com/census-r/exploring-us-census-data-with-visualization.html#visualizing-margins-of-error) from [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You will learn about the [**ggplot**] and [**plotly**] package and mapping and using it to visualize moes (margin of error)
+
+## Visualizing Margins of Error
+###
+
+The [tidyverse](https://tidyverse.tidyverse.org/) is a collection of R packages that are designed to work together in common data wrangling, analysis, and visualization projects. Many of these R packages, maintained by RStudio, are among the most popular R packages worldwide.
+
+### Exercise 1
+
+Load in **tidyverse** package. 
+
+```{r visualizing-margins-of-error-1, exercise = TRUE}
+
+```
+
+```{r visualizing-margins-of-error-1-hint-1, eval = FALSE}
+library(...)
+```
+
+```{r visualizing-margins-of-error-1-test, include = FALSE}
+library(tidyverse)
+```
+
+The **tidyverse** is not really a package itself, but, rather, loads several core packages.
+
+### Exercise 2
+
+We can access the US Census API via the **tidycensus** package. The **tidycensus** package utilizes an API key to access Census data. Load the **tidycensus** package into your R session.
+
+Run `search()` in the Console to see the libraries that you've currently loaded. CP/CR.
+
+```{r visualizing-margins-of-error-2}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+### 
+
+The output should include the string "package:tidycensus". Kyle Walker is also the author of the [**tidycensus**](https://walker-data.com/tidycensus/) package.
+
+### Exercise 3
+use the function `get_decennial()` and passing in `state = "Maine"`,
+  `geography = "county"`,
+  `variables = c(totalpop = "P1_001N")`, and 
+  `year = 2020` as arguments
+ 
+```{r visualizing-margins-of-error-3, exercise = TRUE}
+
+```
+
+```{r visualizing-margins-of-error-3-hint-1, eval = FALSE}
+get_decennial(
+  state = ...,
+  ... = "county",
+  variables = c(... = "P1_001N"),
+  year = 2020
+) 
+```
+
+
+
+
 
 
 
