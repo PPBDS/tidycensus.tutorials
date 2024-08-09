@@ -114,8 +114,10 @@ read_rds("data/housing_val2.rds")
 
 This tutorial covers [Chapter 4: Exploring US Census data with visualization](https://walker-data.com/census-r/exploring-us-census-data-with-visualization.html#visualizing-margins-of-error) from [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You will learn about the [**ggplot**] and [**plotly**] package and mapping and using it to visualize moes (margin of error)
 
+<!-- DK: Add note about skipping first two sections. -->
+
 ## Visualizing Margins of Error
-###
+### 
 
 The [tidyverse](https://tidyverse.tidyverse.org/) is a collection of R packages that are designed to work together in common data wrangling, analysis, and visualization projects. Many of these R packages, maintained by RStudio, are among the most popular R packages worldwide.
 
@@ -157,11 +159,10 @@ question_text(NULL,
 The output should include the string "package:tidycensus". Kyle Walker is also the author of the [**tidycensus**](https://walker-data.com/tidycensus/) package.
 
 ### Exercise 3
+
 In the example below, we will compare the median household incomes of counties in the US state of Maine from the 2016-2020 ACS.
-Use the function `get_decennial()` and passing in `state = "Maine"`,
-  `geography = "county"`,
-  `variables = c(totalpop = "P1_001N")`, and 
-  `year = 2020` as arguments
+
+Use the function `get_decennial()` and passing in `state = "Maine"`, `geography = "county"`, `variables = c(totalpop = "P1_001N")`, and  `year = 2020` as arguments
  
 ```{r visualizing-margins-of-error-3, exercise = TRUE}
 
@@ -177,13 +178,14 @@ get_decennial(
 ```
 
 ### Exercise 4
-Pipe the previous code into the function  `arrange()` with `desc(value)` as an argument/
+
+Pipe the previous code into the function  `arrange()` with `desc(value)` as an argument.
  
 ```{r visualizing-margins-of-error-4, exercise = TRUE}
 
 ```
 
-<!-- SU: Need copy code button -->
+<button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r visualizing-margins-of-error-4-hint-1, eval = FALSE}
 get_decennial(
@@ -206,7 +208,7 @@ Delete the `arrange()` and anything within in it and replace it with the `mutate
 
 ```
 
-<!-- SU: Need copy code button here -->
+<button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r visualizing-margins-of-error-5-hint-1, eval = FALSE}
 get_decennial(
@@ -237,13 +239,14 @@ maine_income
 ```
 
 ### Exercise 7
+
 Several county estimates on the chart are quite close to one another, which may mean that the ranking of counties is misleading given the margin of error around those estimates. Inspect the moe of these counties more. Pipe `main_income` to  `arrange(desc(moe))`
 
 ```{r visualizing-margins-of-error-7, exercise = TRUE}
 
 ```
 
-<!-- SU: Need copy code button here -->
+<button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r visualizing-margins-of-error-7-hint-1, eval = FALSE}
 maine_income |>
@@ -256,6 +259,7 @@ maine_income |>
 ```
 
 ### Exercise 8
+
 Lets visualize the moe's of this data using ggplot. Pipe `main_income` to `ggplot()` setting `x` equal to `estimate` and `y` equal to `reoorder(NAME, estimate)` within `aes`.
 
 ```{r visualizing-margins-of-error-8, exercise = TRUE}
@@ -278,7 +282,7 @@ Add `geom_point` setting `size` to `3` and `color` to `"darkgreen"` within the f
 
 ```
 
-<!-- SU:Need copy code button here -->
+<button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r visualizing-margins-of-error-9-hint-1, eval = FALSE}
 ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
@@ -292,34 +296,36 @@ ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +
 
 ### Exercise 10
 
-
 ```{r visualizing-margins-of-error-10, exercise = TRUE}
 
 ```
 
-<!-- SU:Need copy code button here -->
+<button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r visualizing-margins-of-error-10-hint-1, eval = FALSE}
-ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
+ggplot(..., 
+       aes(x = ..., 
+           y = reorder(NAME, ...))) +  
   geom_point(... = 3, color =  ...)
 ```
 
 ```{r visualizing-margins-of-error-10-test, include = FALSE}
-ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +  
-  geom_point(size = 3, color = "darkgreen")
+maine_income |> 
+  ggplot(aes(x = estimate, 
+             y = reorder(NAME, estimate))) +  
+    geom_point(size = 3, color = "darkgreen")
 ```
 
 A dot plot like the one above intended to visualize a ranking of county household incomes in Maine may be misleading. However, using visualization tools in ggplot2, we can visualize the uncertainty around each estimate, giving chart readers a sense of the uncertainty in the ranking.
 
 ### Exercise 11
+
  Lets add `geom_errorbar()` to visualize the margin of uncertainty. Pipe the previous code to `geom_errorbarh()` setting `xmin` equal to `estimate` minus `moe` and `xmax` to `estimate` plus `moe` within `aes()`.
  
 
 ```{r visualizing-margins-of-error-11, exercise = TRUE}
 
 ```
-
-<!-- SU:Need copy code button here -->
 
 ```{r visualizing-margins-of-error-11-hint-1, eval = FALSE}
 ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
@@ -336,13 +342,28 @@ ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +
 Adding the horizontal error bars around each point gives us critical information to help us understand how our ranking of Maine counties by median household income.
 
 ### Exercise 12
-Lets make the plot look nice using `labs()` and `theme_minimal()`. Pipe to `theme_minimal()` setting `base_size` to `12.5`. USing labs add a title, subtitle, x, and y.
+
+Lets make the plot look nice using `labs()` and `theme_minimal()`. Pipe to `theme_minimal()` setting `base_size` to `12.5`. Using `labs()` add a `title`, `subtitle`, `x`, and `y`. Here is our version:
+
+
+```{r}
+ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +  
+  geom_point(size = 3, color = "darkgreen") + 
+  geom_errorbarh(aes(xmin = estimate - moe, xmax = estimate + moe)) + 
+  theme_minimal(base_size = 12.5) + 
+  labs(title = "Median household income", 
+       subtitle = "Counties in Maine", 
+       x = "2016-2020 ACS estimate", 
+       y = "")
+```
+
+But your version does not need to be identical.
 
 ```{r visualizing-margins-of-error-12, exercise = TRUE}
 
 ```
 
-<!-- SU:Need copy code button here -->
+<button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r visualizing-margins-of-error-12-hint-1, eval = FALSE}
 ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
@@ -366,19 +387,17 @@ ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +
        y = "")
 ```
 
-Remember the plot should look like this
-
 <!-- SU: add image of the plot so they can copy label stuff -->
 
 ### Exercise 13
 
-Lets make the numbers on the x=axis neater. Pipe the previous code into `scale_x_continuous()` setting `labels = label_dollar()` as the argument
+Let's make the numbers on the x=axis neater. Pipe the previous code into `scale_x_continuous()` setting `labels = label_dollar()` as the argument
 
 ```{r visualizing-margins-of-error-13, exercise = TRUE}
 
 ```
 
-<!-- SU:Need copy code button here -->
+<button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r visualizing-margins-of-error-13-hint-1, eval = FALSE}
 ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
@@ -403,12 +422,6 @@ ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +
        y = "") + 
   scale_x_continuous(labels = label_dollar())
 ```
-
-
-
-
-
-
 
 ```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
 ```
