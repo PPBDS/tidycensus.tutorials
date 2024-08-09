@@ -2,7 +2,7 @@ pandoc: 3.1.11
 pkgdown: 2.1.0
 pkgdown_sha: ~
 articles: {}
-last_built: 2024-08-09T12:36Z
+last_built: 2024-08-09T13:04Z
 urls:
   reference: https://ppbds.github.io/tidycensus.tutorials/reference
   article: https://ppbds.github.io/tidycensus.tutorials/articles
