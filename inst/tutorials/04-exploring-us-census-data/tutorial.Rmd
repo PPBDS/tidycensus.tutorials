@@ -1,5 +1,5 @@
 ---
-title: XX
+title: Exploring US Census Data with Visualization
 author: Satvika Upperla
 tutorial:
   id: wrangling-census-data-with-tidyverse-tools
@@ -156,7 +156,8 @@ question_text(NULL,
 The output should include the string "package:tidycensus". Kyle Walker is also the author of the [**tidycensus**](https://walker-data.com/tidycensus/) package.
 
 ### Exercise 3
-use the function `get_decennial()` and passing in `state = "Maine"`,
+In the example below, we will compare the median household incomes of counties in the US state of Maine from the 2016-2020 ACS.
+Use the function `get_decennial()` and passing in `state = "Maine"`,
   `geography = "county"`,
   `variables = c(totalpop = "P1_001N")`, and 
   `year = 2020` as arguments
@@ -173,6 +174,70 @@ get_decennial(
   year = 2020
 ) 
 ```
+
+### Exercise 4
+Pipe the previous code into the function  `arrange()` with `desc(value)` as an argument/
+ 
+```{r visualizing-margins-of-error-4, exercise = TRUE}
+
+```
+
+<!-- SU: Need copy code button -->
+
+```{r visualizing-margins-of-error-4-hint-1, eval = FALSE}
+get_decennial(
+  state = ...,
+  ... = "county",
+  variables = c(... = "P1_001N"),
+  year = 2020
+) |>
+   arrange(...(value))
+```
+
+There are sixteen counties in Maine, ranging in population from a maximum of 303,069 to a minimum of 16,800. In turn, estimates for the counties with smaller population sizes are likely to be subject to a larger margin of error than those with larger baseline populations.
+
+### Exercise 5
+
+Comparing median household incomes of these sixteen counties illustrates this point. Let’s first obtain this data with tidycensus then clean up the NAME column with str_remove() to remove redundant information.
+Delete the `arrange()` and anything within in it and replace it with the `mutate()` function and pass in `NAME = str_remove()` as the argument. withing `str_remove()` pass in `NAME, " County, Maine"` as an argument. 
+ 
+```{r visualizing-margins-of-error-5, exercise = TRUE}
+
+```
+
+<!-- SU: Need copy code button here -->
+
+```{r visualizing-margins-of-error-5-hint-1, eval = FALSE}
+get_decennial(
+  state = ...,
+  ... = "county",
+  variables = c(... = "P1_001N"),
+  year = 2020
+) |>
+   mutate(NAME = ....(..., " County, Maine"))
+```
+
+This will clean up the NAME column replacing something like "York County, Maine" with just "York" instead.
+
+### Exercise 6
+
+We have assigned the previous code to the variable `main_income`. Print `main_income` to ensure it works.
+
+```{r visualizing-margins-of-error-6, exercise = TRUE}
+
+```
+
+```{r visualizing-margins-of-error-6-hint-1, eval = FALSE}
+maine_income
+```
+
+```{r visualizing-margins-of-error-6-test, include = FALSE}
+maine_income
+```
+
+### Exercise 7
+
+
 
 
 
