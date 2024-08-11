@@ -387,8 +387,6 @@ ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +
        y = "")
 ```
 
-<!-- SU: add image of the plot so they can copy label stuff -->
-
 ### Exercise 13
 
 Let's make the numbers on the x=axis neater. Pipe the previous code into `scale_x_continuous()` setting `labels = label_dollar()` as the argument
@@ -422,6 +420,237 @@ ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +
        y = "") + 
   scale_x_continuous(labels = label_dollar())
 ```
+
+
+## Visualizing ACS Estimates Over Time
+###
+While the output table usefully represented the time series of educational attainment in Colorado counties, data visualization is also commonly used to illustrate change over time. Arguably the most common chart type chosen for time-series visualization is the line chart, which ggplot2 handles capably with the geom_line() function.
+
+### Exercise 1
+
+For an illustrative example, we’ll obtain 1-year ACS data from 2005 through 2019 on median home value for Deschutes County, Oregon, home to the city of Bend and large numbers of in-migrants in recent years from the Bay Area in California.
+
+Assign the variable `years` to the years `2005` to `2019`. On another line assign the function `names()` with    `years` as its argument to the variable `years`.    
+```{r visualizing-acs-estimates-over-1, exercise = TRUE}
+
+```
+
+
+```{r visualizing-acs-estimates-over-1-hint, eval = FALSE}
+... <- 2005;2019
+names(...) <- years
+```
+
+```{r visualizing-acs-estimates-over-1-test, include = FALSE}
+years <- 2005:2019
+names(years) <- years
+
+```
+
+### Exercise 2
+Copy the previous code and start on a new line. Use the function `map_dfr()` setting `years` as an argument. the second argument will be a call to `get_acs()`. Use `~{}` and within that put the call to `get_acs()`. Set the arguments of `get_acs()` as;  geography = "county", variables = "B25077_001", state = "OR", county = "Deschutes", year = .x, and survey = "acs1". Set the third argument of `map_dfr()` to `.id = "year"`.
+
+```{r visualizing-acs-estimates-over-2, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r visualizing-acs-estimates-over-2-hint, eval = FALSE}
+years <- 2005:2019
+names(years) <- years
+
+...(years, ~{
+  get_acs(
+    geography = ...,
+    ... = "B25077_001",
+    state = "OR",
+    county = "Deschutes",
+    year = ...,
+    survey = "acs1"
+  )
+}, .id = ...)
+```
+
+```{r visualizing-acs-estimates-over-2-test, include = FALSE}
+years <- 2005:2019
+names(years) <- years
+
+map_dfr(years, ~{
+  get_acs(
+    geography = "county",
+    variables = "B25077_001",
+    state = "OR",
+    county = "Deschutes",
+    year = .x,
+    survey = "acs1"
+  )
+}, .id = "year")
+```
+
+`map_dfr()` is used to iterate over a named vector of years, creating a time-series dataset of median home value in `Deschutes County` since 2005, and we use the formula specification for anonymous functions so that `~ .x` translates to function(x) x.
+
+### Exercise 3
+ We have assigned the previous code to the variable `deschutes_value`. Print out 'deschutes_value' to verify the results. 
+ 
+```{r visualizing-acs-estimates-over-3, exercise = TRUE}
+
+```
+
+
+```{r visualizing-acs-estimates-over-3-hint, eval = FALSE}
+deschutes_value
+```
+
+```{r visualizing-acs-estimates-over-3-test, include = FALSE}
+# SU: Had to comment it out because apparently it cant find it; deschutes_value
+
+```
+
+### Exercise 4
+This information can be visualized with familiar ggplot2 syntax. `deschutes_value` is specified as the input dataset, with year mapped to the X-axis and estimate mapped to the y-axis. The argument `group = 1` is used to help ggplot2 understand how to connect the yearly data points with lines given that only one county is being visualized. `geom_line()` then draws the lines, and we layer points on top of the lines as well to highlight the actual ACS estimates.
+
+Start a pipe, piping `deschutes_value` to `ggplot()` setting `x` equal to `year`, `y` equal to `estimate` and `group` equal to `1` within `aes()`. Then add `geom_line()` and `geom_point()`.
+```{r visualizing-acs-estimates-over-4, exercise = TRUE}
+
+```
+
+```{r visualizing-acs-estimates-over-4-hint, eval = FALSE}
+deschutes_value |> ...(aes(x = ..., y = estimate, ... = 1)) + 
+  ... + 
+  geom_point()
+```
+
+```{r visualizing-acs-estimates-over-4-test, include = FALSE}
+# SU: Had to comment it out because apparently it cant find it; deschutes_value |> ggplot(aes(x = year, y = estimate, group = 1)) + 
+  #geom_line() + 
+  #geom_point()
+
+```
+
+The chart shows rising home values prior to the 2008 recession; a notable drop after the housing market crash; and rising values since 2011, reflecting increased demand from wealthy in-migrants from locations like the Bay Area. 
+
+### Exercise 5
+
+Let's build the margin of error information into the line chart like we did in the previous section. We’ll use the ggplot2 function geom_ribbon() to draw the margin of error interval around the line, helping represent uncertainty in the ACS estimates.
+
+After `ggplot()` and before `geom_line()` add a pipe of `geom_ribbon()` setting `ymax = estimate + moe` and `ymin = estimate - moe` with `aes()`. Then add arguments of `fill = "navy"` and `alpha = 0.4` edit `geom_line()` and `geom_point()` to have `color = "navy"` as an argument. Add `size = 2` as the final argument to `geom_point()`.
+
+```{r visualizing-acs-estimates-over-5, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r visualizing-acs-estimates-over-5-hint, eval = FALSE}
+deschutes_value |> ggplot(aes(x = ..., y = ..., group = 1))  + 
+  ...(aes(ymax = ..., ymin = estimate - moe), 
+              fill = ...,
+              alpha = 0.4) + 
+  geom_line(... = "navy") + 
+  geom_point(color = "navy", ... = 2)
+```
+
+```{r visualizing-acs-estimates-over-5-test, include = FALSE}
+# SU: Had to comment it out because apparently it cant find itdeschutes_value |> ggplot(aes(x = year, y = estimate, group = 1))  + 
+  # geom_ribbon(aes(ymax = ..., ... = estimate - moe), 
+  #             ... = "navy",
+  #             alpha = ...) + 
+  # geom_line(color = "navy") + 
+  # geom_point(color = "navy", size = 2)
+
+```
+
+### Exercise 6
+Pipe the previous code to `theme_minimal()` with the argument `base_size = 12`. Add another pipe to  `scale_y_continuous()`. Set `labels` to `label_dollar(scale = .001, suffix = "k) as an argument.
+
+```{r visualizing-acs-estimates-over-6, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r visualizing-acs-estimates-over-6-hint, eval = FALSE}
+deschutes_value |> ggplot(aes(x = year, y = estimate, group = 1))  + 
+  geom_ribbon(aes(ymax = estimate + moe, ymin = estimate - moe), 
+              fill = "navy",
+              alpha = 0.4) + 
+  geom_line(... = "navy") + 
+  geom_point(color = ..., size = 2) + 
+  ...(base_size = 12) + 
+  scale_y_continuous(... = label_dollar(... = .001, suffix = ...)) 
+```
+
+```{r visualizing-acs-estimates-over-6-test, include = FALSE}
+# SU: Had to comment it out because apparently it cant find itdeschutes_value |> ggplot(aes(x = year, y = estimate, group = 1))  + 
+  # geom_ribbon(aes(ymax = estimate + moe, ymin = estimate - moe), 
+  #             fill = "navy",
+  #             alpha = 0.4) + 
+  # geom_line(color = "navy") + 
+  # geom_point(color = "navy", size = 2) + 
+  # theme_minimal(base_size = 12) + 
+  # scale_y_continuous(labels = label_dollar(scale = .001, suffix = "k")) 
+
+```
+
+### Exercise 7
+
+Add `labels` for the `title`, `caption`, `x`, and `y` using `labs()`. This is what our graph looks like:
+```{r}
+# SU: Had to comment it out because apparently it cant find itggplot(deschutes_value, aes(x = year, y = estimate, group = 1)) + 
+  # geom_ribbon(aes(ymax = estimate + moe, ymin = estimate - moe), 
+  #             fill = "navy",
+  #             alpha = 0.4) + 
+  # geom_line(color = "navy") + 
+  # geom_point(color = "navy", size = 2) + 
+  # theme_minimal(base_size = 12) + 
+  # scale_y_continuous(labels = label_dollar(scale = .001, suffix = "k")) + 
+  # labs(title = "Median home value in Deschutes County, OR",
+  #      x = "Year",
+  #      y = "ACS estimate",
+  #      caption = "Shaded area represents margin of error around the ACS estimate")
+```
+
+Yours does not have to look exactly the same. 
+
+```{r visualizing-acs-estimates-over-7, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r visualizing-acs-estimates-over-7-hint, eval = FALSE}
+deschutes_value |> ggplot(aes(x = year, y = estimate, group = 1))  + 
+  geom_ribbon(aes(ymax = estimate + moe, ymin = estimate - moe), 
+              fill = "navy",
+              alpha = 0.4) + 
+  geom_line(... = "navy") + 
+  geom_point(color = ..., size = 2) + 
+  ...(base_size = 12) + 
+  scale_y_continuous(... = label_dollar(... = .001, suffix = ...)) +
+  labs(title = ...,
+       x = ...,
+       y = ...,
+       caption = ...)
+```
+
+```{r visualizing-acs-estimates-over-7-test, include = FALSE}
+# SU: Had to comment it out because apparently it cant find itggplot(deschutes_value, aes(x = year, y = estimate, group = 1)) + 
+  # geom_ribbon(aes(ymax = estimate + moe, ymin = estimate - moe), 
+  #             fill = "navy",
+  #             alpha = 0.4) + 
+  # geom_line(color = "navy") + 
+  # geom_point(color = "navy", size = 2) + 
+  # theme_minimal(base_size = 12) + 
+  # scale_y_continuous(labels = label_dollar(scale = .001, suffix = "k")) + 
+  # labs(title = "Median home value in Deschutes County, OR",
+  #      x = "Year",
+  #      y = "ACS estimate",
+  #      caption = "Shaded area represents margin of error around the ACS estimate")
+```
+
+
+
 
 ```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
 ```
