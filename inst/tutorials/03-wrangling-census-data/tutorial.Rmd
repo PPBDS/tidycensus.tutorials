@@ -1,5 +1,5 @@
 ---
-title: Wrangling Census data with tidyverse tools
+title: Wrangling Census data with Tidyverse tools
 author: David Kane and Satvika Upperla
 tutorial:
   id: wrangling-census-data-with-tidyverse-tools
