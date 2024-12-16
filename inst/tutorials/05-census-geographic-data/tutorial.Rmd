@@ -1,6 +1,6 @@
 ---
 title: Census geographic data and applications in R
-author: David Kane
+author: David Kane and
 tutorial:
   id: census-geographic-data-and-applications-in-r
 output:

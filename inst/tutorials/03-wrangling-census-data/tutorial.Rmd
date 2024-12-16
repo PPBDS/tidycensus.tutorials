@@ -1353,30 +1353,29 @@ moe_prop(25, 100, 5, 3)
 we had an ACS estimate of 25 with a margin of error of 5 around that estimate. This allowed us the determine the margin of error around the derived proportion of 0.25. The US Census Bureau publishes formulas to calculate margin of errors with the functions [`moe_prop()`](https://rdocumentation.org/packages/tidycensus/versions/1.4.4/topics/moe_prop), [`moe_sum()`](https://www.rdocumentation.org/packages/tidycensus/versions/1.5/topics/moe_sum), and [`moe_product()`](https://www.rdocumentation.org/packages/tidycensus/versions/1.5/topics/moe_product). Click on the functions to learn more about them.   
 
 
-## Calculating group-wise margins of error
 ### 
 
 Margin of error functions in tidycensus can be integrated into tidyverse-centric analytic pipelines to handle large margins of error around estimates.
 
-### Exercise 1
+### Exercise 8
 
 If datasets are characterized by too much uncertainty for our analysis, we decide in this scenario to aggregate our data upwards 
 
 Pipe the data `salt_lake` to the function mutate()
 
-```{r calculating-groupwise-margins-1, exercise = TRUE}
+```{r handling-margins-of-error-with-8, exercise = TRUE}
 
 ```
 
-```{r calculating-groupwise-margins-1-hint-1, eval = FALSE}
+```{r handling-margins-of-error-with-8-hint-1, eval = FALSE}
 salt_lake |> ...
 ```
 
-```{r calculating-groupwise-margins-1-test, include = FALSE}
+```{r handling-margins-of-error-with-8-test, include = FALSE}
 salt_lake |> mutate()
 ```
 
-### Exercise 2
+### Exercise 9
 
 Copy and paste the previous code. Set `sex` to `case_when()` as an argument of `mutate()`. 
 
@@ -1384,13 +1383,13 @@ We can use the `case_when()` function to create a new column, sex, that represen
 
 Inside `case_when` pass `str_sub` as an argument. Within `str_sub` pass the argument `variable` in and set `start` equal to `-2` as another variable. Add `< "26" ~ "Male"`right after `str_sub` and `TRUE ~ "Female"` as another argument to `case_when()`
 
-```{r calculating-groupwise-margins-2, exercise = TRUE}
+```{r handling-margins-of-error-with-9, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button> 
 
-```{r calculating-groupwise-margins-2-hint-1, eval = FALSE}
+```{r handling-margins-of-error-with-9-hint-1, eval = FALSE}
 salt_lake |>
   mutate(sex = case_when(
     str_sub(..., start = ...) < "26" ~ ...,
@@ -1398,7 +1397,7 @@ salt_lake |>
   ))
 ```
 
-```{r calculating-groupwise-margins-2-test, include = FALSE}
+```{r handling-margins-of-error-with-9-test, include = FALSE}
 salt_lake |>
   mutate(sex = case_when(
     str_sub(variable, start = -2) < "26" ~ "Male",
@@ -1406,17 +1405,17 @@ salt_lake |>
   ))
 ```
 
-### Exercise 3
+### Exercise 10
 
 Pipe the previous code into the function `summarize()` passing in the argument setting `sum_est` to the `sum()` of `estimate`. Add another argument setting `sum_moe` to `moe_sum()` with argument `moe` and `estimate` and on setting `.by` equal to both `GEOID` and `sex`.
 
-```{r calculating-groupwise-margins-3, exercise = TRUE}
+```{r handling-margins-of-error-with-10, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button> 
 
-```{r calculating-groupwise-margins-3-hint-1, eval = FALSE}
+```{r handling-margins-of-error-with-10-hint-1, eval = FALSE}
 salt_lake |>
   mutate(sex = case_when(
     str_sub(variable, start = -2) < "26" ~ "Male",
@@ -1426,7 +1425,7 @@ salt_lake |>
             ... = moe_sum(..., estimate), .by = c(..., ...))
 ```
 
-```{r calculating-groupwise-margins-3-test, include = FALSE}
+```{r handling-margins-of-error-with-10-test, include = FALSE}
 salt_lake |>
   mutate(sex = case_when(
     str_sub(variable, start = -2) < "26" ~ "Male",

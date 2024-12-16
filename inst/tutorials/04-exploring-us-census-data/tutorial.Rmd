@@ -1,6 +1,6 @@
 ---
 title: Exploring US Census data with visualization
-author: Satvika Upperla
+author: David Kane and 
 tutorial:
   id: wrangling-census-data-with-tidyverse-tools
 output:
@@ -112,9 +112,12 @@ read_rds("data/housing_val2.rds")
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
 ```
 
+## Introduction
+### 
+
 This tutorial covers [Chapter 4: Exploring US Census data with visualization](https://walker-data.com/census-r/exploring-us-census-data-with-visualization.html#visualizing-margins-of-error) from [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You will learn about the [**ggplot**] and [**plotly**] package and mapping and using it to visualize moes (margin of error)
 
-<!-- DK: Add note about skipping first two sections. -->
+<!-- DK: Add in sections 4.1 and 4.2 -->
 
 ## Visualizing Margins of Error
 ### 
