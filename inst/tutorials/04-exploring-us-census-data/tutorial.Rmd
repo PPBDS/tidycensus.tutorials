@@ -1,6 +1,6 @@
 ---
 title: Exploring US Census data with visualization
-author: David Kane and 
+author: David Kane and Gia Khang
 tutorial:
   id: wrangling-census-data-with-tidyverse-tools
 output:
@@ -119,6 +119,852 @@ This tutorial covers [Chapter 4: Exploring US Census data with visualization](ht
 
 <!-- DK: Add in sections 4.1 and 4.2 -->
 
+## Basic Census visualization with **ggplot2**
+### 
+
+A critical part of the Census data analysis process is data visualization, where an analyst examines patterns and trends found in their data graphically. This first section illustrates some examples for getting started with exploratory Census data visualization with [ggplot2](https://ggplot2.tidyverse.org/).
+
+### Exercise 1
+
+Load in **tidycensus** package. 
+
+```{r basic-census-visualization-wit-1, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r basic-census-visualization-wit-1-hint-1, eval = FALSE}
+library(...)
+```
+
+```{r basic-census-visualization-wit-1-test, include = FALSE}
+library(tidycensus)
+```
+
+### 
+
+### Exercise 2
+
+Let's get access to the data on median household income and median age by county in the state of Georgia from the 2016-2020 ACS. Use the function `get_acs()` and set `geography = "county"`, `state = "Georgia"`, `variables = c(medinc = "B19013_001", medage = "B01002_001")`, and `year = 2020` as arguments. 
+ 
+```{r basic-census-visualization-wit-2, exercise = TRUE}
+
+```
+
+```{r basic-census-visualization-wit-2-hint-1, eval = FALSE}
+get_acs(
+  geography = ...,
+  state = ...,
+  variables = c(medinc = ..., medage = ...),
+  year = ...
+)
+```
+
+```{r basic-census-visualization-wit-2-test, include = FALSE}
+get_acs(
+  geography = "county",
+  state = "Georgia",
+  variables = c(medinc = "B19013_001",
+                medage = "B01002_001"),
+  output = "wide",
+  year = 2020)
+```
+
+### 
+
+We are requesting the data in wide format, which will spread the estimate and margin of error information across the columns.
+
+### Exercise 3
+
+Copy paste your previous code and assign it to an object called `ga_wide` using the assignment operator `<-`. Print `ga_wide` to verify the results. 
+
+```{r basic-census-visualization-wit-3, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r basic-census-visualization-wit-3-hint-1, eval = FALSE}
+... <- get_acs(
+  geography = ...,
+  state = ...,
+  variables = c(medinc = ..., medage = ...),
+  year = ...
+)
+
+print(...)
+```
+
+```{r basic-census-visualization-wit-3-test, include = FALSE}
+ga_wide <- get_acs(
+  geography = "county",
+  state = "Georgia",
+  variables = c(medinc = "B19013_001",
+                medage = "B01002_001"),
+  output = "wide",
+  year = 2020
+)
+
+print(ga_wide)
+```
+
+### 
+
+### Exercise 4
+
+Run the function `ggplot()` on `ga_wide`, setting the `aes()` argument to `x = midincE`. Hit "Run Code."
+
+```{r basic-census-visualization-wit-4, exercise = TRUE}
+
+```
+
+```{r basic-census-visualization-wit-4-hint-1, eval = FALSE}
+ggplot(ga_wide, aes(x = ...))
+```
+
+```{r basic-census-visualization-wit-4-test, include = FALSE}
+ggplot(ga_wide, aes(x = medincE))
+```
+
+### 
+
+Note that this will return a plain graph since we have not mapped the data point into the graph yet.
+
+### Exercise 5
+
+Copy the previous code and add `geom_histogram()`. Hit "Run Code."
+
+```{r basic-census-visualization-wit-5, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r basic-census-visualization-wit-5-hint-1, eval = FALSE}
+ggplot(ga_wide, aes(x = medincE)) + 
+  ...
+```
+
+```{r basic-census-visualization-wit-5-test, include = FALSE}
+ggplot(ga_wide, aes(x = medincE)) + 
+  geom_histogram()
+```
+
+### 
+
+The histogram shows that the modal median household income of Georgia counties is around $40,000 per year, with a longer tail of wealthier counties on the right-hand side of the plot. 
+
+### Exercise 6
+
+Copy the previous code, within the `geom_histogram()` function, set `bins = 15`. Hit "Run Code."
+
+```{r basic-census-visualization-wit-6, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r basic-census-visualization-wit-6-hint-1, eval = FALSE}
+ggplot(ga_wide, aes(x = medincE)) + 
+  geom_histogram(...)
+
+```
+
+```{r basic-census-visualization-wit-6-test, include = FALSE}
+ggplot(ga_wide, aes(x = medincE)) + 
+  geom_histogram(bins = 15)
+```
+
+### 
+
+In the histogram, counties are organized into “bins”, which are groups of equal width along the X-axis. The Y-axis then represents the number of counties that fall within each bin.
+
+### Exercise 7
+
+Add title, subtitle, x-axis label to the histogram using `labs()`. You may also want to add:`scale_x_continuous(labels = scales::label_dollar()) ` to make the x-axis more readable.
+
+```{r basic-census-visualization-wit-7, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r basic-census-visualization-wit-7-hint-1, eval = FALSE}
+ggplot(ga_wide, aes(x = medincE)) + 
+  geom_histogram(bins = 15) + 
+  scale_x_continuous(labels = scales::label_dollar()) +
+  labs(title = ..., 
+       subtitle = ..., 
+       x = ...)
+```
+
+```{r basic-census-visualization-wit-7-test, include = FALSE}
+ggplot(ga_wide, aes(x = medincE)) + 
+  scale_x_continuous(labels = scales::label_dollar()) +
+  geom_histogram(bins = 15) + 
+  labs(title = "Median household income in Georgia counties",
+       subtitle = "Most counties have the median household income around $30000 to $50000",
+       x = "Median household income")
+```
+
+### 
+
+Remember this is what your graph should look like
+
+```{r}
+ggplot(ga_wide, aes(x = medincE)) + 
+  scale_x_continuous(labels = scales::label_dollar()) +
+  geom_histogram(bins = 15) + 
+  labs(title = "Median household income in Georgia counties",
+       subtitle = "Most counties have the median household income around $30000 to $50000",
+       x = "Median household income")
+```
+
+### Exercise 8
+
+Histograms are not the only options for visualizing univariate data distributions. Run the function `ggplot()` on `ga_wide`, setting the `aes()` argument to `x = medageE`. Hit "Run Code."
+
+```{r basic-census-visualization-wit-8, exercise = TRUE}
+
+```
+
+```{r basic-census-visualization-wit-8-hint-1, eval = FALSE}
+ggplot(ga_wide, aes(x = ...))
+```
+
+```{r basic-census-visualization-wit-8-test, include = FALSE}
+ggplot(ga_wide, aes(y = medincE))
+```
+
+### 
+
+A popular alternative is the box-and-whisker plot, which is implemented in **ggplot2** with [geom_boxplot()](https://ggplot2.tidyverse.org/reference/geom_boxplot.html)
+
+### Exercise 9
+
+Copy the previous code and add `geom_boxplot`. Hit "Run Code."
+
+```{r basic-census-visualization-wit-9, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r basic-census-visualization-wit-9-hint-1, eval = FALSE}
+ggplot(ga_wide, aes(y = medincE)) + 
+  ...
+```
+
+```{r basic-census-visualization-wit-9-test, include = FALSE}
+ggplot(ga_wide, aes(y = medincE)) + 
+  geom_boxplot()
+```
+
+### 
+
+In this example, the column `medincE` is passed to the `y` parameter instead of `x`; this creates a vertical rather than horizontal box plot.
+
+### Exercise 10
+
+Add title, subtitle, and y-axis label to the box plot using `labs()`. You may also want to add `scale_y_continuous(labels = scales::label_dollar())` to make the y-axis more readable.
+
+```{r basic-census-visualization-wit-10, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r basic-census-visualization-wit-10-hint-1, eval = FALSE}
+ggplot(ga_wide, aes(y = medincE)) + 
+  geom_boxplot() + 
+  scale_y_continuous(labels = scales::label_dollar()) +
+  labs(title = ..., 
+       subtitle = ..., 
+       y = ...)
+```
+
+```{r basic-census-visualization-wit-10-test, include = FALSE}
+ggplot(ga_wide, aes(y = medincE)) + 
+  scale_y_continuous(labels = scales::label_dollar()) +
+  geom_boxplot() + 
+  labs(title = "Median household income in Georgia counties",
+       subtitle = "Most counties have the median household income around $30000 to $50000",
+       y = "Median household income")
+```
+
+### 
+
+Remember this is what your graph should look like
+
+```{r}
+ggplot(ga_wide, aes(y = medincE)) + 
+  scale_y_continuous(labels = scales::label_dollar()) +
+  geom_boxplot() + 
+  labs(title = "Median household income in Georgia counties",
+       subtitle = "Most counties have the median household income around $30000 to $50000",
+       y = "Median household income")
+```
+
+### Exercise 11
+
+Now we want to see both the median household income and median age of counties in the Georgia state. Run the function `ggplot()` on `ga_wide`, setting the `aes()` argument to `x = medageE` and `y = medincE`. Hit "Run Code."
+
+```{r basic-census-visualization-wit-11, exercise = TRUE}
+
+```
+
+```{r basic-census-visualization-wit-11-hint-1, eval = FALSE}
+ggplot(ga_wide, aes(x = ..., y = ...))
+```
+
+```{r basic-census-visualization-wit-11-test, include = FALSE}
+ggplot(ga_wide, aes(x = medageE, y = medincE))
+```
+
+### 
+
+For two numeric variables, a common exploratory chart is a scatter plot, which maps values in one column to the X-axis and values in another column to the Y-axis. The resulting plot then gives the analyst a sense of the nature of the relationship between the two variables.
+
+### Exercise 12
+
+Copy the previous code and add `geom_point()`. Hit "Run Code."
+
+```{r basic-census-visualization-wit-12, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r basic-census-visualization-wit-12-hint-1, eval = FALSE}
+ggplot(ga_wide, aes(x = medageE, y = medincE)) + 
+  ...
+```
+
+```{r basic-census-visualization-wit-12-test, include = FALSE}
+ggplot(ga_wide, aes(x = medageE, y = medincE)) + 
+  geom_point()
+```
+
+### 
+
+Scatter plots are implemented in ggplot2 with the [geom_point()](https://ggplot2.tidyverse.org/reference/geom_point.html) function, which plots points on a chart relative to X and Y values for observations in a dataset. 
+
+### Exercise 13
+
+Let's see whether there is a relationship between median household income and median age in Georgia counties. Copy previous code, and add `geom_smooth()` to the plot, set the argument `method = "lm"`. Hit "Run Code."
+
+<!-- GK: Using quadratic regression should be more appropriate -->
+
+```{r basic-census-visualization-wit-13, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r basic-census-visualization-wit-13-hint-1, eval = FALSE}
+ggplot(ga_wide, aes(x = medageE, y = medincE)) + 
+  geom_point() + 
+  geom_smooth(method = ...)
+```
+
+```{r basic-census-visualization-wit-13-test, include = FALSE}
+ggplot(ga_wide, aes(x = medageE, y = medincE)) + 
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+### 
+
+The [geom_smooth()](https://ggplot2.tidyverse.org/reference/geom_smooth.html) function draws a fitted line representing the relationship between the two columns on the plot. 
+
+### Exercise 14
+
+Add title, subtitle, and x and y-axis labels to the scatter plot using `labs()`. You may also want to add`scale_y_continuous(labels = scales::label_dollar())` to make the y-axis more readable.
+
+```{r basic-census-visualization-wit-14, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r basic-census-visualization-wit-14-hint-1, eval = FALSE}
+ggplot(ga_wide, aes(x = medageE, y = medincE)) + 
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  labs(title = ..., 
+       subtitle = ..., 
+       x = ..., 
+       y = ...) +
+  scale_y_continuous(labels = ...)
+```
+
+```{r basic-census-visualization-wit-14-test, include = FALSE}
+ggplot(ga_wide, aes(x = medageE, y = medincE)) + 
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  labs(title = "Median household income and median age in Georgia counties",
+       subtitle = "County median household income in Georgia tends to decline slightly as median age increases",
+       x = "Median age",
+       y = "Median household income") + 
+  scale_y_continuous(labels = scales::label_dollar())
+```
+
+### 
+
+Remember this is what your graph should look like
+
+```{r}
+ggplot(ga_wide, aes(x = medageE, y = medincE)) + 
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  labs(title = "Median household income and median age in Georgia counties",
+       subtitle = "county median household income in Georgia tends to decline slightly as median age increases",
+       x = "Median age",
+       y = "Median household income") + 
+  scale_y_continuous(labels = scales::label_dollar())
+```
+
+## Customizing **ggplot2** Visualizations
+### 
+
+The attractive defaults of [ggplot2](https://ggplot2.tidyverse.org/) visualizations allow for the creation of legible graphics with little to no customization. This helps greatly with exploratory data analysis tasks where the primary audience is the analyst exploring the dataset.This section covers how to take a Census data visualization that is relatively illegible by default and polish it up for eventual presentation and export from R.
+
+### Exercise 1
+
+Load in **tidyverse** package. 
+
+```{r customizing-ggplot2-visualizat-1, exercise = TRUE}
+
+```
+
+```{r customizing-ggplot2-visualizat-1-hint-1, eval = FALSE}
+library(...)
+```
+
+```{r customizing-ggplot2-visualizat-1-test, include = FALSE}
+library(tidyverse)
+```
+
+### 
+
+### Exercise 2
+
+Use the function `get_acs()` and set `geography = "cbsa"`, `variables = "DP03_0021P"`, ` summary_var = "B01003_001"`, `survey = "acs1"` and `year = 2019` as arguments. 
+
+```{r customizing-ggplot2-visualizat-2, exercise = TRUE}
+
+```
+
+```{r customizing-ggplot2-visualizat-2-hint-1, eval = FALSE}
+get_acs(
+  geography = ...,
+  variables = ...,
+  summary_var = ...,
+  survey = ...,
+  year = ...
+)
+```
+
+```{r customizing-ggplot2-visualizat-2-test, include = FALSE}
+get_acs(
+  geography = "cbsa",
+  variables = "DP03_0021P",
+  summary_var = "B01003_001",
+  survey = "acs1",
+  year = 2019
+)
+```
+
+### 
+
+This dataset contains the percent of commuters that take public transportation to work for the largest metropolitan areas in the United States. 
+
+### Exercise 3
+
+Copy the previous code, pipe it to the `slice_max()` function with `summary_est` and `n=20` as arguments. 
+
+```{r customizing-ggplot2-visualizat-3, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r customizing-ggplot2-visualizat-3-hint-1, eval = FALSE}
+... |> 
+  slice_max(..., n = ...)
+```
+
+```{r customizing-ggplot2-visualizat-3-test, include = FALSE}
+get_acs(
+  geography = "cbsa",
+  variables = "DP03_0021P",
+  summary_var = "B01003_001",
+  survey = "acs1",
+  year = 2019
+) |> 
+  slice_max(summary_est, n = 20)
+```
+
+### 
+
+This command sort our data by descending order of a summary variable representing total population and then retaining the 20 largest metropolitan areas by population
+
+### Exercise 4
+
+Assign your code to an object called `metros`. Hit "Run Code."
+
+```{r customizing-ggplot2-visualizat-4, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r customizing-ggplot2-visualizat-4-hint-1, eval = FALSE}
+metros <- 
+  ... 
+```
+
+```{r customizing-ggplot2-visualizat-4-test, include = FALSE}
+metros <- get_acs(
+  geography = "cbsa",
+  variables = "DP03_0021P",
+  summary_var = "B01003_001",
+  survey = "acs1",
+  year = 2019
+) |> 
+  slice_max(summary_est, n = 20)
+```
+
+### 
+
+The largest one is New York-Newark-Jersey City, NY-NJ-PA Metro Area. 
+
+### Exercise 5
+
+Run the function `ggplot()` on `metros`, setting the `aes()` argument to `x = NAME`, and `y = estimatet`. Hit "Run Code."
+
+```{r customizing-ggplot2-visualizat-5, exercise = TRUE}
+
+```
+
+```{r customizing-ggplot2-visualizat-5-hint-1, eval = FALSE}
+ggplot(metros, aes(x = ..., y = ...))
+```
+
+```{r customizing-ggplot2-visualizat-5-test, include = FALSE}
+ggplot(metros, aes(x = NAME, y = estimate)) 
+```
+
+### 
+
+The first argument to [ggplot()](https://ggplot2.tidyverse.org/reference/ggplot.html) in the example below is the name of our dataset; the second argument is an aesthetic mapping of columns to plot elements, specified inside the [aes()](https://ggplot2.tidyverse.org/reference/ggplot.html) function. 
+
+### Exercise 6
+
+Copy the previous code and add `geom_col()`. Hit "Run Code."
+
+```{r customizing-ggplot2-visualizat-6, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r customizing-ggplot2-visualizat-6-hint-1, eval = FALSE}
+ggplot(metros, aes(x = NAME, y = estimate)) + 
+  ...
+```
+
+```{r customizing-ggplot2-visualizat-6-test, include = FALSE}
+ggplot(metros, aes(x = NAME, y = estimate)) + 
+  geom_col()
+```
+
+### 
+
+We can hardly see anything from this graph! The x-axis labels are so lengthy that they overlap and are impossible to read; the axis titles are not intuitive; and the data are not sorted, making it difficult to compare similar observations.
+
+### Exercise 7
+
+The first step to take in making the plot looks nicer is reformat the `NAME` column since something like "New York-Newark-Jersey City, NY-NJ-PA Metro Area" is too long. Pipe `metros` to the `mutate()` function and pass in `NAME = str_remove()` as the argument. Within `str_remove()` pass in `NAME = str_remove(NAME, "-.*$")"` as an argument. 
+
+```{r customizing-ggplot2-visualizat-7, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r customizing-ggplot2-visualizat-7-hint-1, eval = FALSE}
+
+```
+
+```{r customizing-ggplot2-visualizat-7-test, include = FALSE}
+metros |>
+  mutate(NAME = str_remove(NAME, "-.*$"))
+```
+
+### 
+
+This removes everything from the first `"-"` to the end of the string.
+
+### Exercise 8
+
+Continue the pipe to the `mutate()` function and pass in `NAME = str_remove(NAME, ",.*$")` as an argument. Hit "Run Code."
+
+```{r customizing-ggplot2-visualizat-8, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r customizing-ggplot2-visualizat-8-hint-1, eval = FALSE}
+
+```
+
+```{r customizing-ggplot2-visualizat-8-test, include = FALSE}
+metros |>
+  mutate(NAME = str_remove(NAME, "-.*$")) |>
+  mutate(NAME = str_remove(NAME, ",.*$"))
+```
+
+### 
+
+The second mutate removes everything from the first `","` to the end of the string if no dash was originally present
+
+### Exercise 9
+
+Copy previous code, pipe it to the `ggplot()` function, setting the `aes()` argument to `x = estimate`, and `y = reorder(NAME, estimate)`. Hit "Run Code."
+
+```{r customizing-ggplot2-visualizat-9, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r customizing-ggplot2-visualizat-9-hint-1, eval = FALSE}
+... |> 
+  ggplot(aes(y = reorder(NAME, estimate), x = estimate))
+```
+
+```{r customizing-ggplot2-visualizat-9-test, include = FALSE}
+metros |>
+  mutate(NAME = str_remove(NAME, "-.*$")) |>
+  mutate(NAME = str_remove(NAME, ",.*$")) |>
+  ggplot(aes(y = reorder(NAME, estimate), x = estimate))
+```
+
+### 
+
+The legibility can be further improved by mapping the metro name to the y-axis and the ACS estimate to the x-axis, and plotting the points in descending order of their estimate values. 
+
+### Exercise 10
+
+Add `geom_col()` to the plot. Hit "Run Code."
+
+```{r customizing-ggplot2-visualizat-10, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r customizing-ggplot2-visualizat-10-hint-1, eval = FALSE}
+... |> 
+  ggplot(aes(y = reorder(NAME, estimate), x = estimate)) + 
+  geom_col()
+```
+
+```{r customizing-ggplot2-visualizat-10-test, include = FALSE}
+metros |>
+  mutate(NAME = str_remove(NAME, "-.*$")) |>
+  mutate(NAME = str_remove(NAME, ",.*$")) |>
+  ggplot(aes(y = reorder(NAME, estimate), x = estimate)) + 
+  geom_col()
+```
+
+### 
+
+The plot is much more legible after our modifications. Metropolitan areas can be directly compared with one another, and the metro area labels convey enough information about the different places without overwhelming the plot with long axis labels.
+
+### Exercise 11
+
+Add title, subtitle, and x and y-axis labels, caption to the plot using `labs()`. 
+
+```{r customizing-ggplot2-visualizat-11, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r customizing-ggplot2-visualizat-11-hint-1, eval = FALSE}
+... |> 
+  ggplot(aes(y = reorder(NAME, estimate), x = estimate)) + 
+  geom_col() + 
+  labs(title = ..., 
+       subtitle = ..., 
+       x = ..., 
+       y = ..., 
+       caption = ...)
+```
+
+```{r customizing-ggplot2-visualizat-11-test, include = FALSE}
+metros |>
+  mutate(NAME = str_remove(NAME, "-.*$")) |>
+  mutate(NAME = str_remove(NAME, ",.*$")) |>
+  ggplot(aes(y = reorder(NAME, estimate), x = estimate)) + 
+  geom_col() + 
+  labs(title = "Percent of commuters taking public transportation to work in the 20 largest US metro areas",
+       subtitle = "New York City has the highest percentage of commuters taking public transportation to work",
+       x = "Percent of commuters taking public transportation to work",
+       y = "Metro area",
+       caption = "Source: 2019 ACS 1-year estimates")
+```
+
+### 
+
+Remember this is what your graph should look like
+
+```{r}
+metros |>
+  mutate(NAME = str_remove(NAME, "-.*$")) |>
+  mutate(NAME = str_remove(NAME, ",.*$")) |>
+  ggplot(aes(y = reorder(NAME, estimate), x = estimate)) + 
+  geom_col() +  
+  theme_minimal() + 
+  labs(title = "Public transit commute share", 
+       subtitle = "2019 1-year ACS estimates", 
+       y = "", 
+       x = "ACS estimate", 
+       caption = "Source: ACS Data Profile variable DP03_0021P via the tidycensus R package") 
+
+```
+
+### Exercise 12
+
+You can still modify the plot to make it nicer. In the `geom_col()` function, set `color = "navy"`, `fill = "navy"`, `alpha = 0.5` and `width = 0.85`. Hit "Run Code."
+
+```{r customizing-ggplot2-visualizat-12, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r customizing-ggplot2-visualizat-12-hint-1, eval = FALSE}
+
+```
+
+```{r customizing-ggplot2-visualizat-12-test, include = FALSE}
+metros |>
+  mutate(NAME = str_remove(NAME, "-.*$")) |>
+  mutate(NAME = str_remove(NAME, ",.*$")) |>
+  ggplot(aes(y = reorder(NAME, estimate), x = estimate)) + 
+  geom_col(color = "navy", fill = "navy", 
+           alpha = 0.5, width = 0.85) + 
+ labs(title = "Public transit commute share", 
+       subtitle = "2019 1-year ACS estimates", 
+       y = "", 
+       x = "ACS estimate", 
+       caption = "Source: ACS Data Profile variable DP03_0021P via the tidycensus R package") 
+```
+
+### 
+
+To make the x-axis represent the percentage, we will rescale it using the **scales** package.
+
+### Exercise 13
+
+Copy the previous code of your graph. Add `scale_x_continuous(labels = label_percent(scale = 1))`. Note that you need to put `library(scales)` at the beginning of your code for it to run.
+
+
+```{r customizing-ggplot2-visualizat-13, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r customizing-ggplot2-visualizat-13-hint-1, eval = FALSE}
+library(...)
+
+... + 
+  scale_x_continuous(labels = label_percent(scale = 1)) + 
+  labs(...)
+```
+
+```{r customizing-ggplot2-visualizat-13-test, include = FALSE}
+library(scales)
+
+metros |>
+  mutate(NAME = str_remove(NAME, "-.*$")) |>
+  mutate(NAME = str_remove(NAME, ",.*$")) |>
+  ggplot(aes(y = reorder(NAME, estimate), x = estimate)) + 
+  geom_col(color = "navy", fill = "navy", 
+           alpha = 0.5, width = 0.85) + 
+  scale_x_continuous(labels = label_percent(scale = 1)) + 
+  labs(title = "Public transit commute share", 
+       subtitle = "2019 1-year ACS estimates", 
+       y = "", 
+       x = "ACS estimate", 
+       caption = "Source: ACS Data Profile variable DP03_0021P via the tidycensus R package") 
+```
+
+### 
+
+### Exercise 14
+
+Add `theme_minimal()` to the plot, set `base_size = 12`, `base_family = "Verdana"`. Hit "Run Code."
+
+
+```{r customizing-ggplot2-visualizat-14, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r customizing-ggplot2-visualizat-14-hint-1, eval = FALSE}
+... + 
+  theme_minimal(base_size = 12, base_family = "Verdana")
+```
+
+```{r customizing-ggplot2-visualizat-14-test, include = FALSE}
+metros |>
+  mutate(NAME = str_remove(NAME, "-.*$")) |>
+  mutate(NAME = str_remove(NAME, ",.*$")) |>
+  ggplot(aes(y = reorder(NAME, estimate), x = estimate)) + 
+  geom_col(color = "navy", fill = "navy", 
+           alpha = 0.5, width = 0.85) + 
+  scale_x_continuous(labels = label_percent(scale = 1)) + 
+  labs(title = "Public transit commute share", 
+       subtitle = "2019 1-year ACS estimates", 
+       y = "", 
+       x = "ACS estimate", 
+       caption = "Source: ACS Data Profile variable DP03_0021P via the tidycensus R package") +
+  theme_minimal(base_size = 12, base_family = "Verdana")
+```
+
+### 
+
+Once an analyst has settled on a visualization design, they may want to export their image from R to display on a website, in a blog post, or in a report. You can do so by clicking the button **Export** in the plot window and then **Save as Image**
+
+### Exercise 15
+
+However, you can also do it by running the function `ggsave()` on your plot. Hit "Run Code."
+
+<!-- GK: I delete the test case to avoid saving multiple times. -->
+
+```{r customizing-ggplot2-visualizat-15, exercise = TRUE}
+ggsave(
+  filename = "metro_transit.png",
+  path = "~/images",
+  width = 8,
+  height = 5,
+  units = "in",
+  dpi = 300
+)
+```
+
+### 
+
+The [ggsave()](https://ggplot2.tidyverse.org/reference/ggsave.html) function in ggplot2 will save the last plot generated to an image file in the user’s current working directory by default. The specified file extension will control the output image format, e.g. .png.
+
 ## Visualizing Margins of Error
 ### 
 
@@ -126,29 +972,11 @@ The [tidyverse](https://tidyverse.tidyverse.org/) is a collection of R packages 
 
 ### Exercise 1
 
-Load in **tidyverse** package. 
-
-```{r visualizing-margins-of-error-1, exercise = TRUE}
-
-```
-
-```{r visualizing-margins-of-error-1-hint-1, eval = FALSE}
-library(...)
-```
-
-```{r visualizing-margins-of-error-1-test, include = FALSE}
-library(tidyverse)
-```
-
-The **tidyverse** is not really a package itself, but, rather, loads several core packages.
-
-### Exercise 2
-
 We can access the US Census API via the **tidycensus** package. The **tidycensus** package utilizes an API key to access Census data. Load the **tidycensus** package into your R session.
 
 Run `search()` in the Console to see the libraries that you've currently loaded. CP/CR.
 
-```{r visualizing-margins-of-error-2}
+```{r visualizing-margins-of-error-1}
 question_text(NULL,
     answer(NULL, correct = TRUE),
     allow_retry = TRUE,
@@ -157,21 +985,19 @@ question_text(NULL,
     rows = 3)
 ```
 
-### 
-
 The output should include the string "package:tidycensus". Kyle Walker is also the author of the [**tidycensus**](https://walker-data.com/tidycensus/) package.
 
-### Exercise 3
+### Exercise 2
 
 In the example below, we will compare the median household incomes of counties in the US state of Maine from the 2016-2020 ACS.
 
 Use the function `get_decennial()` and passing in `state = "Maine"`, `geography = "county"`, `variables = c(totalpop = "P1_001N")`, and  `year = 2020` as arguments
  
-```{r visualizing-margins-of-error-3, exercise = TRUE}
+```{r visualizing-margins-of-error-2, exercise = TRUE}
 
 ```
 
-```{r visualizing-margins-of-error-3-hint-1, eval = FALSE}
+```{r visualizing-margins-of-error-2-hint-1, eval = FALSE}
 get_decennial(
   state = ...,
   ... = "county",
@@ -180,9 +1006,32 @@ get_decennial(
 ) 
 ```
 
-### Exercise 4
+### Exercise 3
 
 Pipe the previous code into the function  `arrange()` with `desc(value)` as an argument.
+ 
+```{r visualizing-margins-of-error-3, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r visualizing-margins-of-error-3-hint-1, eval = FALSE}
+get_decennial(
+  state = ...,
+  ... = "county",
+  variables = c(... = "P1_001N"),
+  year = 2020
+) |>
+   arrange(...(value))
+```
+
+There are sixteen counties in Maine, ranging in population from a maximum of 303,069 to a minimum of 16,800. In turn, estimates for the counties with smaller population sizes are likely to be subject to a larger margin of error than those with larger baseline populations.
+
+### Exercise 4
+
+Comparing median household incomes of these sixteen counties illustrates this point. Let’s first obtain this data with tidycensus then clean up the NAME column with str_remove() to remove redundant information.
+Delete the `arrange()` and anything within in it and replace it with the `mutate()` function and pass in `NAME = str_remove()` as the argument. withing `str_remove()` pass in `NAME, " County, Maine"` as an argument. 
  
 ```{r visualizing-margins-of-error-4, exercise = TRUE}
 
@@ -197,89 +1046,84 @@ get_decennial(
   variables = c(... = "P1_001N"),
   year = 2020
 ) |>
-   arrange(...(value))
-```
-
-There are sixteen counties in Maine, ranging in population from a maximum of 303,069 to a minimum of 16,800. In turn, estimates for the counties with smaller population sizes are likely to be subject to a larger margin of error than those with larger baseline populations.
-
-### Exercise 5
-
-Comparing median household incomes of these sixteen counties illustrates this point. Let’s first obtain this data with tidycensus then clean up the NAME column with str_remove() to remove redundant information.
-Delete the `arrange()` and anything within in it and replace it with the `mutate()` function and pass in `NAME = str_remove()` as the argument. withing `str_remove()` pass in `NAME, " County, Maine"` as an argument. 
- 
-```{r visualizing-margins-of-error-5, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r visualizing-margins-of-error-5-hint-1, eval = FALSE}
-get_decennial(
-  state = ...,
-  ... = "county",
-  variables = c(... = "P1_001N"),
-  year = 2020
-) |>
    mutate(NAME = ....(..., " County, Maine"))
 ```
 
 This will clean up the NAME column replacing something like "York County, Maine" with just "York" instead.
 
-### Exercise 6
+### Exercise 5
 
 We have assigned the previous code to the variable `main_income`. Print `main_income` to ensure it works.
+
+```{r visualizing-margins-of-error-5, exercise = TRUE}
+
+```
+
+```{r visualizing-margins-of-error-5-hint-1, eval = FALSE}
+maine_income
+```
+
+```{r visualizing-margins-of-error-5-test, include = FALSE}
+maine_income
+```
+
+### Exercise 6
+
+Several county estimates on the chart are quite close to one another, which may mean that the ranking of counties is misleading given the margin of error around those estimates. Inspect the moe of these counties more. Pipe `main_income` to  `arrange(desc(moe))`
 
 ```{r visualizing-margins-of-error-6, exercise = TRUE}
 
 ```
 
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
 ```{r visualizing-margins-of-error-6-hint-1, eval = FALSE}
-maine_income
+maine_income |>
+  ...(desc(...))
 ```
 
 ```{r visualizing-margins-of-error-6-test, include = FALSE}
-maine_income
+maine_income |>
+  arrange(desc(moe))
 ```
 
 ### Exercise 7
 
-Several county estimates on the chart are quite close to one another, which may mean that the ranking of counties is misleading given the margin of error around those estimates. Inspect the moe of these counties more. Pipe `main_income` to  `arrange(desc(moe))`
+Lets visualize the moe's of this data using ggplot. Pipe `main_income` to `ggplot()` setting `x` equal to `estimate` and `y` equal to `reoorder(NAME, estimate)` within `aes`.
 
 ```{r visualizing-margins-of-error-7, exercise = TRUE}
 
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
 ```{r visualizing-margins-of-error-7-hint-1, eval = FALSE}
-maine_income |>
-  ...(desc(...))
+ggplot(..., aes(x = ..., y = reorder(NAME, ...)))
 ```
 
 ```{r visualizing-margins-of-error-7-test, include = FALSE}
-maine_income |>
-  arrange(desc(moe))
+ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate)))
 ```
 
 ### Exercise 8
 
-Lets visualize the moe's of this data using ggplot. Pipe `main_income` to `ggplot()` setting `x` equal to `estimate` and `y` equal to `reoorder(NAME, estimate)` within `aes`.
+Add `geom_point` setting `size` to `3` and `color` to `"darkgreen"` within the function
 
 ```{r visualizing-margins-of-error-8, exercise = TRUE}
 
 ```
 
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
 ```{r visualizing-margins-of-error-8-hint-1, eval = FALSE}
-ggplot(..., aes(x = ..., y = reorder(NAME, ...)))
+ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
+  geom_point(... = 3, color =  ...)
 ```
 
 ```{r visualizing-margins-of-error-8-test, include = FALSE}
-ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate)))
+ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +  
+  geom_point(size = 3, color = "darkgreen")
 ```
 
 ### Exercise 9
-
-Add `geom_point` setting `size` to `3` and `color` to `"darkgreen"` within the function
 
 ```{r visualizing-margins-of-error-9, exercise = TRUE}
 
@@ -288,31 +1132,13 @@ Add `geom_point` setting `size` to `3` and `color` to `"darkgreen"` within the f
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r visualizing-margins-of-error-9-hint-1, eval = FALSE}
-ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
-  geom_point(... = 3, color =  ...)
-```
-
-```{r visualizing-margins-of-error-9-test, include = FALSE}
-ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +  
-  geom_point(size = 3, color = "darkgreen")
-```
-
-### Exercise 10
-
-```{r visualizing-margins-of-error-10, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r visualizing-margins-of-error-10-hint-1, eval = FALSE}
 ggplot(..., 
        aes(x = ..., 
            y = reorder(NAME, ...))) +  
   geom_point(... = 3, color =  ...)
 ```
 
-```{r visualizing-margins-of-error-10-test, include = FALSE}
+```{r visualizing-margins-of-error-9-test, include = FALSE}
 maine_income |> 
   ggplot(aes(x = estimate, 
              y = reorder(NAME, estimate))) +  
@@ -321,22 +1147,22 @@ maine_income |>
 
 A dot plot like the one above intended to visualize a ranking of county household incomes in Maine may be misleading. However, using visualization tools in ggplot2, we can visualize the uncertainty around each estimate, giving chart readers a sense of the uncertainty in the ranking.
 
-### Exercise 11
+### Exercise 10
 
  Lets add `geom_errorbar()` to visualize the margin of uncertainty. Pipe the previous code to `geom_errorbarh()` setting `xmin` equal to `estimate` minus `moe` and `xmax` to `estimate` plus `moe` within `aes()`.
  
 
-```{r visualizing-margins-of-error-11, exercise = TRUE}
+```{r visualizing-margins-of-error-10, exercise = TRUE}
 
 ```
 
-```{r visualizing-margins-of-error-11-hint-1, eval = FALSE}
+```{r visualizing-margins-of-error-10-hint-1, eval = FALSE}
 ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
   geom_point(... = 3, color =  ...) + 
   ...(aes(xmin = ... - moe, xmax = estimate + ...))
 ```
 
-```{r visualizing-margins-of-error-11-test, include = FALSE}
+```{r visualizing-margins-of-error-10-test, include = FALSE}
 ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +  
   geom_point(size = 3, color = "darkgreen") + 
   geom_errorbarh(aes(xmin = estimate - moe, xmax = estimate + moe))
@@ -344,7 +1170,7 @@ ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +
 
 Adding the horizontal error bars around each point gives us critical information to help us understand how our ranking of Maine counties by median household income.
 
-### Exercise 12
+### Exercise 11
 
 Lets make the plot look nice using `labs()` and `theme_minimal()`. Pipe to `theme_minimal()` setting `base_size` to `12.5`. Using `labs()` add a `title`, `subtitle`, `x`, and `y`. Here is our version:
 
@@ -362,6 +1188,38 @@ ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +
 
 But your version does not need to be identical.
 
+```{r visualizing-margins-of-error-11, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r visualizing-margins-of-error-11-hint-1, eval = FALSE}
+ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
+  geom_point(... = 3, color =  ...) + 
+  ...(aes(xmin = ... - moe, xmax = estimate + ...)) + 
+  theme_minimal(... = 12.5) + 
+  labs(title = ..., 
+      ... = "Counties in Maine", 
+       x = "2016-2020 ACS estimate", 
+       y = ...)
+```
+
+```{r visualizing-margins-of-error-11-test, include = FALSE}
+ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +  
+  geom_point(size = 3, color = "darkgreen") + 
+  geom_errorbarh(aes(xmin = estimate - moe, xmax = estimate + moe)) + 
+  theme_minimal(base_size = 12.5) + 
+  labs(title = "Median household income", 
+       subtitle = "Counties in Maine", 
+       x = "2016-2020 ACS estimate", 
+       y = "")
+```
+
+### Exercise 12
+
+Let's make the numbers on the x=axis neater. Pipe the previous code into `scale_x_continuous()` setting `labels = label_dollar()` as the argument
+
 ```{r visualizing-margins-of-error-12, exercise = TRUE}
 
 ```
@@ -376,43 +1234,11 @@ ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +
   labs(title = ..., 
       ... = "Counties in Maine", 
        x = "2016-2020 ACS estimate", 
-       y = ...)
-```
-
-```{r visualizing-margins-of-error-12-test, include = FALSE}
-ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +  
-  geom_point(size = 3, color = "darkgreen") + 
-  geom_errorbarh(aes(xmin = estimate - moe, xmax = estimate + moe)) + 
-  theme_minimal(base_size = 12.5) + 
-  labs(title = "Median household income", 
-       subtitle = "Counties in Maine", 
-       x = "2016-2020 ACS estimate", 
-       y = "")
-```
-
-### Exercise 13
-
-Let's make the numbers on the x=axis neater. Pipe the previous code into `scale_x_continuous()` setting `labels = label_dollar()` as the argument
-
-```{r visualizing-margins-of-error-13, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r visualizing-margins-of-error-13-hint-1, eval = FALSE}
-ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
-  geom_point(... = 3, color =  ...) + 
-  ...(aes(xmin = ... - moe, xmax = estimate + ...)) + 
-  theme_minimal(... = 12.5) + 
-  labs(title = ..., 
-      ... = "Counties in Maine", 
-       x = "2016-2020 ACS estimate", 
        y = ...) + 
   scale_x_continuous(labels = ...)
 ```
 
-```{r visualizing-margins-of-error-13-test, include = FALSE}
+```{r visualizing-margins-of-error-12-test, include = FALSE}
 ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +  
   geom_point(size = 3, color = "darkgreen") + 
   geom_errorbarh(aes(xmin = estimate - moe, xmax = estimate + moe)) + 
@@ -424,9 +1250,7 @@ ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +
   scale_x_continuous(labels = label_dollar())
 ```
 
-
 ## Visualizing ACS Estimates Over Time
-###
 While the output table usefully represented the time series of educational attainment in Colorado counties, data visualization is also commonly used to illustrate change over time. Arguably the most common chart type chosen for time-series visualization is the line chart, which ggplot2 handles capably with the geom_line() function.
 
 ### Exercise 1
@@ -438,8 +1262,7 @@ Assign the variable `years` to the years `2005` to `2019`. On another line assig
 
 ```
 
-
-```{r visualizing-acs-estimates-over-1-hint, eval = FALSE}
+```{r visualizing-acs-estimates-over-1-hint-1, eval = FALSE}
 ... <- 2005;2019
 names(...) <- years
 ```
@@ -460,7 +1283,7 @@ Copy the previous code and start on a new line. Use the function `map_dfr()` set
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r visualizing-acs-estimates-over-2-hint, eval = FALSE}
+```{r visualizing-acs-estimates-over-2-hint-1, eval = FALSE}
 years <- 2005:2019
 names(years) <- years
 
@@ -502,8 +1325,7 @@ map_dfr(years, ~{
 
 ```
 
-
-```{r visualizing-acs-estimates-over-3-hint, eval = FALSE}
+```{r visualizing-acs-estimates-over-3-hint-1, eval = FALSE}
 deschutes_value
 ```
 
@@ -521,7 +1343,7 @@ Start a pipe, piping `deschutes_value` to `ggplot()` setting `x` equal to `year`
 
 ```
 
-```{r visualizing-acs-estimates-over-4-hint, eval = FALSE}
+```{r visualizing-acs-estimates-over-4-hint-1, eval = FALSE}
 deschutes_value |> ...(aes(x = ..., y = estimate, ... = 1)) + 
   ... + 
   geom_point()
@@ -548,7 +1370,7 @@ After `ggplot()` and before `geom_line()` add a pipe of `geom_ribbon()` setting 
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r visualizing-acs-estimates-over-5-hint, eval = FALSE}
+```{r visualizing-acs-estimates-over-5-hint-1, eval = FALSE}
 deschutes_value |> ggplot(aes(x = ..., y = ..., group = 1))  + 
   ...(aes(ymax = ..., ymin = estimate - moe), 
               fill = ...,
@@ -577,7 +1399,7 @@ Pipe the previous code to `theme_minimal()` with the argument `base_size = 12`. 
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r visualizing-acs-estimates-over-6-hint, eval = FALSE}
+```{r visualizing-acs-estimates-over-6-hint-1, eval = FALSE}
 deschutes_value |> ggplot(aes(x = year, y = estimate, group = 1))  + 
   geom_ribbon(aes(ymax = estimate + moe, ymin = estimate - moe), 
               fill = "navy",
@@ -626,7 +1448,7 @@ Yours does not have to look exactly the same.
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r visualizing-acs-estimates-over-7-hint, eval = FALSE}
+```{r visualizing-acs-estimates-over-7-hint-1, eval = FALSE}
 deschutes_value |> ggplot(aes(x = year, y = estimate, group = 1))  + 
   geom_ribbon(aes(ymax = estimate + moe, ymin = estimate - moe), 
               fill = "navy",
@@ -655,9 +1477,6 @@ deschutes_value |> ggplot(aes(x = year, y = estimate, group = 1))  +
   #      y = "ACS estimate",
   #      caption = "Shaded area represents margin of error around the ACS estimate")
 ```
-
-
-
 
 ```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
 ```
