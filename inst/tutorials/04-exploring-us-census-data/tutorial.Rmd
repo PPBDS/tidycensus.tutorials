@@ -112,6 +112,8 @@ read_rds("data/housing_val2.rds")
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
 ```
 
+<!-- DK: No data downloads in test cases. -->
+
 ## Introduction
 ### 
 
@@ -132,8 +134,6 @@ Load in **tidycensus** package.
 
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
 ```{r basic-census-visualization-wit-1-hint-1, eval = FALSE}
 library(...)
 ```
@@ -143,6 +143,12 @@ library(tidycensus)
 ```
 
 ### 
+
+<!-- DK: Add text. -->
+
+```{r echo = FALSE}
+include_graphics("images/census-hierarchies.png")
+```
 
 ### Exercise 2
 
@@ -159,16 +165,6 @@ get_acs(
   variables = c(medinc = ..., medage = ...),
   year = ...
 )
-```
-
-```{r basic-census-visualization-wit-2-test, include = FALSE}
-get_acs(
-  geography = "county",
-  state = "Georgia",
-  variables = c(medinc = "B19013_001",
-                medage = "B01002_001"),
-  output = "wide",
-  year = 2020)
 ```
 
 ### 
@@ -454,7 +450,7 @@ Scatter plots are implemented in ggplot2 with the [geom_point()](https://ggplot2
 
 Let's see whether there is a relationship between median household income and median age in Georgia counties. Copy previous code, and add `geom_smooth()` to the plot, set the argument `method = "lm"`. Hit "Run Code."
 
-<!-- GK: Using quadratic regression should be more appropriate -->
+<!-- GK: Using quadratic (?) regression should be more appropriate. Two choices: Add another question right after which changes the argument to method or add that observation as a knowledge drop. -->
 
 ```{r basic-census-visualization-wit-13, exercise = TRUE}
 
@@ -948,7 +944,6 @@ Once an analyst has settled on a visualization design, they may want to export t
 
 However, you can also do it by running the function `ggsave()` on your plot. Hit "Run Code."
 
-<!-- GK: I delete the test case to avoid saving multiple times. -->
 
 ```{r customizing-ggplot2-visualizat-15, exercise = TRUE}
 ggsave(
