@@ -195,7 +195,7 @@ include_graphics("images/census-hierarchies.png")
 
 ### Exercise 3
 
-We have assigned the previous code to the variable `ga_wide`. Print `ga_wide` to ensure it works.
+We have assigned the object created with the previous code to `ga_wide`. Type `ga_wide`.
 
 ```{r basic-census-visualization-wit-3, exercise = TRUE}
 
@@ -211,7 +211,7 @@ ga_wide
 
 ### 
 
-The core visualization package within the [tidyverse](https://www.tidyverse.org/packages/) suite of packages is [ggplot2](https://ggplot2.tidyverse.org/). **ggplot2** allows R users to visualize data using a layered grammar of graphics approach, in which plot objects are initialized upon which the R user layers plot elements.
+The core visualization package within the *[Tidyverse](https://www.tidyverse.org/)* suite of packages is **[ggplot2](https://ggplot2.tidyverse.org/)**. **ggplot2** allows R users to visualize data using a layered grammar of graphics approach, in which plot objects are initialized upon which the R user layers plot elements.
 
 ### Exercise 4
 
@@ -548,7 +548,7 @@ library(tidyverse)
 
 ### 
 
-The [tidyverse](https://tidyverse.tidyverse.org/) is a collection of R packages that are designed to work together in common data wrangling, analysis, and visualization projects. Many of these R packages, maintained by RStudio, are among the most popular R packages worldwide.
+<!-- DK: Better knowledge drop. -->
 
 ### Exercise 2
 
