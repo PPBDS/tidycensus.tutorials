@@ -27,6 +27,28 @@ options(tutorial.exercise.timelimit = 60,
 # connection, so we need to save all the downloaded data. Save the creation code
 # to make replication/improvements easier.
 
+#ga_wide <- get_acs(
+#  geography = "county",
+#  state = "Georgia",
+#  variables = c(medinc = "B19013_001",
+#                medage = "B01002_001"),
+#  output = "wide",
+#  year = 2020
+#)
+#write_rds(ga_wide, "data/ga_wide.rds")
+ga_wide <- read_rds("data/ga_wide.rds")
+
+#metros <- get_acs(
+#  geography = "cbsa",
+#  variables = "DP03_0021P",
+#  summary_var = "B01003_001",
+#  survey = "acs1",
+#  year = 2019
+#) |> 
+#  slice_max(summary_est, n = 20)
+#write_rds(metros, "data/metros.rds")
+metros <- read_rds("data/metros.rds")
+
 # maine_income <- get_acs(
 #  state = "Maine",
 #  geography = "county",
@@ -144,11 +166,7 @@ library(tidycensus)
 
 ### 
 
-<!-- DK: Add text. -->
-
-```{r echo = FALSE}
-include_graphics("images/census-hierarchies.png")
-```
+Aggregate data from the decennial US Census, American Community Survey, and other Census surveys are made available to the public at different enumeration units. Enumeration units are geographies at which Census data are tabulated. 
 
 ### Exercise 2
 
@@ -169,47 +187,35 @@ get_acs(
 
 ### 
 
-We are requesting the data in wide format, which will spread the estimate and margin of error information across the columns.
+Enumeration units represent different levels of the Census hierarchy. This hierarchy is summarized in the graphic below
+
+```{r echo = FALSE}
+include_graphics("images/census-hierarchies.png")
+```
 
 ### Exercise 3
 
-Copy paste your previous code and assign it to an object called `ga_wide` using the assignment operator `<-`. Print `ga_wide` to verify the results. 
+We have assigned the previous code to the variable `ga_wide`. Print `ga_wide` to ensure it works.
 
 ```{r basic-census-visualization-wit-3, exercise = TRUE}
 
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
 ```{r basic-census-visualization-wit-3-hint-1, eval = FALSE}
-... <- get_acs(
-  geography = ...,
-  state = ...,
-  variables = c(medinc = ..., medage = ...),
-  year = ...
-)
-
-print(...)
+ga_wide
 ```
 
 ```{r basic-census-visualization-wit-3-test, include = FALSE}
-ga_wide <- get_acs(
-  geography = "county",
-  state = "Georgia",
-  variables = c(medinc = "B19013_001",
-                medage = "B01002_001"),
-  output = "wide",
-  year = 2020
-)
-
-print(ga_wide)
+ga_wide
 ```
 
 ### 
 
+The core visualization package within the [tidyverse](https://www.tidyverse.org/packages/) suite of packages is [ggplot2](https://ggplot2.tidyverse.org/). **ggplot2** allows R users to visualize data using a layered grammar of graphics approach, in which plot objects are initialized upon which the R user layers plot elements.
+
 ### Exercise 4
 
-Run the function `ggplot()` on `ga_wide`, setting the `aes()` argument to `x = midincE`. Hit "Run Code."
+Run the function `ggplot()` on `ga_wide`, setting the `aes()` argument to `x = midincE`. Note that this will return a plain graph.
 
 ```{r basic-census-visualization-wit-4, exercise = TRUE}
 
@@ -225,7 +231,7 @@ ggplot(ga_wide, aes(x = medincE))
 
 ### 
 
-Note that this will return a plain graph since we have not mapped the data point into the graph yet.
+**ggplot2** is an ideal package for visualization of US Census data, especially when obtained in tidy format by the **tidycensus** package. It has powerful capacity for basic charts, group-wise comparisons, and advanced chart types such as maps.
 
 ### Exercise 5
 
@@ -450,8 +456,6 @@ Scatter plots are implemented in ggplot2 with the [geom_point()](https://ggplot2
 
 Let's see whether there is a relationship between median household income and median age in Georgia counties. Copy previous code, and add `geom_smooth()` to the plot, set the argument `method = "lm"`. Hit "Run Code."
 
-<!-- GK: Using quadratic (?) regression should be more appropriate. Two choices: Add another question right after which changes the argument to method or add that observation as a knowledge drop. -->
-
 ```{r basic-census-visualization-wit-13, exercise = TRUE}
 
 ```
@@ -544,6 +548,8 @@ library(tidyverse)
 
 ### 
 
+The [tidyverse](https://tidyverse.tidyverse.org/) is a collection of R packages that are designed to work together in common data wrangling, analysis, and visualization projects. Many of these R packages, maintained by RStudio, are among the most popular R packages worldwide.
+
 ### Exercise 2
 
 Use the function `get_acs()` and set `geography = "cbsa"`, `variables = "DP03_0021P"`, ` summary_var = "B01003_001"`, `survey = "acs1"` and `year = 2019` as arguments. 
@@ -608,28 +614,18 @@ This command sort our data by descending order of a summary variable representin
 
 ### Exercise 4
 
-Assign your code to an object called `metros`. Hit "Run Code."
+We have assigned the previous code to the variable `metros`. Print `metros` to ensure it works.
 
 ```{r customizing-ggplot2-visualizat-4, exercise = TRUE}
 
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
 ```{r customizing-ggplot2-visualizat-4-hint-1, eval = FALSE}
-metros <- 
-  ... 
+metros 
 ```
 
 ```{r customizing-ggplot2-visualizat-4-test, include = FALSE}
-metros <- get_acs(
-  geography = "cbsa",
-  variables = "DP03_0021P",
-  summary_var = "B01003_001",
-  survey = "acs1",
-  year = 2019
-) |> 
-  slice_max(summary_est, n = 20)
+metros 
 ```
 
 ### 
@@ -783,7 +779,7 @@ The plot is much more legible after our modifications. Metropolitan areas can be
 
 ### Exercise 11
 
-Add title, subtitle, and x and y-axis labels, caption to the plot using `labs()`. 
+Add title, subtitle, and x-axis and y-axis labels, caption to the plot using `labs()`. 
 
 ```{r customizing-ggplot2-visualizat-11, exercise = TRUE}
 
@@ -798,7 +794,7 @@ Add title, subtitle, and x and y-axis labels, caption to the plot using `labs()`
   labs(title = ..., 
        subtitle = ..., 
        x = ..., 
-       y = ..., 
+       y = "", 
        caption = ...)
 ```
 
@@ -808,11 +804,11 @@ metros |>
   mutate(NAME = str_remove(NAME, ",.*$")) |>
   ggplot(aes(y = reorder(NAME, estimate), x = estimate)) + 
   geom_col() + 
-  labs(title = "Percent of commuters taking public transportation to work in the 20 largest US metro areas",
-       subtitle = "New York City has the highest percentage of commuters taking public transportation to work",
-       x = "Percent of commuters taking public transportation to work",
-       y = "Metro area",
-       caption = "Source: 2019 ACS 1-year estimates")
+  labs(title = "Public transit commute share", 
+       subtitle = "2019 1-year ACS estimates", 
+       y = "", 
+       x = "ACS estimate", 
+       caption = "Source: ACS Data Profile variable DP03_0021P via the tidycensus R package") 
 ```
 
 ### 
@@ -904,6 +900,8 @@ metros |>
 
 ### 
 
+While an analyst may be comfortable with the plot as-is, **ggplot2** allows for significant customization with respect to stylistic presentation. This includes styling the bars on the plot with a different color and internal transparency; changing the font; and customizing the axis tick labels.
+
 ### Exercise 14
 
 Add `theme_minimal()` to the plot, set `base_size = 12`, `base_family = "Verdana"`. Hit "Run Code."
@@ -944,7 +942,6 @@ Once an analyst has settled on a visualization design, they may want to export t
 
 However, you can also do it by running the function `ggsave()` on your plot. Hit "Run Code."
 
-
 ```{r customizing-ggplot2-visualizat-15, exercise = TRUE}
 ggsave(
   filename = "metro_transit.png",
@@ -963,7 +960,7 @@ The [ggsave()](https://ggplot2.tidyverse.org/reference/ggsave.html) function in 
 ## Visualizing Margins of Error
 ### 
 
-The [tidyverse](https://tidyverse.tidyverse.org/) is a collection of R packages that are designed to work together in common data wrangling, analysis, and visualization projects. Many of these R packages, maintained by RStudio, are among the most popular R packages worldwide.
+Handling margins of error appropriately is of significant importance for analysts working with ACS data. While **tidycensus** has tools available for working with margins of error in a data wrangling workflow, it is also often useful to visualize those margins of error to illustrate the degree of uncertainty around estimates, especially when making comparisons between those estimates.
 
 ### Exercise 1
 
@@ -1001,6 +998,10 @@ get_decennial(
 ) 
 ```
 
+### 
+
+In the above example visualization of public transportation mode share by metropolitan area for the largest metros in the United States, estimates are associated with margins of error though they are relatively small given the large population size of the geographic units represented in the plot. However, if studying demographic trends for geographies of smaller population size - like counties, Census tracts, or block groups - comparisons can be subject to a considerable degree of uncertainty.
+
 ### Exercise 3
 
 Pipe the previous code into the function  `arrange()` with `desc(value)` as an argument.
@@ -1020,6 +1021,8 @@ get_decennial(
 ) |>
    arrange(...(value))
 ```
+
+### 
 
 There are sixteen counties in Maine, ranging in population from a maximum of 303,069 to a minimum of 16,800. In turn, estimates for the counties with smaller population sizes are likely to be subject to a larger margin of error than those with larger baseline populations.
 
