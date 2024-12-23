@@ -74,7 +74,7 @@ metros <- read_rds("data/metros.rds")
  # )
 #}, .id = "year")
 #  write_rds(deschutes_value, "data/deschutes_value.rds")
- read_rds("data/deschutes_value.rds")
+deschutes_value <- read_rds("data/deschutes_value.rds")
   
   
 
@@ -1047,6 +1047,8 @@ get_decennial(
    mutate(NAME = ....(..., " County, Maine"))
 ```
 
+### 
+
 This will clean up the NAME column replacing something like "York County, Maine" with just "York" instead.
 
 ### Exercise 5
@@ -1065,9 +1067,24 @@ maine_income
 maine_income
 ```
 
+### 
+
+We will produce the below graph to visualize the median household income of Maine counties. 
+
+```{r}
+ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) + 
+  geom_point(size = 3, color = "darkgreen") + 
+  labs(title = "Median household income", 
+       subtitle = "Counties in Maine", 
+       x = "", 
+       y = "ACS estimate") + 
+  theme_minimal(base_size = 12.5) + 
+  scale_x_continuous(labels = label_dollar())
+```
+
 ### Exercise 6
 
-Several county estimates on the chart are quite close to one another, which may mean that the ranking of counties is misleading given the margin of error around those estimates. Inspect the moe of these counties more. Pipe `main_income` to  `arrange(desc(moe))`
+Run `ggplot()` on `main_income`, setting the `aes()` argument to `x = estimate`, and `y = reorder(NAME, estimate)`. Hit "Run Code."
 
 ```{r visualizing-margins-of-error-6, exercise = TRUE}
 
@@ -1076,34 +1093,57 @@ Several county estimates on the chart are quite close to one another, which may 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r visualizing-margins-of-error-6-hint-1, eval = FALSE}
-maine_income |>
-  ...(desc(...))
+ggplot(..., aes(x = ..., y = reorder(NAME, ...)))
 ```
 
 ```{r visualizing-margins-of-error-6-test, include = FALSE}
-maine_income |>
-  arrange(desc(moe))
+ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate)))
 ```
+
+### 
+
+Using some of the tips covered in the previous visualization section, we can produce a plot with appropriate styling and formatting to rank the counties.
 
 ### Exercise 7
 
-Lets visualize the moe's of this data using ggplot. Pipe `main_income` to `ggplot()` setting `x` equal to `estimate` and `y` equal to `reoorder(NAME, estimate)` within `aes`.
+Add `geom_point()` to the plot, set the argument `size = 3`, `color = "darkgreen"`. Hit "Run Code."
 
 ```{r visualizing-margins-of-error-7, exercise = TRUE}
 
 ```
 
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
 ```{r visualizing-margins-of-error-7-hint-1, eval = FALSE}
-ggplot(..., aes(x = ..., y = reorder(NAME, ...)))
+ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
+  geom_point(... = 3, color =  ...)
 ```
 
 ```{r visualizing-margins-of-error-7-test, include = FALSE}
-ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate)))
+ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +
+  geom_point(size = 3, color = "darkgreen")
 ```
+
+### 
+
+The above visualization suggests a ranking of counties from the wealthiest (Cumberland) to the poorest (Piscataquis). However, the data used to generate this chart is significantly different from the metropolitan area data used in the previous example.
 
 ### Exercise 8
 
-Add `geom_point` setting `size` to `3` and `color` to `"darkgreen"` within the function
+Add title, subtitle, and x and y-axis labels to the scatter plot using `labs()`. 
+
+Remember this is what your graph should look like
+
+```{r}
+ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) + 
+  geom_point(size = 3, color = "darkgreen") + 
+  labs(title = "Median household income", 
+       subtitle = "Counties in Maine", 
+       x = "", 
+       y = "ACS estimate") + 
+  theme_minimal(base_size = 12.5) + 
+  scale_x_continuous(labels = label_dollar())
+```
 
 ```{r visualizing-margins-of-error-8, exercise = TRUE}
 
@@ -1113,15 +1153,31 @@ Add `geom_point` setting `size` to `3` and `color` to `"darkgreen"` within the f
 
 ```{r visualizing-margins-of-error-8-hint-1, eval = FALSE}
 ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
-  geom_point(... = 3, color =  ...)
+  geom_point(... = 3, color =  ...) + 
+  labs(title = ..., 
+       subtitle = ..., 
+       x = "", 
+       y = ...)
 ```
 
 ```{r visualizing-margins-of-error-8-test, include = FALSE}
-ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +  
-  geom_point(size = 3, color = "darkgreen")
+ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) + 
+  geom_point(size = 3, color = "darkgreen") + 
+  labs(title = "Median household income", 
+       subtitle = "Counties in Maine", 
+       x = "", 
+       y = "ACS estimate") + 
+  theme_minimal(base_size = 12.5) + 
+  scale_x_continuous(labels = label_dollar())
 ```
 
+### 
+
+In our first example, ACS estimates covered the top 20 US metros by population - areas that all have populations exceeding 2.8 million. For these areas, margins of error are small enough that they do not meaningfully change the interpretation of the estimates given the large sample sizes used to generate them.
+
 ### Exercise 9
+
+Add `theme_minimal()` to the plot, set `base_size = 12.5`. Hit "Run Code."
 
 ```{r visualizing-margins-of-error-9, exercise = TRUE}
 
@@ -1130,48 +1186,174 @@ ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r visualizing-margins-of-error-9-hint-1, eval = FALSE}
-ggplot(..., 
-       aes(x = ..., 
-           y = reorder(NAME, ...))) +  
-  geom_point(... = 3, color =  ...)
+ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
+  geom_point(... = 3, color =  ...) + 
+  labs(title = ..., 
+       subtitle = ..., 
+       x = "", 
+       y = ...) + 
+  theme_minimal(base_size = ...)
 ```
 
 ```{r visualizing-margins-of-error-9-test, include = FALSE}
-maine_income |> 
-  ggplot(aes(x = estimate, 
-             y = reorder(NAME, estimate))) +  
-    geom_point(size = 3, color = "darkgreen")
+ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) + 
+  geom_point(size = 3, color = "darkgreen") + 
+  labs(title = "Median household income", 
+       subtitle = "Counties in Maine", 
+       x = "", 
+       y = "ACS estimate") + 
+  theme_minimal(base_size = 12.5) 
 ```
 
-A dot plot like the one above intended to visualize a ranking of county household incomes in Maine may be misleading. However, using visualization tools in ggplot2, we can visualize the uncertainty around each estimate, giving chart readers a sense of the uncertainty in the ranking.
+### 
+
+However, as discussed in Section 3.5, smaller geographies may have much larger margins of error relative to their ACS estimates.
 
 ### Exercise 10
 
- Lets add `geom_errorbar()` to visualize the margin of uncertainty. Pipe the previous code to `geom_errorbarh()` setting `xmin` equal to `estimate` minus `moe` and `xmax` to `estimate` plus `moe` within `aes()`.
- 
+To add the dollar sign to the x-axis, use the `scale_x_continuous()` function with the `labels = label_dollar()` argument. Hit "Run Code."
 
 ```{r visualizing-margins-of-error-10, exercise = TRUE}
 
 ```
 
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
 ```{r visualizing-margins-of-error-10-hint-1, eval = FALSE}
+ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
+  geom_point(... = 3, color =  ...) + 
+  labs(title = ..., 
+       subtitle = ..., 
+       x = "", 
+       y = ...) + 
+  theme_minimal(base_size = ...) + 
+  scale_x_continuous(labels = ...)
+```
+
+```{r visualizing-margins-of-error-10-test, include = FALSE}
+ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) + 
+  geom_point(size = 3, color = "darkgreen") + 
+  labs(title = "Median household income", 
+       subtitle = "Counties in Maine", 
+       x = "", 
+       y = "ACS estimate") + 
+  theme_minimal(base_size = 12.5) + 
+  scale_x_continuous(labels = label_dollar())
+```
+
+### 
+
+Several county estimates on the chart are quite close to one another, which may mean that the ranking of counties is misleading given the margin of error around those estimates
+
+### Exercise 11
+
+We can explore this by looking directly at the data. Pipe `main_income` to  `arrange(desc(moe))`
+
+```{r visualizing-margins-of-error-11, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r visualizing-margins-of-error-11-hint-1, eval = FALSE}
+maine_income |>
+  ...(desc(...))
+```
+
+```{r visualizing-margins-of-error-11-test, include = FALSE}
+maine_income |>
+  arrange(desc(moe))
+```
+
+### 
+
+This will arrange the data in descending order of the margin of error, allowing us to see which estimates are most uncertain. We can also visualize it using `ggplot()`
+
+```{r}
+ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) + 
+  geom_errorbarh(aes(xmin = estimate - moe, xmax = estimate + moe)) + 
+  geom_point(size = 3, color = "darkgreen") + 
+  theme_minimal(base_size = 12.5) + 
+  labs(title = "Median household income", 
+       subtitle = "Counties in Maine", 
+       x = "2016-2020 ACS estimate", 
+       y = "") + 
+  scale_x_continuous(labels = label_dollar())
+```
+
+### Exercise 12
+
+Lets visualize the moe's of this data using ggplot. Pipe `main_income` to `ggplot()` setting `x` equal to `estimate` and `y` equal to `reoorder(NAME, estimate)` within `aes`.
+
+```{r visualizing-margins-of-error-12, exercise = TRUE}
+
+```
+
+```{r visualizing-margins-of-error-12-hint-1, eval = FALSE}
+ggplot(..., aes(x = ..., y = reorder(NAME, ...)))
+```
+
+```{r visualizing-margins-of-error-12-test, include = FALSE}
+ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate)))
+```
+
+### 
+
+Margins of error around the estimated median household incomes vary from a low of $1563 (Cumberland County) to a high of $4616 (Sagadahoc County). In many cases, the margins of error around estimated county household income exceed the differences between counties of neighboring ranks, suggesting uncertainty in the ranks themselves.
+
+### Exercise 13
+
+Add `geom_point` setting `size` to `3` and `color` to `"darkgreen"` within the function
+
+```{r visualizing-margins-of-error-13, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r visualizing-margins-of-error-13-hint-1, eval = FALSE}
+ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
+  geom_point(... = 3, color =  ...)
+```
+
+```{r visualizing-margins-of-error-13-test, include = FALSE}
+ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +
+  geom_point(size = 3, color = "darkgreen")
+```
+
+### 
+
+A dot plot like the one above intended to visualize a ranking of county household incomes in Maine may be misleading. However, using visualization tools in **ggplot2**, we can visualize the uncertainty around each estimate, giving chart readers a sense of the uncertainty in the ranking.
+
+### Exercise 14
+
+Lets add `geom_errorbar()` to visualize the margin of uncertainty. Pipe the previous code to `geom_errorbarh()` setting `xmin` equal to `estimate` minus `moe` and `xmax` to `estimate` plus `moe` within `aes()`.
+ 
+```{r visualizing-margins-of-error-14, exercise = TRUE}
+
+```
+
+```{r visualizing-margins-of-error-14-hint-1, eval = FALSE}
 ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
   geom_point(... = 3, color =  ...) + 
   ...(aes(xmin = ... - moe, xmax = estimate + ...))
 ```
 
-```{r visualizing-margins-of-error-10-test, include = FALSE}
-ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +  
+```{r visualizing-margins-of-error-14-test, include = FALSE}
+ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +
   geom_point(size = 3, color = "darkgreen") + 
   geom_errorbarh(aes(xmin = estimate - moe, xmax = estimate + moe))
 ```
 
-Adding the horizontal error bars around each point gives us critical information to help us understand how our ranking of Maine counties by median household income.
+### 
 
-### Exercise 11
+The `geom_errorbarh()` will plot horizontal error bars around each dot that stretch to a given value around each estimate. In this instance, we will use the `moe` column to determine the lengths of the error bars.
 
-Lets make the plot look nice using `labs()` and `theme_minimal()`. Pipe to `theme_minimal()` setting `base_size` to `12.5`. Using `labs()` add a `title`, `subtitle`, `x`, and `y`. Here is our version:
+### Exercise 15
 
+Lets make the plot look nice using `labs()` and `theme_minimal()`. Pipe to `theme_minimal()` setting `base_size` to `12.5`. Using `labs()` add a `title`, `subtitle`, `x`, and `y`. 
+
+This is what your graph should look like:
 
 ```{r}
 ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +  
@@ -1184,15 +1366,13 @@ ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +
        y = "")
 ```
 
-But your version does not need to be identical.
-
-```{r visualizing-margins-of-error-11, exercise = TRUE}
+```{r visualizing-margins-of-error-15, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r visualizing-margins-of-error-11-hint-1, eval = FALSE}
+```{r visualizing-margins-of-error-15-hint-1, eval = FALSE}
 ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
   geom_point(... = 3, color =  ...) + 
   ...(aes(xmin = ... - moe, xmax = estimate + ...)) + 
@@ -1203,7 +1383,7 @@ ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +
        y = ...)
 ```
 
-```{r visualizing-margins-of-error-11-test, include = FALSE}
+```{r visualizing-margins-of-error-15-test, include = FALSE}
 ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +  
   geom_point(size = 3, color = "darkgreen") + 
   geom_errorbarh(aes(xmin = estimate - moe, xmax = estimate + moe)) + 
@@ -1214,17 +1394,21 @@ ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +
        y = "")
 ```
 
-### Exercise 12
+### 
+
+Adding the horizontal error bars around each point gives us critical information to help us understand how our ranking of Maine counties by median household income. 
+
+### Exercise 16
 
 Let's make the numbers on the x=axis neater. Pipe the previous code into `scale_x_continuous()` setting `labels = label_dollar()` as the argument
 
-```{r visualizing-margins-of-error-12, exercise = TRUE}
+```{r visualizing-margins-of-error-16, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r visualizing-margins-of-error-12-hint-1, eval = FALSE}
+```{r visualizing-margins-of-error-16-hint-1, eval = FALSE}
 ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +  
   geom_point(... = 3, color =  ...) + 
   ...(aes(xmin = ... - moe, xmax = estimate + ...)) + 
@@ -1236,7 +1420,7 @@ ggplot(..., aes(x = ..., y = reorder(NAME, ...))) +
   scale_x_continuous(labels = ...)
 ```
 
-```{r visualizing-margins-of-error-12-test, include = FALSE}
+```{r visualizing-margins-of-error-16-test, include = FALSE}
 ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +  
   geom_point(size = 3, color = "darkgreen") + 
   geom_errorbarh(aes(xmin = estimate - moe, xmax = estimate + moe)) + 
@@ -1248,14 +1432,19 @@ ggplot(maine_income, aes(x = estimate, y = reorder(NAME, estimate))) +
   scale_x_continuous(labels = label_dollar())
 ```
 
+### 
+
+For example, while the ACS estimate suggests that Piscataquis County has the lowest median household income in Maine, the large margin of error around the estimate for Piscataquis County suggests that either Aroostook or Washington Counties could conceivably have lower median household incomes. 
+
 ## Visualizing ACS Estimates Over Time
-While the output table usefully represented the time series of educational attainment in Colorado counties, data visualization is also commonly used to illustrate change over time. Arguably the most common chart type chosen for time-series visualization is the line chart, which ggplot2 handles capably with the geom_line() function.
+### 
+
+While the output table usefully represented the time series of educational attainment in Colorado counties, data visualization is also commonly used to illustrate change over time. Arguably the most common chart type chosen for time-series visualization is the line chart, which ggplot2 handles capably with the `geom_line()` function.
 
 ### Exercise 1
 
-For an illustrative example, we’ll obtain 1-year ACS data from 2005 through 2019 on median home value for Deschutes County, Oregon, home to the city of Bend and large numbers of in-migrants in recent years from the Bay Area in California.
+Assign the variable `years` to the years `2005` to `2019`. On another line assign the function `names()` with `years` as its argument to the variable `years`.
 
-Assign the variable `years` to the years `2005` to `2019`. On another line assign the function `names()` with    `years` as its argument to the variable `years`.    
 ```{r visualizing-acs-estimates-over-1, exercise = TRUE}
 
 ```
@@ -1271,7 +1460,13 @@ names(years) <- years
 
 ```
 
+### 
+
+For an illustrative example, we’ll obtain 1-year ACS data from 2005 through 2019 on median home value for Deschutes County, Oregon, home to the city of Bend and large numbers of in-migrants in recent years from the Bay Area in California.
+
 ### Exercise 2
+
+<!-- GK: This instruction is too long, consider pre-adding it for students -->
 
 Copy the previous code and start on a new line. Use the function `map_dfr()` setting `years` as an argument. the second argument will be a call to `get_acs()`. Use `~{}` and within that put the call to `get_acs()`. Set the arguments of `get_acs()` as;  geography = "county", variables = "B25077_001", state = "OR", county = "Deschutes", year = .x, and survey = "acs1". Set the third argument of `map_dfr()` to `.id = "year"`.
 
@@ -1313,11 +1508,13 @@ map_dfr(years, ~{
 }, .id = "year")
 ```
 
+### 
+
 `map_dfr()` is used to iterate over a named vector of years, creating a time-series dataset of median home value in `Deschutes County` since 2005, and we use the formula specification for anonymous functions so that `~ .x` translates to function(x) x.
 
 ### Exercise 3
 
- We have assigned the previous code to the variable `deschutes_value`. Print out 'deschutes_value' to verify the results. 
+We have assigned the previous code to the variable `deschutes_value`. Print out `deschutes_value` to verify the results. 
  
 ```{r visualizing-acs-estimates-over-3, exercise = TRUE}
 
@@ -1328,15 +1525,17 @@ deschutes_value
 ```
 
 ```{r visualizing-acs-estimates-over-3-test, include = FALSE}
-# SU: Had to comment it out because apparently it cant find it; deschutes_value
-
+deschutes_value
 ```
+
+### 
+
+This information can be visualized with familiar **ggplot2** syntax. `deschutes_value` is specified as the input dataset, with year mapped to the X-axis and estimate mapped to the y-axis. 
 
 ### Exercise 4
 
-This information can be visualized with familiar ggplot2 syntax. `deschutes_value` is specified as the input dataset, with year mapped to the X-axis and estimate mapped to the y-axis. The argument `group = 1` is used to help ggplot2 understand how to connect the yearly data points with lines given that only one county is being visualized. `geom_line()` then draws the lines, and we layer points on top of the lines as well to highlight the actual ACS estimates.
-
 Start a pipe, piping `deschutes_value` to `ggplot()` setting `x` equal to `year`, `y` equal to `estimate` and `group` equal to `1` within `aes()`. Then add `geom_line()` and `geom_point()`.
+
 ```{r visualizing-acs-estimates-over-4, exercise = TRUE}
 
 ```
@@ -1348,13 +1547,15 @@ deschutes_value |> ...(aes(x = ..., y = estimate, ... = 1)) +
 ```
 
 ```{r visualizing-acs-estimates-over-4-test, include = FALSE}
-# SU: Had to comment it out because apparently it cant find it; deschutes_value |> ggplot(aes(x = year, y = estimate, group = 1)) + 
-  #geom_line() + 
-  #geom_point()
+ deschutes_value |> ggplot(aes(x = year, y = estimate, group = 1)) + 
+  geom_line() + 
+  geom_point()
 
 ```
 
-The chart shows rising home values prior to the 2008 recession; a notable drop after the housing market crash; and rising values since 2011, reflecting increased demand from wealthy in-migrants from locations like the Bay Area. 
+### 
+
+The argument `group = 1` is used to help ggplot2 understand how to connect the yearly data points with lines given that only one county is being visualized. `geom_line()` then draws the lines, and we layer points on top of the lines as well to highlight the actual ACS estimates.
 
 ### Exercise 5
 
@@ -1378,14 +1579,17 @@ deschutes_value |> ggplot(aes(x = ..., y = ..., group = 1))  +
 ```
 
 ```{r visualizing-acs-estimates-over-5-test, include = FALSE}
-# SU: Had to comment it out because apparently it cant find itdeschutes_value |> ggplot(aes(x = year, y = estimate, group = 1))  + 
-  # geom_ribbon(aes(ymax = ..., ... = estimate - moe), 
-  #             ... = "navy",
-  #             alpha = ...) + 
-  # geom_line(color = "navy") + 
-  # geom_point(color = "navy", size = 2)
-
+deschutes_value |> ggplot(aes(x = year, y = estimate, group = 1))  + 
+  geom_ribbon(aes(ymax = estimate + moe, ymin = estimate - moe), 
+              fill = "navy",
+              alpha = 0.4) + 
+  geom_line(color = "navy") + 
+  geom_point(color = "navy", size = 2)
 ```
+
+### 
+
+The chart shows rising home values prior to the 2008 recession; a notable drop after the housing market crash; and rising values since 2011, reflecting increased demand from wealthy in-migrants from locations like the Bay Area. 
 
 ### Exercise 6
 
@@ -1409,36 +1613,35 @@ deschutes_value |> ggplot(aes(x = year, y = estimate, group = 1))  +
 ```
 
 ```{r visualizing-acs-estimates-over-6-test, include = FALSE}
-# SU: Had to comment it out because apparently it cant find itdeschutes_value |> ggplot(aes(x = year, y = estimate, group = 1))  + 
-  # geom_ribbon(aes(ymax = estimate + moe, ymin = estimate - moe), 
-  #             fill = "navy",
-  #             alpha = 0.4) + 
-  # geom_line(color = "navy") + 
-  # geom_point(color = "navy", size = 2) + 
-  # theme_minimal(base_size = 12) + 
-  # scale_y_continuous(labels = label_dollar(scale = .001, suffix = "k")) 
+deschutes_value |> ggplot(aes(x = year, y = estimate, group = 1))  + 
+   geom_ribbon(aes(ymax = estimate + moe, ymin = estimate - moe), 
+               fill = "navy",
+               alpha = 0.4) + 
+   geom_line(color = "navy") + 
+   geom_point(color = "navy", size = 2) + 
+   theme_minimal(base_size = 12) + 
+   scale_y_continuous(labels = label_dollar(scale = .001, suffix = "k")) 
 
 ```
 
 ### Exercise 7
 
 Add `labels` for the `title`, `caption`, `x`, and `y` using `labs()`. This is what our graph looks like:
-```{r}
-# SU: Had to comment it out because apparently it cant find itggplot(deschutes_value, aes(x = year, y = estimate, group = 1)) + 
-  # geom_ribbon(aes(ymax = estimate + moe, ymin = estimate - moe), 
-  #             fill = "navy",
-  #             alpha = 0.4) + 
-  # geom_line(color = "navy") + 
-  # geom_point(color = "navy", size = 2) + 
-  # theme_minimal(base_size = 12) + 
-  # scale_y_continuous(labels = label_dollar(scale = .001, suffix = "k")) + 
-  # labs(title = "Median home value in Deschutes County, OR",
-  #      x = "Year",
-  #      y = "ACS estimate",
-  #      caption = "Shaded area represents margin of error around the ACS estimate")
-```
 
-Yours does not have to look exactly the same. 
+```{r}
+ggplot(deschutes_value, aes(x = year, y = estimate, group = 1)) + 
+   geom_ribbon(aes(ymax = estimate + moe, ymin = estimate - moe), 
+               fill = "navy",
+               alpha = 0.4) + 
+   geom_line(color = "navy") + 
+   geom_point(color = "navy", size = 2) + 
+   theme_minimal(base_size = 12) + 
+   scale_y_continuous(labels = label_dollar(scale = .001, suffix = "k")) + 
+   labs(title = "Median home value in Deschutes County, OR",
+        x = "Year",
+        y = "ACS estimate",
+        caption = "Shaded area represents margin of error around the ACS estimate")
+```
 
 ```{r visualizing-acs-estimates-over-7, exercise = TRUE}
 
@@ -1462,18 +1665,18 @@ deschutes_value |> ggplot(aes(x = year, y = estimate, group = 1))  +
 ```
 
 ```{r visualizing-acs-estimates-over-7-test, include = FALSE}
-# SU: Had to comment it out because apparently it cant find itggplot(deschutes_value, aes(x = year, y = estimate, group = 1)) + 
-  # geom_ribbon(aes(ymax = estimate + moe, ymin = estimate - moe), 
-  #             fill = "navy",
-  #             alpha = 0.4) + 
-  # geom_line(color = "navy") + 
-  # geom_point(color = "navy", size = 2) + 
-  # theme_minimal(base_size = 12) + 
-  # scale_y_continuous(labels = label_dollar(scale = .001, suffix = "k")) + 
-  # labs(title = "Median home value in Deschutes County, OR",
-  #      x = "Year",
-  #      y = "ACS estimate",
-  #      caption = "Shaded area represents margin of error around the ACS estimate")
+ggplot(deschutes_value, aes(x = year, y = estimate, group = 1)) + 
+   geom_ribbon(aes(ymax = estimate + moe, ymin = estimate - moe), 
+               fill = "navy",
+               alpha = 0.4) + 
+   geom_line(color = "navy") + 
+   geom_point(color = "navy", size = 2) + 
+   theme_minimal(base_size = 12) + 
+   scale_y_continuous(labels = label_dollar(scale = .001, suffix = "k")) + 
+   labs(title = "Median home value in Deschutes County, OR",
+        x = "Year",
+        y = "ACS estimate",
+        caption = "Shaded area represents margin of error around the ACS estimate")
 ```
 
 ```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
