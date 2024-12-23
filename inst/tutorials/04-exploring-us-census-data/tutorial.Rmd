@@ -134,14 +134,11 @@ read_rds("data/housing_val2.rds")
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
 ```
 
-<!-- DK: No data downloads in test cases. -->
-
 ## Introduction
 ### 
 
-This tutorial covers [Chapter 4: Exploring US Census data with visualization](https://walker-data.com/census-r/exploring-us-census-data-with-visualization.html#visualizing-margins-of-error) from [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You will learn about the [**ggplot**] and [**plotly**] package and mapping and using it to visualize moes (margin of error)
+This tutorial covers [Chapter 4: Exploring US Census data with visualization](https://walker-data.com/census-r/exploring-us-census-data-with-visualization.html#visualizing-margins-of-error) from [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You will learn about using the [**ggplot**](https://ggplot2.tidyverse.org/) package for mapping and for visualizing the margin of error.
 
-<!-- DK: Add in sections 4.1 and 4.2 -->
 
 ## Basic Census visualization with **ggplot2**
 ### 
@@ -1466,7 +1463,7 @@ For an illustrative example, we’ll obtain 1-year ACS data from 2005 through 20
 
 ### Exercise 2
 
-<!-- GK: This instruction is too long, consider pre-adding it for students -->
+<!-- DK: This instruction is too long, consider pre-adding it for students -->
 
 Copy the previous code and start on a new line. Use the function `map_dfr()` setting `years` as an argument. the second argument will be a call to `get_acs()`. Use `~{}` and within that put the call to `get_acs()`. Set the arguments of `get_acs()` as;  geography = "county", variables = "B25077_001", state = "OR", county = "Deschutes", year = .x, and survey = "acs1". Set the third argument of `map_dfr()` to `.id = "year"`.
 
@@ -1491,6 +1488,8 @@ names(years) <- years
   )
 }, .id = ...)
 ```
+
+<!-- DK: Modify any test which downloads data. -->
 
 ```{r visualizing-acs-estimates-over-2-test, include = FALSE}
 years <- 2005:2019
@@ -1678,6 +1677,12 @@ ggplot(deschutes_value, aes(x = year, y = estimate, group = 1)) +
         y = "ACS estimate",
         caption = "Shaded area represents margin of error around the ACS estimate")
 ```
+
+## Summary
+### 
+
+This tutorial covered [Chapter 4: Exploring US Census data with visualization](https://walker-data.com/census-r/exploring-us-census-data-with-visualization.html#visualizing-margins-of-error) from [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You learned about using the [**ggplot**](https://ggplot2.tidyverse.org/) package for mapping and for visualizing the margin of error.
+
 
 ```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
 ```
