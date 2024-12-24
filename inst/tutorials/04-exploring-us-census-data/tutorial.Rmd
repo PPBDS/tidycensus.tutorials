@@ -89,14 +89,14 @@ deschutes_value <- read_rds("data/deschutes_value.rds")
  # year = 2019
 #) 
  # write_rds(utah, "data/utah.rds")
-  read_rds("data/utah.rds")
+utah <-  read_rds("data/utah.rds")
   
  # utah_filtered <- filter(utah, str_detect(AGEGROUP, "^Age"), 
  #                SEX != "Both sexes") |>
   #mutate(value = ifelse(SEX == "Male", -value, value))
   
 #  write_rds(utah_filtered, "data/utah_filtered.rds")
-  read_rds("data/utah_filtered.rds")
+utah_filtered <- read_rds("data/utah_filtered.rds")
   
   
   
@@ -116,7 +116,7 @@ deschutes_value <- read_rds("data/deschutes_value.rds")
 #)
   
 #write_rds(housing_val, "data/housing_val.rds")
-read_rds("data/housing_val.rds")
+housing_val <- read_rds("data/housing_val.rds")
 
 #housing_val2 <- separate(
  # housing_val, 
@@ -125,7 +125,7 @@ read_rds("data/housing_val.rds")
   #sep = ", "
 #)
 #write_rds(housing_val2, "data/housing_val2.rds")
-read_rds("data/housing_val2.rds")
+housing_val2 <- read_rds("data/housing_val2.rds")
 ```
 
 ```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
@@ -545,7 +545,7 @@ library(tidyverse)
 
 ### 
 
-<!-- DK: Better knowledge drop. -->
+In this example, we will create a visualization that illustrates the percent of commuters that take public transportation to work for the largest metropolitan areas in the United States.
 
 ### Exercise 2
 
@@ -577,7 +577,7 @@ get_acs(
 
 ### 
 
-This dataset contains the percent of commuters that take public transportation to work for the largest metropolitan areas in the United States. 
+The data come from the 2019 1-year American Community Survey Data Profile, variable `DP03_0021P`. To determine this information, we can use tidyverse tools to sort our data by descending order of a summary variable representing total population and then retaining the 20 largest metropolitan areas by population using the `slice_max()` function.
 
 ### Exercise 3
 
@@ -627,7 +627,25 @@ metros
 
 ### 
 
-The largest one is New York-Newark-Jersey City, NY-NJ-PA Metro Area. 
+The largest one is New York-Newark-Jersey City, NY-NJ-PA Metro Area. We will learn how to create a plot to visualize the public transit commute share for these 20 largest metropolitan areas.
+
+```{r}
+library(scales)
+
+metros |>
+  mutate(NAME = str_remove(NAME, "-.*$")) |>
+  mutate(NAME = str_remove(NAME, ",.*$")) |>
+  ggplot(aes(y = reorder(NAME, estimate), x = estimate)) + 
+  geom_col(color = "navy", fill = "navy", 
+           alpha = 0.5, width = 0.85) +  
+  theme_minimal(base_size = 12, base_family = "Verdana") + 
+  scale_x_continuous(labels = label_percent(scale = 1)) + 
+  labs(title = "Public transit commute share", 
+       subtitle = "2019 1-year ACS estimates", 
+       y = "", 
+       x = "ACS estimate", 
+       caption = "Source: ACS Data Profile variable DP03_0021P via the tidycensus R package") 
+```
 
 ### Exercise 5
 
@@ -1463,35 +1481,9 @@ For an illustrative example, we’ll obtain 1-year ACS data from 2005 through 20
 
 ### Exercise 2
 
-<!-- DK: This instruction is too long, consider pre-adding it for students -->
-
-Copy the previous code and start on a new line. Use the function `map_dfr()` setting `years` as an argument. the second argument will be a call to `get_acs()`. Use `~{}` and within that put the call to `get_acs()`. Set the arguments of `get_acs()` as;  geography = "county", variables = "B25077_001", state = "OR", county = "Deschutes", year = .x, and survey = "acs1". Set the third argument of `map_dfr()` to `.id = "year"`.
+On the exercise chunk, Hit "Run Code".
 
 ```{r visualizing-acs-estimates-over-2, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r visualizing-acs-estimates-over-2-hint-1, eval = FALSE}
-years <- 2005:2019
-names(years) <- years
-
-...(years, ~{
-  get_acs(
-    geography = ...,
-    ... = "B25077_001",
-    state = "OR",
-    county = "Deschutes",
-    year = ...,
-    survey = "acs1"
-  )
-}, .id = ...)
-```
-
-<!-- DK: Modify any test which downloads data. -->
-
-```{r visualizing-acs-estimates-over-2-test, include = FALSE}
 years <- 2005:2019
 names(years) <- years
 
@@ -1588,7 +1580,7 @@ deschutes_value |> ggplot(aes(x = year, y = estimate, group = 1))  +
 
 ### 
 
-The chart shows rising home values prior to the 2008 recession; a notable drop after the housing market crash; and rising values since 2011, reflecting increased demand from wealthy in-migrants from locations like the Bay Area. 
+Given what we have learned in previous sections, there are also several opportunities for chart cleanup. This can include more intuitive tick and axis labels; a re-designed visual scheme; and a title and caption.
 
 ### Exercise 6
 
@@ -1622,6 +1614,10 @@ deschutes_value |> ggplot(aes(x = year, y = estimate, group = 1))  +
    scale_y_continuous(labels = label_dollar(scale = .001, suffix = "k")) 
 
 ```
+
+### 
+
+The chart shows rising home values prior to the 2008 recession; a notable drop after the housing market crash; and rising values since 2011, reflecting increased demand from wealthy in-migrants from locations like the Bay Area. 
 
 ### Exercise 7
 
@@ -1677,6 +1673,351 @@ ggplot(deschutes_value, aes(x = year, y = estimate, group = 1)) +
         y = "ACS estimate",
         caption = "Shaded area represents margin of error around the ACS estimate")
 ```
+
+## Exploring age and sex structure with population pyramids 
+### 
+
+A common method for visualizing the demographic structure of a particular area is the *population pyramid*. Population pyramids are typically constructed by visualizing population size or proportion on the x-axis; age cohort on the y-axis; and sex is represented categorically with male and female bars mirrored around a central axis.
+
+### Exercise 1
+
+We can illustrate this type of visualization using data from the Population Estimates API for the state of Utah.
+
+Use the function `get_estimates()` and passing in `geography = "state"`, `state = "UT"`, `product = "characteristics"`, `breakdown = c("SEX", "AGEGROUP")`, `breakdown_labels = TRUE`, `year = 2019` as arguments. 
+ 
+```{r exploring-age-and-sex-structur-1, exercise = TRUE}
+
+```
+
+```{r exploring-age-and-sex-structur-1-hint-1, eval = FALSE}
+get_estimates(
+  geography = ...,
+  state = ...,
+  product = ...,
+  breakdown = c(..., ...),
+  breakdown_labels = ...,
+  year = ...
+)
+```
+
+### 
+
+The `breakdown` argument is used to specify the demographic characteristics to be returned by the API. In this case, we are interested in age and sex of the population. 
+
+### Exercise 2
+
+We have assigned the previous code to the variable `utah`. Print `utah` to ensure it works.
+
+```{r exploring-age-and-sex-structur-2, exercise = TRUE}
+
+```
+
+```{r exploring-age-and-sex-structur-2-hint-1, eval = FALSE}
+utah
+```
+
+```{r exploring-age-and-sex-structur-2-test, include = FALSE}
+utah
+```
+
+### 
+
+The function returns a long-form dataset in which each row represents population values broken down by age and sex for the state of Utah. However, there are some key issues with this dataset that must be addressed before constructing a population pyramid. 
+
+### Exercise 3
+
+Several rows represent values that we don’t need for our population pyramid visualization. For example, the first few rows in the dataset represent population values for `"Both sexes"` or for `"All ages"`.
+
+Run `filter()` on `utah`, add `str_detect(AGEGROUP, "^Age")` and `SEX != "Both sexes"` as arguments. 
+
+```{r exploring-age-and-sex-structur-3, exercise = TRUE}
+
+```
+
+```{r exploring-age-and-sex-structur-3-hint-1, eval = FALSE}
+filter(utah, str_detect(...,...),
+       SEX != "Both sexes")
+```
+
+```{r exploring-age-and-sex-structur-3-test, include = FALSE}
+filter(utah, str_detect(AGEGROUP, "^Age"),
+       SEX != "Both sexes")
+```
+
+### 
+
+In the dataset returned by `get_estimates()`, five-year age bands are identified in the `AGEGROUP` column beginning with the word `"Age"`. We can filter this dataset for rows that match this pattern, and remove those rows that represent both sexes. This leaves us with rows that represent five-year age bands by sex. 
+
+### Exercise 4
+
+However, to achieve the desired visual effect, data for one sex must mirror another, split by a central vertical axis. Copy your previous code, add `mutate()`, setting `value = ifelse(SEX == "Male", -value, value)` as an argument. 
+
+```{r exploring-age-and-sex-structur-4, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r exploring-age-and-sex-structur-4-hint-1, eval = FALSE}
+... |> 
+  mutate(...)
+```
+
+```{r exploring-age-and-sex-structur-4-test, include = FALSE}
+filter(utah, str_detect(AGEGROUP, "^Age"),
+       SEX != "Both sexes") |>
+  mutate(value = ifelse(SEX == "Male", -value, value))
+```
+
+### 
+
+This command will check the `SEX` column, if its value is `"Male"`, then it will add a negative sign to the `value` column. Otherwise, it returns the original value.
+
+### Exercise 5
+
+Assign the previous code to an object called `utah_filtered`. 
+
+```{r exploring-age-and-sex-structur-5, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r exploring-age-and-sex-structur-5-hint-1, eval = FALSE}
+utah_filtered <- ... 
+```
+
+```{r exploring-age-and-sex-structur-5-test, include = FALSE}
+utah_filtered <- filter(utah, str_detect(AGEGROUP, "^Age"), 
+                  SEX != "Both sexes") %>%
+  mutate(value = ifelse(SEX == "Male", -value, value))
+```
+
+### 
+
+The `utah_filtered` dataset is now ready for visualization. We can use `ggplot2` to create a population pyramid.
+
+### Exercise 6
+
+Run `ggplot()` on `utah_filtered`, setting `aes()` to `x = value`, `y = AGEGROUP`, and `fill = SEX`. Hit "Run Code."
+
+```{r exploring-age-and-sex-structur-6, exercise = TRUE}
+
+```
+
+```{r exploring-age-and-sex-structur-6-hint-1, eval = FALSE}
+ggplot(utah_filtered, aes(x = ..., y = ..., fill = ...))
+```
+
+```{r exploring-age-and-sex-structur-6-test, include = FALSE}
+ggplot(utah_filtered, aes(x = value, y = AGEGROUP, fill = SEX))
+```
+
+### 
+
+The core components of the pyramid visualization require mapping the `population value` and the `age group` to the chart axes. `Sex` can be mapped to the fill aesthetic allowing for the plotting of these categories by color.
+
+### Exercise 7
+
+Add `geom_col()` to the plot. Hit "Run Code."
+
+```{r exploring-age-and-sex-structur-7, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r exploring-age-and-sex-structur-7-hint-1, eval = FALSE}
+... + 
+  geom_col()
+```
+
+```{r exploring-age-and-sex-structur-7-test, include = FALSE}
+ggplot(utah_filtered, aes(x = value, y = AGEGROUP, fill = SEX)) + 
+  geom_col()
+```
+
+### 
+
+The visualization represents a functional population pyramid that is nonetheless in need of some cleanup. In particular, the axis labels are not informative; the y-axis tick labels have redundant information (“Age” and “years”); and the x-axis tick labels are difficult to parse. 
+
+### Exercise 8
+
+Let's first adjust the size of the columns. Within the `geom_col()` function, add `width = 0.95` and `alpha = 0.75` as arguments. Hit "Run Code."
+
+```{r exploring-age-and-sex-structur-8, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r exploring-age-and-sex-structur-8-hint-1, eval = FALSE}
+... + 
+  geom_col(width = ..., alpha = ...)
+```
+
+```{r exploring-age-and-sex-structur-8-test, include = FALSE}
+ggplot(utah_filtered, aes(x = value, y = AGEGROUP, fill = SEX)) + 
+  geom_col(width = 0.95, alpha = 0.75)
+```
+
+### 
+
+We can format the axis tick labels by using appropriate `scale_*` functions in **ggplot2** and setting the X-axis limits to show both sides of 0 equally. In particular, this involves the use of custom absolute values to represent population sizes, and the removal of redundant age group information.
+
+### Exercise 9
+
+Add `scale_x_continuous()` to the plot. Within the function, set `labels = ~ number_format(scale = .001, suffix = "k")(abs(.x))` and `limits = 140000 * c(-1,1)` as arguments. Hit "Run Code."
+
+```{r exploring-age-and-sex-structur-9, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r exploring-age-and-sex-structur-9-hint-1, eval = FALSE}
+... + 
+  scale_x_continuous(labels = ..., 
+                     limits = ...)
+```
+
+```{r exploring-age-and-sex-structur-9-test, include = FALSE}
+ggplot(utah_filtered, aes(x = value, y = AGEGROUP, fill = SEX)) + 
+  geom_col(width = 0.95, alpha = 0.75) +
+  scale_x_continuous(labels = ~ number_format(scale = .001, suffix = "k")(abs(.x)), 
+                     limits = 140000 * c(-1,1))
+```
+
+### 
+
+### Exercise 10
+
+Set `labels = ~ str_remove_all(.x, "Age\\s|\\syears")` as an argument. Hit "Run Code."
+
+```{r exploring-age-and-sex-structur-10, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r exploring-age-and-sex-structur-10-hint-1, eval = FALSE}
+... + 
+  scale_y_discrete(labels = ~ str_remove_all(.x, "Age\\s|\\syears"))
+```
+
+```{r exploring-age-and-sex-structur-10-test, include = FALSE}
+ggplot(utah_filtered, aes(x = value, y = AGEGROUP, fill = SEX)) + 
+  geom_col(width = 0.95, alpha = 0.75) +
+  scale_x_continuous(labels = ~ number_format(scale = .001, suffix = "k")(abs(.x)), 
+                     limits = 140000 * c(-1,1)) +
+  scale_y_discrete(labels = ~ str_remove_all(.x, "Age\\s|\\syears"))
+```
+
+### 
+
+This remove all the words "Ages" and "years" in the y-axis. 
+
+### Exercise 11
+
+Add `scale_fill_manual()` to the plot. Set `values = c("darked", "navy")` as an argument. Hit "Run Code."
+
+```{r exploring-age-and-sex-structur-11, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r exploring-age-and-sex-structur-11-hint-1, eval = FALSE}
+... + 
+  scale_fill_manual(values = c("darked", "navy"))
+```
+
+```{r exploring-age-and-sex-structur-11-test, include = FALSE}
+ggplot(utah_filtered, aes(x = value, y = AGEGROUP, fill = SEX)) + 
+  geom_col(width = 0.95, alpha = 0.75) +
+  scale_x_continuous(labels = ~ number_format(scale = .001, suffix = "k")(abs(.x)), 
+                     limits = 140000 * c(-1,1)) +
+  scale_y_discrete(labels = ~ str_remove_all(.x, "Age\\s|\\syears")) + 
+  scale_fill_manual(values = c("darkred", "navy"))
+```
+
+### 
+
+We’ll also make use of an alternative **ggplot2** theme, `theme_minimal()`, which uses a white background with muted gridlines.
+
+### Exercise 12
+
+Add `theme_minimal()` to the plot. Set `base_family = "Verdana"` and `base_size = 12`. Hit "Run Code."
+
+```{r exploring-age-and-sex-structur-12, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r exploring-age-and-sex-structur-12-hint-1, eval = FALSE}
+... + 
+  theme_minimal(base_family = ..., base_size = ...)
+```
+
+```{r exploring-age-and-sex-structur-12-test, include = FALSE}
+ggplot(utah_filtered, aes(x = value, y = AGEGROUP, fill = SEX)) + 
+  geom_col(width = 0.95, alpha = 0.75) +
+  scale_x_continuous(labels = ~ number_format(scale = .001, suffix = "k")(abs(.x)), 
+                     limits = 140000 * c(-1,1)) +
+  theme_minimal(base_family = "Verdana", base_size = 12)
+```
+
+### 
+
+### Exercise 13
+
+Add title, caption, and x and y-axis labels to the plot using `labs()`. We do not need the label for legend so set `fill = ""` within the `labs()`. This is what your graph should look like:
+
+```{r}
+ggplot(utah_filtered, aes(x = value, y = AGEGROUP, fill = SEX)) + 
+  geom_col(width = 0.95, alpha = 0.75) +
+  scale_x_continuous(labels = ~ number_format(scale = .001, suffix = "k")(abs(.x)), 
+                     limits = 140000 * c(-1,1)) +
+  theme_minimal(base_family = "Verdana", base_size = 12) + 
+  labs(x = "", 
+       y = "2019 Census Bureau population estimate", 
+       title = "Population structure in Utah", 
+       fill = "", 
+       caption = "Data source: US Census Bureau population estimates & tidycensus R package")
+
+```
+
+```{r exploring-age-and-sex-structur-13, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r exploring-age-and-sex-structur-13-hint-1, eval = FALSE}
+... + 
+  labs(x = "", 
+       y = ..., 
+       title = ..., 
+       fill = "", 
+       caption = ...)
+```
+
+```{r exploring-age-and-sex-structur-13-test, include = FALSE}
+ggplot(utah_filtered, aes(x = value, y = AGEGROUP, fill = SEX)) + 
+  geom_col(width = 0.95, alpha = 0.75) +
+  scale_x_continuous(labels = ~ number_format(scale = .001, suffix = "k")(abs(.x)), 
+                     limits = 140000 * c(-1,1)) +
+  theme_minimal(base_family = "Verdana", base_size = 12) +
+  labs(x = "", 
+       y = "2019 Census Bureau population estimate", 
+       title = "Population structure in Utah", 
+       fill = "", 
+       caption = "Data source: US Census Bureau population estimates & tidycensus R package")
+
+```
+
+### 
 
 ## Summary
 ### 
