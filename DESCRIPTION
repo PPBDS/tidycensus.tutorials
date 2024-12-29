@@ -21,7 +21,9 @@ RoxygenNote: 7.3.1
 Imports:
     tidycensus,
     tutorial.helpers (>= 0.3.0)
-Suggests: 
+Suggests:
+    ggbeeswarm,
+    geofacet,
     ggthemes,
     ggridges,
     ipumsr,

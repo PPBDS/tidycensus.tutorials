@@ -19,6 +19,9 @@ library(tidyverse)
 library(knitr)
 library(scales)
 library(ggridges)
+library(geofacet)
+library(ggbeeswarm)
+library(plotly)
 
 knitr::opts_chunk$set(echo = FALSE)
 options(tutorial.exercise.timelimit = 60, 
