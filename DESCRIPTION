@@ -23,6 +23,7 @@ Imports:
     tutorial.helpers (>= 0.3.0)
 Suggests: 
     ggthemes,
+    ggridges,
     ipumsr,
     leaflet,
     learnr,

@@ -18,6 +18,7 @@ library(tidycensus)
 library(tidyverse)
 library(knitr)
 library(scales)
+library(ggridges)
 
 knitr::opts_chunk$set(echo = FALSE)
 options(tutorial.exercise.timelimit = 60, 
