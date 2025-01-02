@@ -2617,60 +2617,51 @@ housing_val2
 
 ### 
 
-The [ggridges package](https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html) (Wilke 2021) adapts the concept of the faceted density plot to generate *ridgeline* plots, in which the densities overlap one another. We will create a ridgeline plot using the Portland-area home value data; `geom_density_ridges()` generates the ridgelines, and `theme_ridges()` styles the plot in an appropriate manner.
+The [ggridges package](https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html) (Wilke 2021) adapts the concept of the faceted density plot to generate *ridgeline* plots, in which the densities overlap one another. 
 
 ### Exercise 2
 
-Load the `ggridges` package on the first line. On the second line, run `ggplot()` on `housing_val2`, setting `aes()` to `x = estimate`, `y = county`. Hit "Run Code."
+Load the `ggridges` package. Hit "Run Code."
 
 ```{r advanced-visualization-with-gg-2, exercise = TRUE}
 
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
 ```{r advanced-visualization-with-gg-2-hint-1, eval = FALSE}
 library(...)
-ggplot(housing_val2, aes(..., y = ...))
 ```
 
 ```{r advanced-visualization-with-gg-2-test, include = FALSE}
 library(ggridges)
-ggplot(housing_val2, aes(x = estimate, y = county))
 ```
 
 ### 
 
-Note that you need to `library(ggridges)` in every exercise chunk that uses `ggridges` in order for the code to run. Just use the `Copy previous code` button to make sure you have the library loaded.
+We encourage you to review the gallery of [ggplot2 extensions](https://exts.ggplot2.tidyverse.org/). 
 
 ### Exercise 3
 
-Add `geom_density_ridges()` to the plot. Hit "Run Code."
+Run `ggplot()` on `housing_val2`, setting `aes()` to `x = estimate`, `y = county`. Hit "Run Code."
 
 ```{r advanced-visualization-with-gg-3, exercise = TRUE}
 
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
 ```{r advanced-visualization-with-gg-3-hint-1, eval = FALSE}
-... + 
-  geom_density_ridges()
+ggplot(housing_val2, aes(..., y = ...))
 ```
 
 ```{r advanced-visualization-with-gg-3-test, include = FALSE}
-library(ggridges)
-ggplot(housing_val2, aes(x = estimate, y = county)) + 
-  geom_density_ridges()
+ggplot(housing_val2, aes(x = estimate, y = county))
 ```
 
 ### 
 
-The ridgeline plot shows the distribution of median home values in each county. The plot is particularly useful for comparing the distribution of values across different groups.
+We will create a ridgeline plot using the Portland-area home value data; `geom_density_ridges()` generates the ridgelines, and `theme_ridges()` styles the plot in an appropriate manner.
 
 ### Exercise 4
 
-Add `theme_ridges()` to the plot. Hit "Run Code."
+Add `geom_density_ridges()` to the plot. Hit "Run Code."
 
 ```{r advanced-visualization-with-gg-4, exercise = TRUE}
 
@@ -2680,23 +2671,21 @@ Add `theme_ridges()` to the plot. Hit "Run Code."
 
 ```{r advanced-visualization-with-gg-4-hint-1, eval = FALSE}
 ... + 
-  theme_ridges()
+  geom_density_ridges()
 ```
 
 ```{r advanced-visualization-with-gg-4-test, include = FALSE}
-library(ggridges)
 ggplot(housing_val2, aes(x = estimate, y = county)) + 
-  geom_density_ridges() +
-  theme_ridges()
+  geom_density_ridges()
 ```
 
 ### 
 
-The `theme_ridges()` function is used to style the ridgeline plot. This function is part of the `ggridges` package and is used to set the theme for the plot.
+The ridgeline plot shows the distribution of median home values in each county. The plot is particularly useful for comparing the distribution of values across different groups.
 
 ### Exercise 5
 
-Add `scale_x_continuous()` to the plot. Set `labels = dollar_format(scale = 0.000001, suffix = "m")` and `break = c(0, 500000, 1000000)` . Hit "Run Code."
+Add `theme_ridges()` to the plot. Hit "Run Code."
 
 ```{r advanced-visualization-with-gg-5, exercise = TRUE}
 
@@ -2706,12 +2695,36 @@ Add `scale_x_continuous()` to the plot. Set `labels = dollar_format(scale = 0.00
 
 ```{r advanced-visualization-with-gg-5-hint-1, eval = FALSE}
 ... + 
+  theme_ridges()
+```
+
+```{r advanced-visualization-with-gg-5-test, include = FALSE}
+ggplot(housing_val2, aes(x = estimate, y = county)) + 
+  geom_density_ridges() +
+  theme_ridges()
+```
+
+### 
+
+The `theme_ridges()` function is used to style the ridgeline plot. This function is part of the `ggridges` package and is used to set the theme for the plot.
+
+### Exercise 6
+
+Add `scale_x_continuous()` to the plot. Set `labels = dollar_format(scale = 0.000001, suffix = "m")` and `break = c(0, 500000, 1000000)` . Hit "Run Code."
+
+```{r advanced-visualization-with-gg-6, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r advanced-visualization-with-gg-6-hint-1, eval = FALSE}
+... + 
   scale_x_continuous(labels = ..., 
                      breaks = ...)
 ```
 
-```{r advanced-visualization-with-gg-5-test, include = FALSE}
-library(ggridges)
+```{r advanced-visualization-with-gg-6-test, include = FALSE}
 ggplot(housing_val2, aes(x = estimate, y = county)) + 
   geom_density_ridges() +
   theme_ridges() +
@@ -2723,23 +2736,22 @@ ggplot(housing_val2, aes(x = estimate, y = county)) +
 
 The `scale_x_continuous()` function is used to format the x-axis labels as dollar values. The `breaks` argument is used to specify the breaks on the x-axis.
 
-### Exercise 6
+### Exercise 7
 
 We can also rotate the text on the x-axis to make it more readable. Add `theme(axis.text.x = element_text(angle = 45))` to the plot. Hit "Run Code."
 
-```{r advanced-visualization-with-gg-6, exercise = TRUE}
+```{r advanced-visualization-with-gg-7, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r advanced-visualization-with-gg-6-hint-1, eval = FALSE}
+```{r advanced-visualization-with-gg-7-hint-1, eval = FALSE}
 ... + 
   theme(axis.text.x = element_text(angle = 45))
 ```
 
-```{r advanced-visualization-with-gg-6-test, include = FALSE}
-library(ggridges)
+```{r advanced-visualization-with-gg-7-test, include = FALSE}
 ggplot(housing_val2, aes(x = estimate, y = county)) + 
   geom_density_ridges() +
   theme_ridges() +
@@ -2752,13 +2764,11 @@ ggplot(housing_val2, aes(x = estimate, y = county)) +
 
 The `element_text()` function is used to set the text properties of the x-axis labels. The `angle` argument is used to specify the angle at which the text is rotated.
 
-### Exercise 7
+### Exercise 8
 
 Lastly, add lable for x and y-axis to the plot using `labs()`. This is what your graph should look like:
 
 ```{r}
-library(ggridges)
-
 ggplot(housing_val2, aes(x = estimate, y = county)) + 
   geom_density_ridges() + 
   theme_ridges() + 
@@ -2769,20 +2779,19 @@ ggplot(housing_val2, aes(x = estimate, y = county)) +
   theme(axis.text.x = element_text(angle = 45))
 ```
 
-```{r advanced-visualization-with-gg-7, exercise = TRUE}
+```{r advanced-visualization-with-gg-8, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r advanced-visualization-with-gg-7-hint-1, eval = FALSE}
+```{r advanced-visualization-with-gg-8-hint-1, eval = FALSE}
 ... +
   labs(x = ..., 
        y = "")
 ```
 
-```{r advanced-visualization-with-gg-7-test, include = FALSE}
-library(ggridges)
+```{r advanced-visualization-with-gg-8-test, include = FALSE}
 ggplot(housing_val2, aes(x = estimate, y = county)) + 
   geom_density_ridges() +
   theme_ridges() +
@@ -2797,11 +2806,11 @@ ggplot(housing_val2, aes(x = estimate, y = county)) +
 
 The overlapping density “ridges” offer both a pleasing aesthetic but also a practical way to compare the different data distributions. As **ggridges** extends **ggplot2**, analysts can style the different chart components to their liking using the methods introduced earlier in this chapter.
 
-### Exercise 8
+### Exercise 9
 
 In this example, we will look at household income by race/ethnicity in New York City. Hit "Run Code."
 
-```{r advanced-visualization-with-gg-8, exercise = TRUE}
+```{r advanced-visualization-with-gg-9, exercise = TRUE}
 get_acs(
   geography = "tract", 
   state = "NY",  
@@ -2815,7 +2824,7 @@ get_acs(
 )
 ```
 
-```{r advanced-visualization-with-gg-8-hint-1, eval = FALSE}
+```{r advanced-visualization-with-gg-9-hint-1, eval = FALSE}
 get_acs(
   geography = "tract", 
   state = "NY",  
@@ -2833,19 +2842,19 @@ get_acs(
 
 The [ggbeeswarm](https://cran.r-project.org/web/packages/ggbeeswarm/index.html) package (Clarke and Sherrill-Mix 2017) extends **ggplot2** by allowing users to generate *beeswarm* plots, in which clouds of points are jittered to show the overall density of a distribution of data values.
 
-### Exercise 9
+### Exercise 10
 
 We have assigned the previous code to the variable `ny_race_income`. Print `ny_race_income` to ensure it works.
 
-```{r advanced-visualization-with-gg-9, exercise = TRUE}
+```{r advanced-visualization-with-gg-10, exercise = TRUE}
 
 ```
 
-```{r advanced-visualization-with-gg-9-hint-1, eval = FALSE}
+```{r advanced-visualization-with-gg-10-hint-1, eval = FALSE}
 ny_race_income
 ```
 
-```{r advanced-visualization-with-gg-9-test, include = FALSE}
+```{r advanced-visualization-with-gg-10-test, include = FALSE}
 ny_race_income
 ```
 
@@ -2853,33 +2862,9 @@ ny_race_income
 
 Beeswarm plots can be compelling ways to visualize multiple data variables on a chart, such as the distributions of median household income by the racial and ethnic composition of neighborhoods. 
 
-### Exercise 10
-
-Pipe `ny_race_income` to `group_by()`, passing `GEOID` as an argument. Hit "Run Code."
-
-```{r advanced-visualization-with-gg-10, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r advanced-visualization-with-gg-10-hint-1, eval = FALSE}
-... |> 
-  group_by(GEOID)
-```
-
-```{r advanced-visualization-with-gg-10-test, include = FALSE}
-ny_race_income |> 
-  group_by(GEOID)
-```
-
-### 
-
-The `group_by()` function is used to group the dataset by the `GEOID` column. The data wrangling in the first part of the code chunk takes advantage of some of the skills covered in Chapters 2 and 3, allowing for visualization of household income distributions by the largest group in each Census tract.
-
 ### Exercise 11
 
-Copy your previous code, add `filter()`, setting `estimate == max(estimate, na.rm = TRUE)` as an argument. Hit "Run Code."
+Pipe `ny_race_income` to `group_by()`, passing `GEOID` as an argument. Hit "Run Code."
 
 ```{r advanced-visualization-with-gg-11, exercise = TRUE}
 
@@ -2889,22 +2874,21 @@ Copy your previous code, add `filter()`, setting `estimate == max(estimate, na.r
 
 ```{r advanced-visualization-with-gg-11-hint-1, eval = FALSE}
 ... |> 
-  filter(...)
+  group_by(GEOID)
 ```
 
 ```{r advanced-visualization-with-gg-11-test, include = FALSE}
 ny_race_income |> 
-  group_by(GEOID) |> 
-  filter(estimate == max(estimate, na.rm = TRUE))
+  group_by(GEOID)
 ```
 
 ### 
 
-This command will filter the dataset for the largest group in each Census tract as well as remove any missing values.
+The `group_by()` function is used to group the dataset by the `GEOID` column. The data wrangling in the first part of the code chunk takes advantage of some of the skills covered in Chapters 2 and 3, allowing for visualization of household income distributions by the largest group in each Census tract.
 
 ### Exercise 12
 
-Continue the pipe with `ungroup()`. Hit "Run Code."
+Copy your previous code, add `filter()`, setting `estimate == max(estimate, na.rm = TRUE)` as an argument. Hit "Run Code."
 
 ```{r advanced-visualization-with-gg-12, exercise = TRUE}
 
@@ -2914,10 +2898,35 @@ Continue the pipe with `ungroup()`. Hit "Run Code."
 
 ```{r advanced-visualization-with-gg-12-hint-1, eval = FALSE}
 ... |> 
-  ungroup()
+  filter(...)
 ```
 
 ```{r advanced-visualization-with-gg-12-test, include = FALSE}
+ny_race_income |> 
+  group_by(GEOID) |> 
+  filter(estimate == max(estimate, na.rm = TRUE))
+```
+
+### 
+
+This command will filter the dataset for the largest group in each Census tract as well as remove any missing values.
+
+### Exercise 13
+
+Continue the pipe with `ungroup()`. Hit "Run Code."
+
+```{r advanced-visualization-with-gg-13, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r advanced-visualization-with-gg-13-hint-1, eval = FALSE}
+... |> 
+  ungroup()
+```
+
+```{r advanced-visualization-with-gg-13-test, include = FALSE}
 ny_race_income |> 
   group_by(GEOID) |> 
   filter(estimate == max(estimate, na.rm = TRUE)) |> 
@@ -2928,22 +2937,22 @@ ny_race_income |>
 
 The `ungroup()` function is used to remove the grouping from the dataset. This is necessary to ensure that the dataset is not grouped when it is passed to the `ggplot()` function.
 
-### Exercise 13
+### Exercise 14
 
 The last step in wrangling the data is filter out zero values in the `estimate` column. Add `filter(estimate != 0)` to the pipe. Hit "Run Code."
 
-```{r advanced-visualization-with-gg-13, exercise = TRUE}
+```{r advanced-visualization-with-gg-14, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r advanced-visualization-with-gg-13-hint-1, eval = FALSE}
+```{r advanced-visualization-with-gg-14-hint-1, eval = FALSE}
 ... |> 
   filter(...)
 ```
 
-```{r advanced-visualization-with-gg-13-test, include = FALSE}
+```{r advanced-visualization-with-gg-14-test, include = FALSE}
 ny_race_income |> 
   group_by(GEOID) |> 
   filter(estimate == max(estimate, na.rm = TRUE)) |> 
@@ -2955,57 +2964,43 @@ ny_race_income |>
 
 We now have the data ready for visualization. We will use the `ggbeeswarm` package to create a beeswarm plot of the data.
 
-### Exercise 14
-
-Load the `ggbeeswarm` package on the first line. On the second line, run `ggplot()` on `ny_race_income`, setting `aes()` to `x = variable`, `y = summary_est`, and `color = summary_est`. Hit "Run Code."
-
-```{r advanced-visualization-with-gg-14, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r advanced-visualization-with-gg-14-hint-1, eval = FALSE}
-
-```
-
-```{r advanced-visualization-with-gg-14-test, include = FALSE}
-library(ggbeeswarm)
-ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est))
-```
-
-### 
-
-Note that you need to `library(ggbeeswarm)` in every excersie chunk that uses `ggbeeswarm` in order for the code to run. Just use the `Copy previous code` button to make sure you have the library loaded.
-
 ### Exercise 15
 
-Add `geom_quasirandom()` to the plot, setting `alpha = 0.5` as an argument. Hit "Run Code."
+Load the `ggbeeswarm` package. Hit "Run Code."
 
 ```{r advanced-visualization-with-gg-15, exercise = TRUE}
 
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
 ```{r advanced-visualization-with-gg-15-hint-1, eval = FALSE}
-... + 
-  geom_quasirandom(alpha = 0.5)
+library(...)
 ```
 
 ```{r advanced-visualization-with-gg-15-test, include = FALSE}
 library(ggbeeswarm)
-ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est)) +
-  geom_quasirandom(alpha = 0.5)
 ```
 
 ### 
 
-The `geom_quasirandom()` function is used to create a beeswarm plot of the data. The `alpha` argument is used to specify the transparency of the points.
+We will create the following beeswarm plot to visualize the household income by race/ethnicity in New York City. 
+
+```{r}
+ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est)) +
+  geom_quasirandom(alpha = 0.5) + 
+  coord_flip() + 
+  theme_minimal(base_size = 13) + 
+  scale_color_viridis_c(guide = "none") + 
+  scale_y_continuous(labels = label_dollar()) + 
+  labs(x = "Largest group in Census tract", 
+       y = "Median household income", 
+       title = "Household income distribution by largest racial/ethnic group", 
+       subtitle = "Census tracts, New York City", 
+       caption = "Data source: 2016-2020 ACS")
+```
 
 ### Exercise 16
 
-Add `coord_flip()` to the plot. Hit "Run Code."
+Run `ggplot()` on `ny_race_income`, setting `aes()` to `x = variable`, `y = summary_est`, and `color = summary_est`. Hit "Run Code."
 
 ```{r advanced-visualization-with-gg-16, exercise = TRUE}
 
@@ -3014,12 +3009,57 @@ Add `coord_flip()` to the plot. Hit "Run Code."
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r advanced-visualization-with-gg-16-hint-1, eval = FALSE}
+
+```
+
+```{r advanced-visualization-with-gg-16-test, include = FALSE}
+ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est))
+```
+
+### 
+
+The `geom_quasirandom()` function is used to create a beeswarm plot of the data. The `alpha` argument is used to specify the transparency of the points.
+
+### Exercise 17
+
+Add `geom_quasirandom()` to the plot, setting `alpha = 0.5` as an argument. Hit "Run Code."
+
+```{r advanced-visualization-with-gg-17, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r advanced-visualization-with-gg-17-hint-1, eval = FALSE}
+... + 
+  geom_quasirandom(alpha = 0.5)
+```
+
+```{r advanced-visualization-with-gg-17-test, include = FALSE}
+ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est)) +
+  geom_quasirandom(alpha = 0.5)
+```
+
+### 
+
+We need to flip the axes of the plot to make it more readable.
+
+### Exercise 18
+
+Add `coord_flip()` to the plot. Hit "Run Code."
+
+```{r advanced-visualization-with-gg-18, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r advanced-visualization-with-gg-18-hint-1, eval = FALSE}
 ... + 
   coord_flip()
 ```
 
-```{r advanced-visualization-with-gg-16-test, include = FALSE}
-library(ggbeeswarm)
+```{r advanced-visualization-with-gg-18-test, include = FALSE}
 ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est)) +
   geom_quasirandom(alpha = 0.5) + 
   coord_flip()
@@ -3029,22 +3069,21 @@ ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est)) 
 
 The `coord_flip()` function is used to flip the x and y axes of the plot. This is useful when you want to change the orientation of the plot.
 
-### Exercise 17
+### Exercise 19
 
 Add `theme_minimal()` to the plot, setting `base_size = 13`. Hit "Run Code."
 
-```{r advanced-visualization-with-gg-17, exercise = TRUE}
+```{r advanced-visualization-with-gg-19, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r advanced-visualization-with-gg-17-hint-1, eval = FALSE}
+```{r advanced-visualization-with-gg-19-hint-1, eval = FALSE}
 
 ```
 
-```{r advanced-visualization-with-gg-17-test, include = FALSE}
-library(ggbeeswarm)
+```{r advanced-visualization-with-gg-19-test, include = FALSE}
 ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est)) +
   geom_quasirandom(alpha = 0.5) +
   coord_flip() +
@@ -3055,23 +3094,22 @@ ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est)) 
 
 We can also adjust the color scheme of the plot to make it more visually appealing and informative using the function `scale_color_viridis_c()`.
 
-### Exercise 18
+### Exercise 20
 
 Add `scale_color_viridis_c()` to the plot, setting `guide = "none"`. Hit "Run Code."
 
-```{r advanced-visualization-with-gg-18, exercise = TRUE}
+```{r advanced-visualization-with-gg-20, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r advanced-visualization-with-gg-18-hint-1, eval = FALSE}
+```{r advanced-visualization-with-gg-20-hint-1, eval = FALSE}
 ... +
   scale_color_viridis_c(guide = "none")
 ```
 
-```{r advanced-visualization-with-gg-18-test, include = FALSE}
-library(ggbeeswarm)
+```{r advanced-visualization-with-gg-20-test, include = FALSE}
 ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est)) +
   geom_quasirandom(alpha = 0.5) +
   coord_flip() +
@@ -3083,23 +3121,22 @@ ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est)) 
 
 The `scale_color_viridis_c()` function is used to adjust the color scheme of the plot. The `guide` argument is used to specify the type of legend to display.
 
-### Exercise 19
+### Exercise 21
 
 Let's add the dollar sign to the y-axis labels. Add `scale_y_continuous()` to the plot, setting `labels = label_dollar()`. Hit "Run Code."
 
-```{r advanced-visualization-with-gg-19, exercise = TRUE}
+```{r advanced-visualization-with-gg-21, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r advanced-visualization-with-gg-19-hint-1, eval = FALSE}
+```{r advanced-visualization-with-gg-21-hint-1, eval = FALSE}
 .. + 
   scale_y_continuous(labels = ...)
 ```
 
-```{r advanced-visualization-with-gg-19-test, include = FALSE}
-library(ggbeeswarm)
+```{r advanced-visualization-with-gg-21-test, include = FALSE}
 ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est)) +
   geom_quasirandom(alpha = 0.5) +
   coord_flip() +
@@ -3110,9 +3147,9 @@ ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est)) 
 
 ### 
 
-Note that we have flipped the axes in this plot, so the y-axis is now the horizontal axis.
+Note that we have flipped the axes in this plot, so the y-axis is now the horizontal axis. The plot shows that the wealthiest neighborhoods in New York City - those with median household incomes exceeding $150,000 - are all plurality or majority non-Hispanic white.
 
-### Exercise 20
+### Exercise 22
 
 Add title, subtitle, caption, label for x and y-axis to the plot using `labs()`. This is what your graph should look like:
 
@@ -3131,13 +3168,13 @@ ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est)) 
        caption = "Data source: 2016-2020 ACS")
 ```
 
-```{r advanced-visualization-with-gg-20, exercise = TRUE}
+```{r advanced-visualization-with-gg-22, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r advanced-visualization-with-gg-20-hint-1, eval = FALSE}
+```{r advanced-visualization-with-gg-22-hint-1, eval = FALSE}
 ... + 
   labs(x = ..., 
        y = ..., 
@@ -3146,8 +3183,7 @@ ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est)) 
        caption = ...)
 ```
 
-```{r advanced-visualization-with-gg-20-test, include = FALSE}
-library(ggbeeswarm)
+```{r advanced-visualization-with-gg-22-test, include = FALSE}
 ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est)) +
   geom_quasirandom(alpha = 0.5) +
   coord_flip() +
@@ -3163,69 +3199,85 @@ ggplot(ny_race_income, aes(x = variable, y = summary_est, color = summary_est)) 
 
 ### 
 
-The plot shows that the wealthiest neighborhoods in New York City - those with median household incomes exceeding $150,000 - are all plurality or majority non-Hispanic white. However, the chart also illustrates that there are a range of values among neighborhoods with pluralities of the different racial and ethnic groups, suggesting a nuanced portrait of the intersections between race and income inequality in the city.
-
-### Exercise 21
-
-In the example below, we replicate the population pyramid code above to generate population pyramids for each state in the US with some modifications, We have created the code for you and assigned it to an object called `us_pyramid_data`. Print `us_pyramid_data` to ensure it works.
-
-```{r advanced-visualization-with-gg-21, exercise = TRUE}
-
-```
-
-```{r advanced-visualization-with-gg-21-hint-1, eval = FALSE}
-us_pyramid_data
-```
-
-```{r advanced-visualization-with-gg-21-test, include = FALSE}
-us_pyramid_data
-```
-
-### 
-
-Geographic location can be incorporated into Census data visualizations without using geographic information explicitly by way of the [geofacet](https://cran.r-project.org/web/packages/geofacet/vignettes/geofacet.html) package (Hafen 2020). Geofaceted plots are enhanced versions of faceted visualizations that arrange subplots in relationship to their relative geographic location. 
-
-### Exercise 22
-
-Load the `geofacet` package on the first line. On the second line, run `ggplot()` on `us_pyramid_data`, setting `aes()` to `x = age`, `y = estimate`, and `fill = sex`. Hit "Run Code."
-
-```{r advanced-visualization-with-gg-22, exercise = TRUE}
-
-```
-
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
-```{r advanced-visualization-with-gg-22-hint-1, eval = FALSE}
-library(...)
-ggplot(us_pyramid_data, aes(x = ..., y = ..., fill = ...))
-```
-
-```{r advanced-visualization-with-gg-22-test, include = FALSE}
-library(geofacet)
-ggplot(us_pyramid_data, aes(x = prop, y = AGEGROUP, fill = SEX))
-```
-
-### 
-
-Note that you need to `library(geofacet)` in every excersie chunk that uses `geofacet` in order for the code to run. Just use the `Copy previous code` button to make sure you have the library loaded.
+The plot also illustrates that there are a range of values among neighborhoods with pluralities of the different racial and ethnic groups, suggesting a nuanced portrait of the intersections between race and income inequality in the city.
 
 ### Exercise 23
 
-Add `geom_col()` to the plot, setting `width = 1`. Hit "Run Code."
+In the example below, we replicate the population pyramid code above to generate population pyramids for each state in the US with some modifications. We have created the code for you and assigned it to an object called `us_pyramid_data`. Print `us_pyramid_data` to ensure it works.
 
 ```{r advanced-visualization-with-gg-23, exercise = TRUE}
 
 ```
 
+```{r advanced-visualization-with-gg-23-hint-1, eval = FALSE}
+us_pyramid_data
+```
+
+```{r advanced-visualization-with-gg-23-test, include = FALSE}
+us_pyramid_data
+```
+
+### 
+
+Geographic location can be incorporated into Census data visualizations without using geographic information explicitly by way of the [geofacet](https://cran.r-project.org/web/packages/geofacet/vignettes/geofacet.html) package (Hafen 2020). 
+
+### Exercise 24
+
+Load the `geofacet` package. Hit "Run Code."
+
+```{r advanced-visualization-with-gg-24, exercise = TRUE}
+
+```
+
+```{r advanced-visualization-with-gg-24-hint-1, eval = FALSE}
+library(...)
+```
+
+```{r advanced-visualization-with-gg-24-test, include = FALSE}
+library(geofacet)
+```
+
+### 
+
+Geofaceted plots are enhanced versions of faceted visualizations that arrange subplots in relationship to their relative geographic location. 
+
+### Exercise 25
+
+Run `ggplot()` on `us_pyramid_data`, setting `aes()` to `x = age`, `y = estimate`, and `fill = sex`. Hit "Run Code."
+
+```{r advanced-visualization-with-gg-25, exercise = TRUE}
+
+```
+
+```{r advanced-visualization-with-gg-25-hint-1, eval = FALSE}
+library(...)
+ggplot(us_pyramid_data, aes(x = ..., y = ..., fill = ...))
+```
+
+```{r advanced-visualization-with-gg-25-test, include = FALSE}
+ggplot(us_pyramid_data, aes(x = prop, y = AGEGROUP, fill = SEX))
+```
+
+### 
+
+We have modified the output data so that the population information reflects the proportion of the overall population for each state so that all states are on consistent scales.
+
+### Exercise 26
+
+Add `geom_col()` to the plot, setting `width = 1`. Hit "Run Code."
+
+```{r advanced-visualization-with-gg-26, exercise = TRUE}
+
+```
+
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r advanced-visualization-with-gg-23-hint-1, eval = FALSE}
+```{r advanced-visualization-with-gg-26-hint-1, eval = FALSE}
 ... + 
   geom_col(width = 1)
 ```
 
-```{r advanced-visualization-with-gg-23-test, include = FALSE}
-library(geofacet)
+```{r advanced-visualization-with-gg-26-test, include = FALSE}
 ggplot(us_pyramid_data, aes(x = prop, y = AGEGROUP, fill = SEX)) + 
   geom_col(width = 1)
 ```
@@ -3234,24 +3286,23 @@ ggplot(us_pyramid_data, aes(x = prop, y = AGEGROUP, fill = SEX)) +
 
 The geofacet package has over 100 available grids to choose from allowing for faceted plots for US states, counties, and regions around the world. The key is to use a column that can map correctly to information in the geofaceted grid that you are using.
 
-### Exercise 24
+### Exercise 27
 
 Add `facet_geo()` to the plot, setting `~NAME, grid = "us_state_with_DC_PR_grid2", label = "code"` as an argument. Hit "Run Code."
 
 
-```{r advanced-visualization-with-gg-24, exercise = TRUE}
+```{r advanced-visualization-with-gg-27, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r advanced-visualization-with-gg-24-hint-1, eval = FALSE}
+```{r advanced-visualization-with-gg-27-hint-1, eval = FALSE}
 ... +
   facet_geo(~NAME, grid = "us_state_with_DC_PR_grid2", label = "code")
 ```
 
-```{r advanced-visualization-with-gg-24-test, include = FALSE}
-library(geofacet)
+```{r advanced-visualization-with-gg-27-test, include = FALSE}
 ggplot(us_pyramid_data, aes(x = prop, y = AGEGROUP, fill = SEX)) + 
   geom_col(width = 1) + 
   facet_geo(~NAME, grid = "us_state_with_DC_PR_grid2", label = "code")
@@ -3261,23 +3312,22 @@ ggplot(us_pyramid_data, aes(x = prop, y = AGEGROUP, fill = SEX)) +
 
 The `facet_geo()` function is used to create a geofaceted plot. The `grid` argument is used to specify the grid to use for the plot, and the `label` argument is used to specify the label to display on the plot.
 
-### Exercise 25
+### Exercise 28
 
 Add `theme_minimal()` to the plot. Hit "Run Code."
 
-```{r advanced-visualization-with-gg-25, exercise = TRUE}
+```{r advanced-visualization-with-gg-28, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r advanced-visualization-with-gg-25-hint-1, eval = FALSE}
+```{r advanced-visualization-with-gg-28-hint-1, eval = FALSE}
 ... + 
   theme_minimal()
 ```
 
-```{r advanced-visualization-with-gg-25-test, include = FALSE}
-library(geofacet)
+```{r advanced-visualization-with-gg-28-test, include = FALSE}
 ggplot(us_pyramid_data, aes(x = prop, y = AGEGROUP, fill = SEX)) + 
   geom_col(width = 1) + 
   facet_geo(~NAME, grid = "us_state_with_DC_PR_grid2", label = "code") +
@@ -3288,23 +3338,22 @@ ggplot(us_pyramid_data, aes(x = prop, y = AGEGROUP, fill = SEX)) +
 
 The result is a compelling visualization that expresses general geographic relationships and patterns in the data while showing comparative population pyramids for all states.
 
-### Exercise 26
+### Exercise 29
 
 Add `scale_fill_manual()` to the plot, setting `values = c("darkred", "navy")`. Hit "Run Code."
 
-```{r advanced-visualization-with-gg-26, exercise = TRUE}
+```{r advanced-visualization-with-gg-29, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r advanced-visualization-with-gg-26-hint-1, eval = FALSE}
+```{r advanced-visualization-with-gg-29-hint-1, eval = FALSE}
 ... + 
   scale_fill_manual(values = c("darkred", "navy"))
 ```
 
-```{r advanced-visualization-with-gg-26-test, include = FALSE}
-library(geofacet)
+```{r advanced-visualization-with-gg-29-test, include = FALSE}
 ggplot(us_pyramid_data, aes(x = prop, y = AGEGROUP, fill = SEX)) + 
   geom_col(width = 1) + 
   facet_geo(~NAME, grid = "us_state_with_DC_PR_grid2", label = "code") +
@@ -3316,24 +3365,23 @@ ggplot(us_pyramid_data, aes(x = prop, y = AGEGROUP, fill = SEX)) +
 
 The unique nature of Washington, DC stands out with its large population in their 20s and 30s; we can also compare Utah, the youngest state in the country, with older states in the Northeast.
 
-### Exercise 27
+### Exercise 30
 
 Add `theme()` to the plot. Set `axis.text = element_blank()`, and `strip.text.x = element_text(size = 8)`. Hit "Run Code."
 
-```{r advanced-visualization-with-gg-27, exercise = TRUE}
+```{r advanced-visualization-with-gg-30, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r advanced-visualization-with-gg-27-hint-1, eval = FALSE}
+```{r advanced-visualization-with-gg-30-hint-1, eval = FALSE}
 ... + 
   theme(axis.text = ..., 
         strip.text.x = ...)
 ```
 
-```{r advanced-visualization-with-gg-27-test, include = FALSE}
-library(geofacet)
+```{r advanced-visualization-with-gg-30-test, include = FALSE}
 ggplot(us_pyramid_data, aes(x = prop, y = AGEGROUP, fill = SEX)) + 
   geom_col(width = 1) + 
   facet_geo(~NAME, grid = "us_state_with_DC_PR_grid2", label = "code") +
@@ -3348,17 +3396,17 @@ ggplot(us_pyramid_data, aes(x = prop, y = AGEGROUP, fill = SEX)) +
 If this specific grid arrangement is not to your liking (e.g. Minnesotans may take issue with Wisconsin to the north!), try out some of the other built-in grid options in the package. Also, you can use the [grid_design()](https://rdrr.io/pkg/geofacet/man/grid_design.html) function in the **geofacet** package to pull up an interactive app in which you can design your own grid for use in geofaceted plots!
 
 
-### Exercise 28
+### Exercise 31
 
 Add labels for x and y-axis, title and caption to the plot using `labs()`. You may want to remove the legend title by setting `fill = ""`. 
 
-```{r advanced-visualization-with-gg-28, exercise = TRUE}
+```{r advanced-visualization-with-gg-31, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r advanced-visualization-with-gg-28-hint-1, eval = FALSE}
+```{r advanced-visualization-with-gg-31-hint-1, eval = FALSE}
 ... + 
   labs(x = "", 
        y = "", 
@@ -3367,8 +3415,7 @@ Add labels for x and y-axis, title and caption to the plot using `labs()`. You m
        caption = ...)
 ```
 
-```{r advanced-visualization-with-gg-28-test, include = FALSE}
-library(geofacet)
+```{r advanced-visualization-with-gg-31-test, include = FALSE}
 ggplot(us_pyramid_data, aes(x = prop, y = AGEGROUP, fill = SEX)) + 
   geom_col(width = 1) + 
   facet_geo(~NAME, grid = "us_state_with_DC_PR_grid2", label = "code") +
@@ -3385,30 +3432,47 @@ ggplot(us_pyramid_data, aes(x = prop, y = AGEGROUP, fill = SEX)) +
 
 ### 
 
-One of the most popular packages for interactive visualization is the **plotly** package (Sievert 2020), an interface to the Plotly visualization library. The [ggplotly()](https://rdrr.io/pkg/plotly/man/ggplotly.html) function can convert an existing **ggplot2** graphic into an interactive web visualization in a single line of code! 
+One of the most popular packages for interactive visualization is the **plotly** package (Sievert 2020), an interface to the Plotly visualization library. The [ggplotly()](https://rdrr.io/pkg/plotly/man/ggplotly.html) function can convert an existing **ggplot2** graphic into an interactive web visualization in a single line of code!
 
-### Exercise 29
+### Exercise 32
+
+Load the `plotly` package. Hit "Run Code."
+
+```{r advanced-visualization-with-gg-32, exercise = TRUE}
+
+```
+
+```{r advanced-visualization-with-gg-32-hint-1, eval = FALSE}
+library(...)
+```
+
+```{r advanced-visualization-with-gg-32-test, include = FALSE}
+library(plotly)
+```
+
+### 
+
+Interactive graphics like this are an excellent way to facilitate additional data exploration, and can be polished further for presentation on the web.
+
+### Exercise 33
 
 Let’s try it out here with the utah_pyramid population pyramid. On the first line, load the `plotly` package. On the second line, run `ggplotly()` on `utah_pyramid`. Hit "Run Code."
 
-```{r advanced-visualization-with-gg-29, exercise = TRUE}
+```{r advanced-visualization-with-gg-33, exercise = TRUE}
 
 ```
 
-```{r advanced-visualization-with-gg-29-hint-1, eval = FALSE}
-library(...)
+```{r advanced-visualization-with-gg-33-hint-1, eval = FALSE}
 ggplotly(...)
 ```
 
-```{r advanced-visualization-with-gg-29-test, include = FALSE}
-library(plotly)
-
+```{r advanced-visualization-with-gg-33-test, include = FALSE}
 ggplotly(utah_pyramid)
 ```
 
 ### 
 
-Try hovering your cursor over the different bars; this reveals a tooltip that shares information about the data. The legend is interactive, as data series can be clicked on and off; viewers can also pan and zoom on the plot using the toolbar that appears in the upper right corner of the visualization. Interactive graphics like this are an excellent way to facilitate additional data exploration, and can be polished further for presentation on the web.
+Try hovering your cursor over the different bars; this reveals a tooltip that shares information about the data. The legend is interactive, as data series can be clicked on and off; viewers can also pan and zoom on the plot using the toolbar that appears in the upper right corner of the visualization. 
 
 ## Summary
 ### 
