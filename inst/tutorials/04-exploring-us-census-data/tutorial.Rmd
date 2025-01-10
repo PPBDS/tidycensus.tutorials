@@ -31,26 +31,27 @@ options(tutorial.exercise.timelimit = 60,
 # connection, so we need to save all the downloaded data. Save the creation code
 # to make replication/improvements easier.
 
-#ga_wide <- get_acs(
-#  geography = "county",
-#  state = "Georgia",
-#  variables = c(medinc = "B19013_001",
-#                medage = "B01002_001"),
-#  output = "wide",
-#  year = 2020
-#)
-#write_rds(ga_wide, "data/ga_wide.rds")
+# ga_wide <- get_acs(
+#   geography = "county",
+#   state = "Georgia",
+#   variables = c(medinc = "B19013_001",
+#                 medage = "B01002_001"),
+#   output = "wide",
+#   year = 2020
+# )
+# write_rds(ga_wide, "data/ga_wide.rds")
+
 ga_wide <- read_rds("data/ga_wide.rds")
 
-#metros <- get_acs(
-#  geography = "cbsa",
-#  variables = "DP03_0021P",
-#  summary_var = "B01003_001",
-#  survey = "acs1",
-#  year = 2019
-#) |> 
-#  slice_max(summary_est, n = 20)
-#write_rds(metros, "data/metros.rds")
+# metros <- get_acs(
+#   geography = "cbsa",
+#   variables = "DP03_0021P",
+#   summary_var = "B01003_001",
+#   survey = "acs1",
+#   year = 2019
+# ) |> 
+# slice_max(summary_est, n = 20)
+# write_rds(metros, "data/metros.rds")
 metros <- read_rds("data/metros.rds")
 
 # maine_income <- get_acs(
