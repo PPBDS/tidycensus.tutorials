@@ -32,6 +32,10 @@ options(tutorial.exercise.timelimit = 60,
 ```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
 ```
 
+<!-- DK: To the extent possible, make the sections --- which are really "topics" --- match the sections in the chater. -->
+
+<!-- DK: Remove any material which is not actual in the chapter. Be ruthless.  -->
+
 ## Introduction
 ### 
 
@@ -1081,8 +1085,6 @@ Copy and paste your code from above. Add appropriate labels using the `labs()` f
 Nice! You've successfully mapped Census data with `ggplot()`. 
 
 ### Exercise 8
-
-<!-- DK: Akward section. Maybe cut for space reasons? -->
 
 Along with `plot()` and `ggplot()`, we can also use functions from another package, **tmap**, to map Census data.
 
