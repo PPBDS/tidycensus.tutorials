@@ -109,14 +109,14 @@ This should return a value of `TRUE`. Now this setting will be in your `.Rprofil
 
 ### Exercise 4
 
-Type `states()` and assign it to an object called `st`. Hit "Run Code."
+Type `states()` and Hit "Run Code."
 
 ```{r census-geographic-data-and-app-4, exercise = TRUE}
 
 ```
 
 ```{r census-geographic-data-and-app-4-hint-1, eval = FALSE}
-... <- states()
+states()
 ```
 
 ### 
@@ -125,7 +125,7 @@ Generally speaking, each type of geographic dataset available in the Census Bure
 
 ### Exercise 5
 
-Type `st` and hit "Run Code."
+We have assigned the previous code to an object called `st`. Run `st` to ensure it works. 
 
 ```{r census-geographic-data-and-app-5, exercise = TRUE}
 
@@ -157,7 +157,7 @@ This should return two datatypes: `sf` and `data.frame`. We can visualize this `
 
 ### Exercise 7
 
-Type st in the first line. In the second line, run `plot()` below with the `geometry` column as the argument. Remember we extract columns using the `$` operator. 
+Run `plot()` below with the `geometry` column as the argument. Remember we extract columns using the `$` operator. 
 
 ```{r census-geographic-data-and-app-7, exercise = TRUE}
 
@@ -166,7 +166,6 @@ Type st in the first line. In the second line, run `plot()` below with the `geom
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r census-geographic-data-and-app-7-hint-1, eval = FALSE}
-st
 plot(st$...)
 ```
 
@@ -176,24 +175,33 @@ This should show a zoomed out map of the US.
 
 ### Exercise 8
 
-We can also just grab counties from a specific state. 
-
-Create a variable below named `nm_counties` and assign it to the function `counties()` with the argument `"NM"`. below that, run `plot()` with the `geometry` column extracted from the variable.
+Run `counties()` with the argument `"NM"` and hit "Run Code."
 
 ```{r census-geographic-data-and-app-8, exercise = TRUE}
 
 ```
 
 ```{r census-geographic-data-and-app-8-hint-1, eval = FALSE}
-nm_counties <- ...("NM")
-plot(nm_counties$...)
+counties("NM")
 ```
 
 ### 
 
 The [counties()](https://rdrr.io/pkg/tigris/man/counties.html) function can be used to obtain county boundaries for the entirety of the United States, but also can be used with the `state` argument to return only those counties from a specific state, like New Mexico.
 
-It should produce a graph like this: 
+### Exercise 9
+
+We have assigned the previous code to an object called `nm_counties`. Run `nm_counties` to ensure it works.  
+
+```{r census-geographic-data-and-app-9, exercise = TRUE}
+
+```
+
+```{r census-geographic-data-and-app-9-hint-1, eval = FALSE}
+nm_counties
+```
+
+### 
 
 ```{r}
 include_graphics("images/counties.png")
@@ -201,43 +209,125 @@ include_graphics("images/counties.png")
 
 We can visualize all the counties in New Mexico with the `counties()` function. 
 
+### Exercise 10
+
+Run `plot()` with the `geometry` column extracted from the variable.
+
+```{r census-geographic-data-and-app-10, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r census-geographic-data-and-app-10-hint-1, eval = FALSE}
+plot(nm_counties$...)
+```
+
 ### 
 
 We can do the same thing with the `tract()` function, using the `state` and `county` arguments. Obtaining Census shapefiles programmatically requires inputting the Federal Information Processing Standard (FIPS) code; however, **tigris** translates postal codes and names of states and counties to their FIPS codes so that R users do not have to look them up.
 
-### Exercise 9
+### Exercise 11
 
-Run the function `tracts()` with the arguments `"NM"` and `"Los Alamos"` and assign it to the variable `la_tracts`. Then below that, run `plot()` with the `geometry` column extracted from the variable. 
+Run the function `tracts()` with the arguments `"NM"` and `"Los Alamos"`. Hit "Run Code."
 
-```{r census-geographic-data-and-app-9, exercise = TRUE}
+```{r census-geographic-data-and-app-11, exercise = TRUE}
 
 ```
 
-```{r census-geographic-data-and-app-9-hint-1, eval = FALSE}
-... <- tracts("NM", "Los Alamos")
-plot(la_tracts$...)
+```{r census-geographic-data-and-app-11-hint-1, eval = FALSE}
+tracts(..., ...)
 ```
 
 ### 
 
 In this case the state postal code `"NM"` is used to instruct **tigris** to subset the counties dataset for counties in New Mexico. The full name of the state, `"New Mexico"`, would work the same here as well. 
 
-### Exercise 10
+### Exercise 12
 
-Run the function `area_water()` with the argument `"NM"` and `"Los Alamos"` and assign it to the variable `la_water`. Then below that, run `plot()` with the `geometry` column extracted from the variable. 
+We have assigned the previous code to an object called `la_tracts`. Run `la_tracts` to ensure it works. 
 
-```{r census-geographic-data-and-app-10, exercise = TRUE}
+```{r census-geographic-data-and-app-12, exercise = TRUE}
 
 ```
 
-```{r census-geographic-data-and-app-10-hint-1, eval = FALSE}
-la_water <- area_water(..., ...)
-plot(la_water$...)
+```{r census-geographic-data-and-app-12-hint-1, eval = FALSE}
+la_tracts
+```
+
+### 
+
+The TIGER/Line shapefiles include three general types of data. The first one is *Legal entities*, which are geographies that have official legal standing in the United States. These include states and counties.
+
+### Exercise 13
+
+Then below that, run `plot()` with the `geometry` column extracted from the variable.
+
+```{r census-geographic-data-and-app-13, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r census-geographic-data-and-app-13-hint-1, eval = FALSE}
+plot(la_tracts$...)
+```
+
+### 
+
+The second type of data is *Statistical entities*, which are geographies defined by the Census Bureau for purposes of data collection and dissemination. Examples of statistical entities include Census tracts and block groups.
+
+### Exercise 14
+
+Run the function `area_water()` with the argument `"NM"` and `"Los Alamos"`. Hit "Run Code." 
+
+and assign it to the variable `la_water`. Then below that, 
+
+```{r census-geographic-data-and-app-14, exercise = TRUE}
+
+```
+
+```{r census-geographic-data-and-app-14-hint-1, eval = FALSE}
+area_water(..., ...)
+```
+
+### 
+
+The third type of data is *Geographic features*, which are geographies that are not linked with aggregate demographic data from the Census Bureau. These datasets include roads and water features.
+
+### Exercise 15
+
+We have assigned the previous code to an object called `la_water`. Run `la_water` to ensure it works. 
+
+```{r census-geographic-data-and-app-15, exercise = TRUE}
+
+```
+
+```{r census-geographic-data-and-app-15-hint-1, eval = FALSE}
+la_water
 ```
 
 ### 
 
 Several geographic features are available in tigris as well, including roads and water features which can be useful for thematic mapping. 
+
+### Exercise 16
+
+Run `plot()` with the `geometry` column extracted from the variable. 
+
+```{r census-geographic-data-and-app-16, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r census-geographic-data-and-app-16-hint-1, eval = FALSE}
+plot(la_water$...)
+```
+
+### 
+
+Traditionally, TIGER/Line shapefiles are downloaded from a web interface as zipped folders, then unzipped for use in a Geographic Information System (GIS) or other software that can work with geographic data. However, the R package **tigris**  allows R users to access these datasets directly from their R sessions without having to go through these steps.
 
 ## Understanding tigris and simple features
 ### 
@@ -246,50 +336,41 @@ Data returned by the tigris package are examples of vector spatial data, a spati
 
 ### Exercise 1
 
-Now, Let’s acquire landmark point data for DC.
+Now, Let’s acquire landmark point data for DC. Run the `landmarks()` function with the arguments `"DC"` and set the second argument, `type`, to `"point"`. 
 
-Create a variable named `dc_landmarks` and assign it to the `landmarks()` function. Set the first argument to `"DC"`, and set the second argument, `type`, to `"point"`. Then below that, use `plot()` to plot the extracted geometry column from the variable.  
+Create a variable named `dc_landmarks`  Then below that, 
 
 ```{r understanding-tigris-and-simpl-1, exercise = TRUE}
 
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
 ```{r understanding-tigris-and-simpl-1-hint-1, eval = FALSE}
-dc_landmarks <- landmarks("...", type = "...")
-
-plot(dc_landmarks$...)
+landmarks("...", type = "...")
 ```
 
 ### 
 
-This should produce a bunch of what seems like random points, which represent all the landmarks in DC. We've created dots with landmarks, but what if we want to study something like roads? Lines would be more useful.
+The **sf** package is an R interface to C libraries that power much of the broader geographic data ecosystem: [GDAL](https://gdal.org/) for reading & writing spatial data, [GEOS](https://trac.osgeo.org/geos/) for modeling spatial relationships, and [PROJ](https://proj.org/) for representing coordinate reference systems. These topics will be outlined in more detail in this chapter and the remainder of this section.
 
 ### Exercise 2
 
-Create a variable named `dc_roads` and assign it to the `primary_secondary_roads()` function with a single argument of `"DC"`. Below that, plot the extracted `geometry` column from the variable just like before.
+We have assigned the previous code to an object called `dc_landmarks`. Run `dc_landmarks` to ensure it works. 
 
 ```{r understanding-tigris-and-simpl-2, exercise = TRUE}
 
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
 ```{r understanding-tigris-and-simpl-2-hint-1, eval = FALSE}
-dc_roads <- ...("DC")
-plot(...)
+dc_landmarks 
 ```
 
 ### 
 
-**Lines** are one-dimensional representations of geographic features that are used when the length, but not the area, of those features is of primary importance. With respect to the TIGER/Line shapefiles, transportation network features such as roads and railroads are represented as lines.
+As mentioned earlier, **sf** represents vector spatial data much like a regular R data frame, but with a special column, `geometry`, that represents the shape of each feature. When a simple features object is printed, the information above the data frame gives some additional geographic context to the coordinates in the `geometry` column.
 
 ### Exercise 3
 
-Points and lines are cool, but sometimes we may need to use two-dimensional shapes/polygons. 
-
-Create a variable below named `dc_block_groups` and assign it to the function `block_groups()` with a single argument of `"DC"`. Then below that, plot the geometry column like before. 
+Run `plot()` to plot the extracted geometry column from the variable.  
 
 ```{r understanding-tigris-and-simpl-3, exercise = TRUE}
 
@@ -298,73 +379,225 @@ Create a variable below named `dc_block_groups` and assign it to the function `b
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
 ```{r understanding-tigris-and-simpl-3-hint-1, eval = FALSE}
-dc_block_groups <- block_groups("...")
-plot(...)
+plot(dc_landmarks$...)
+```
+
+### 
+
+This should produce a bunch of what seems like random points, which represent all the landmarks in DC. 
+
+### Exercise 4
+
+Run `primary_secondary_roads()` function with a single argument of `"DC"`.
+
+```{r understanding-tigris-and-simpl-4, exercise = TRUE}
+
+```
+
+```{r understanding-tigris-and-simpl-4-hint-1, eval = FALSE}
+primary_secondary_roads(...)
+```
+
+### 
+
+We've created dots with landmarks, but what if we want to study something like roads? Lines would be more useful.
+
+### Exercise 5
+
+We have assigned the previous code to an object called `dc_roads`. Run `dc_roads` to ensure it works. 
+
+```{r understanding-tigris-and-simpl-5, exercise = TRUE}
+
+```
+
+```{r understanding-tigris-and-simpl-5-hint-1, eval = FALSE}
+dc_roads
+```
+
+### 
+
+**Lines** are one-dimensional representations of geographic features that are used when the length, but not the area, of those features is of primary importance. With respect to the TIGER/Line shapefiles, transportation network features such as roads and railroads are represented as lines.
+
+### Exercise 6
+
+Plot the extracted `geometry` column from the variable just like before.
+
+```{r understanding-tigris-and-simpl-6, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r understanding-tigris-and-simpl-6-hint-1, eval = FALSE}
+plot(dc_roads$...)
+```
+
+### 
+
+Points and lines are cool, but sometimes we may need to use two-dimensional shapes/polygons. 
+
+### Exercise 7
+
+Run `block_groups()` with the argument `"DC"`. Hit "Run Code."
+
+```{r understanding-tigris-and-simpl-7, exercise = TRUE}
+
+```
+
+```{r understanding-tigris-and-simpl-7-hint-1, eval = FALSE}
+block_groups("DC")
 ```
 
 ### 
 
 **Polygons** are enclosed shapes with at least three connected coordinate pairs. With respect to Census geometries, enumeration units like block groups are represented as polygons in the TIGER/Line files. Polygon geometry is useful when an analyst needs to represent the shape or area of geographic features in their project. 
 
-### Exercise 4
+### Exercise 8
 
-We just went throught the basic usage of the `tigris` package. Now we're going to plot geographic data using the `ggplot2` package. 
+We have assigned the previous code to an object called `dc_block_groups`. Run `dc_block_groups` to ensure it works. 
 
-We have already defined `la_tracts` for you in the box below. Below that, run `ggplot()` with `la_tracts` as the argument and then add the `geom_sf()` layer. 
+```{r understanding-tigris-and-simpl-8, exercise = TRUE}
 
-```{r understanding-tigris-and-simpl-4, exercise = TRUE}
-la_tracts <- tracts("NM", "Los Alamos")
+```
+
+```{r understanding-tigris-and-simpl-8-hint-1, eval = FALSE}
+dc_block_groups
+```
+
+### 
+
+These three core geometries (point, line, and polygon) can be encoded in more complex ways in the simple features representation used by sf. For example, the geometry type `POLYGON` will use one row in a simple features data frame for each discrete shape; the geometry type `MULTIPOLYGON`, in contrast, can link multiple discrete shapes as part of the same geographic feature.
+
+### Exercise 9
+
+Run `plot()` to plot the extracted geometry column from the variable.   
+
+```{r understanding-tigris-and-simpl-9, exercise = TRUE}
+
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r understanding-tigris-and-simpl-4-hint-1, eval = FALSE}
-la_tracts <- tracts("NM", "Los Alamos")
+```{r understanding-tigris-and-simpl-9-hint-1, eval = FALSE}
+plot(dc_block_groups$...))
+```
+
+### 
+
+This is important for encoding features that may have detached parts, such as a series of islands that belong to the same county. In this vein, points can be represented as `MULTIPOINT` and lines can be represented as MULTILINESTRING, respectively, to accommodate similar scenarios.
+
+### Exercise 10
+
+Run `la_tracts` and hit "Run Code."
+
+```{r understanding-tigris-and-simpl-10, exercise = TRUE}
+
+```
+
+```{r understanding-tigris-and-simpl-10-hint-1, eval = FALSE}
+la_tracts
+```
+
+### 
+
+We just went throught the basic usage of the `tigris` package. Now we're going to plot geographic data using the `ggplot2` package. 
+
+### Exercise 11
+
+Run `ggplot()` with `la_tracts` as the argument and then add the `geom_sf()` layer. 
+```{r understanding-tigris-and-simpl-11, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r understanding-tigris-and-simpl-11-hint-1, eval = FALSE}
 ggplot(...) + 
   geom_sf()
 ```
 
 ### 
 
-This should return a regular mapped graph; however, notice that it has an annoying background. 
+By default, ggplot2 includes its standard grey grid with latitude and longitude values displayed along the axes. For many cartographic applications, an analyst will want to remove this background information. 
 
-### Exercise 5
+### Exercise 12
 
 Copy and paste your code from before and add the `theme_void()` layer. 
 
-```{r understanding-tigris-and-simpl-5, exercise = TRUE}
+```{r understanding-tigris-and-simpl-12, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r understanding-tigris-and-simpl-5-hint-1, eval = FALSE}
+```{r understanding-tigris-and-simpl-12-hint-1, eval = FALSE}
 ... +
   theme_void()
 ```
 
 ### 
 
-This should get rid of the background and just show the tracts. 
+The `theme_void()` function strips the background grid and axis labels from the plot accordingly:
 
-**Note: If you ever want to compare two graphs without faceting, simply create the two graphs and concatenate them in a new line using the `+` operator. **
+### Exercise 13
 
-<!-- VD: Not that this isn't useful, but is this note relevant here? -->
+Load the `patchwork` package. 
 
-### Exercise 6
+```{r understanding-tigris-and-simpl-13, exercise = TRUE}
+
+```
+
+```{r understanding-tigris-and-simpl-13-hint-1, eval = FALSE}
+library(patchwork)
+```
+
+### 
+
+We can use *faceted plots* to compare different views, which is also a very useful concept for geographic visualization. Faceted mapping will be addressed directly in the next chapter. For comparative spatial plots, the [patchwork](https://cran.r-project.org/web/packages/patchwork/vignettes/patchwork.html) R package (Pedersen 2020) works very well for arranging a multi-plot layout. 
+
+### Exercise 14
+
+Run `block_groups()` function, set the arguments to `"NM"` and `"Los Alamos"`. 
+
+```{r understanding-tigris-and-simpl-14, exercise = TRUE}
+
+```
+
+```{r understanding-tigris-and-simpl-14-hint-1, eval = FALSE}
+block_groups(..., ...)
+```
+
+### 
+
+Below, we’ll use patchwork to put two **ggplot2** spatial plots - one of Census tracts and one of block groups in Los Alamos County - side-by-side using the + operator.
+
+### Exercise 15
+
+We have assigned the previous code to an object called `la_block_groups_2`. Type `la_block_groups_2` and hit "Run Code."
+
+```{r understanding-tigris-and-simpl-15, exercise = TRUE}
+
+```
+
+```{r understanding-tigris-and-simpl-15-hint-1, eval = FALSE}
+la_block_groups_2
+```
+
+### 
+
+### Exercise 16
 
 We can also make our graphs interactive by using the `mapview` package. The package visualizes geographic data on an interactive, zoomable map.
 
-Below `la_tracts`, run `mapview()` with `la_tracts` as the argument.
+Run `mapview()` with `la_tracts` as the argument.
 
-```{r understanding-tigris-and-simpl-6, exercise = TRUE}
-la_tracts <- tracts("NM", "Los Alamos")
+```{r understanding-tigris-and-simpl-16, exercise = TRUE}
+
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r understanding-tigris-and-simpl-6-hint-1, eval = FALSE}
-la_tracts <- tracts("NM", "Los Alamos")
+```{r understanding-tigris-and-simpl-16-hint-1, eval = FALSE}
 mapview(...)
 ```
 
@@ -372,27 +605,27 @@ mapview(...)
 
 Notice that our map is now interactive. We can hover above areas and see something pop up, and we can also zoom in and out.
 
-### Exercise 7
+### Exercise 17
 
 Let's take it one step further. Logically, we can assume that tracts change with each decennial census. In order to show this, we will need the packages `patchwork` and `glue` along with `tidyverse`. Load the `glue` and `patchwork` packages.
 
-```{r understanding-tigris-and-simpl-7, exercise = TRUE}
+```{r understanding-tigris-and-simpl-17, exercise = TRUE}
 
 ```
 
-```{r understanding-tigris-and-simpl-7-hint-1, eval = FALSE}
+```{r understanding-tigris-and-simpl-17-hint-1, eval = FALSE}
 library(...)
 ...(patchwork)
 ```
 
-### Exercise 8
+### Exercise 18
 
 Take a look below. We have created a variable for you already. This will focus on data from Tarrant County, Texas. The `map` function iterates through each year, grabbing a cartographic boundary file of Census tracts for the four decennial Census years.
 
 Below the `tracts()` function but inside the end `})`, start a graph with `ggplot()` and `year_tracts` as the argument. Add the `geom_sf()` layer and the `theme_void` layer. Finally, add the following layer: `labs(title = glue("{.x}: {nrow(year_tracts)} tracts"))`.
 
 
-```{r understanding-tigris-and-simpl-8, exercise = TRUE}
+```{r understanding-tigris-and-simpl-18, exercise = TRUE}
 yearly_plots <- map(seq(1990, 2020, 10), ~{
   year_tracts <- tracts("TX", "Tarrant", year = .x,
                         cb = TRUE)
@@ -402,7 +635,7 @@ yearly_plots <- map(seq(1990, 2020, 10), ~{
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r understanding-tigris-and-simpl-8-hint-1, eval = FALSE}
+```{r understanding-tigris-and-simpl-18-hint-1, eval = FALSE}
 yearly_plots <- map(seq(1990, 2020, 10), ~{
   year_tracts <- tracts("TX", "Tarrant", year = .x,
                         cb = TRUE)
@@ -420,19 +653,19 @@ By using the `glue` package in `labs()`, we create a custom title for each year 
 
 This generates the graphs, but we are not done yet. The graphs are now stored in the `yearly_plots` variable.  
 
-### Exercise 9
+### Exercise 19
 
 Now, we can use `patchwork` to facet the graphs.
 
 Copy and paste your code from above. Then below that, use `patchwork` to facet it. Check the hint to see how we should format this. We are indexing the `yearly_plot` object using double brackets. 
 
-```{r understanding-tigris-and-simpl-9, exercise = TRUE}
+```{r understanding-tigris-and-simpl-19, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r understanding-tigris-and-simpl-9-hint-1, eval = FALSE}
+```{r understanding-tigris-and-simpl-19-hint-1, eval = FALSE}
 ... 
 (yearly_plots[[1]] + ...[[2]]) / 
   (yearly_plots[[...]] + ...[[...]])
@@ -453,7 +686,7 @@ The forward slash that we included basically stacks graphs 1 and 2 on top of gra
 
 We've successfuly faceted a graph by time, how cool is that?!
 
-### Exercise 10
+### Exercise 20
 
 For geographic data to appropriately represent locations in mapping and spatial analysis, they must be referenced to some model of the Earth’s surface correctly. In simpler terms - a data model of the state of Florida should represent where Florida is actually located relative to other locations! This is defined as a coordinate reference system (CRS).
 
@@ -463,13 +696,13 @@ When plotting an object with `geom_sf()` we can specify a CRS with `coord_sf()`
 
 Create a variable named `fl_counties` and assign it to the `counties()` function with arguments `"FL"` and `cb = TRUE`. Below that, use `ggplot()` and `geom_sf()` to plot the variable. 
 
-```{r understanding-tigris-and-simpl-10, exercise = TRUE}
+```{r understanding-tigris-and-simpl-20, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r understanding-tigris-and-simpl-10-hint-1, eval = FALSE}
+```{r understanding-tigris-and-simpl-20-hint-1, eval = FALSE}
 fl_counties <- counties("...", cb = ...)
 ggplot(...) + 
   geom_sf()
@@ -479,17 +712,17 @@ ggplot(...) +
 
 Good! Now let's incorporate a specified CRS with `coord_sf()`.
 
-### Exercise 11
+### Exercise 21
 
 Copy and paste your code from before. Add the `coord_sf()` layer and set the argument `crs` to `3087`.
 
-```{r understanding-tigris-and-simpl-11, exercise = TRUE}
+```{r understanding-tigris-and-simpl-21, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r understanding-tigris-and-simpl-11-hint-1, eval = FALSE}
+```{r understanding-tigris-and-simpl-21-hint-1, eval = FALSE}
 ... + 
   coord_sf(crs = ...)
 ```
@@ -502,19 +735,19 @@ Now that we've specified a CRS, your graph should look like this:
 include_graphics("images/crs_mod.png")
 ```
 
-### Exercise 12
+### Exercise 22
 
 As seen in the earlier graph, the tick marks default to longitude and latitude. We can change this with the `datum` argument.
 
 Copy and paste your code from above. Within `coord_sf()`, add another argument (`datum`) and set it to `3087`.
 
-```{r understanding-tigris-and-simpl-12, exercise = TRUE}
+```{r understanding-tigris-and-simpl-22, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r understanding-tigris-and-simpl-12-hint-1, eval = FALSE}
+```{r understanding-tigris-and-simpl-22-hint-1, eval = FALSE}
 ... + 
   coord_sf(... = ..., datum = ...)
 ```
@@ -523,20 +756,20 @@ Copy and paste your code from above. Within `coord_sf()`, add another argument (
 
 Now we know how to modify both our CRS, and our axis ticks. 
 
-### Exercise 13
+### Exercise 23
 
 Let's shift gears to national US mapping. A common problem for national display of the United States is the fragmented nature of US states and territories geographically. A lot of times, programmers have to decide what to do with Hawaii, Alaska, and Puerto Rico. 
 
 Using the `tigris` function `states()` with `cb` set to `TRUE`, create a variable named `us_states` and assign it. Below that, use `ggplot()`, `geom_sf()` and `theme_void()` to construct a map. 
 
 
-```{r understanding-tigris-and-simpl-13, exercise = TRUE}
+```{r understanding-tigris-and-simpl-23, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r understanding-tigris-and-simpl-13-hint-1, eval = FALSE}
+```{r understanding-tigris-and-simpl-23-hint-1, eval = FALSE}
 us_states <- states(cb = ...)
 ggplot(...) + 
   geom_sf() +
@@ -547,7 +780,7 @@ ggplot(...) +
 
 We can see how difficult it is to get anything useful from this map. 
 
-### Exercise 14
+### Exercise 24
 
 We can fix this by using a a projected coordinate reference system appropriate for the United States, such as the continental US Albers Equal Area projection. 
 
@@ -556,13 +789,13 @@ We can fix this by using a a projected coordinate reference system appropriate f
 Copy and paste your code from earlier and add the `coord_sf()` layer. Within this function, set `crs` to `"ESRI:102003"`. 
 
 
-```{r understanding-tigris-and-simpl-14, exercise = TRUE}
+```{r understanding-tigris-and-simpl-24, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r understanding-tigris-and-simpl-14-hint-1, eval = FALSE}
+```{r understanding-tigris-and-simpl-24-hint-1, eval = FALSE}
 ... + 
   coord_sf(crs = "...")
 ```
@@ -571,19 +804,19 @@ Copy and paste your code from earlier and add the `coord_sf()` layer. Within thi
 
 Notice that this reformats the graph and makes it much easier to analyze. 
 
-### Exercise 15
+### Exercise 25
 
 We can do this same thing and make it a lot easier through the `tigris` package. 
 
 Notice that we redefined `us_states` for you. Below that, create a new variable named `us_states_shifted` and assign it to the function `shift_geometry()` with `us_states` as the argument. 
 
-```{r understanding-tigris-and-simpl-15, exercise = TRUE}
+```{r understanding-tigris-and-simpl-25, exercise = TRUE}
 us_states <- states(cb = TRUE)
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r understanding-tigris-and-simpl-15-hint-1, eval = FALSE}
+```{r understanding-tigris-and-simpl-25-hint-1, eval = FALSE}
 us_states <- states(cb = TRUE)
 us_states_shifted <- shift_geometry(...)
 ```
@@ -592,17 +825,17 @@ us_states_shifted <- shift_geometry(...)
 
 `shift_geometry()` does all the reformatting work for us, so now we can just plot it.
 
-### Exercise 16
+### Exercise 26
 
 Copy and paste your code from above. Below that, create a plot using `ggplot()`, `geom_sf()`, and `theme_void()`.
 
-```{r understanding-tigris-and-simpl-16, exercise = TRUE}
+```{r understanding-tigris-and-simpl-26, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r understanding-tigris-and-simpl-16-hint-1, eval = FALSE}
+```{r understanding-tigris-and-simpl-26-hint-1, eval = FALSE}
 us_states <- states(cb = TRUE)
 us_states_shifted <- shift_geometry(...)
 ggplot(...) +
@@ -620,7 +853,7 @@ include_graphics("images/shift_geom.png")
 
 We have seen how we can `tigris` and its functions to reformat graphs. Learn more about `shift_geometry()` and its arguments [here](https://walker-data.com/census-r/census-geographic-data-and-applications-in-r.html#shifting-and-rescaling-geometry-for-national-us-mapping).
 
-### Exercise 17
+### Exercise 27
 
 Let's explore some other useful reformatting options, such as changing polygons to points. 
 
@@ -628,7 +861,7 @@ Let's explore some other useful reformatting options, such as changing polygons 
 
 Look below to what we've already written. `tx_places` uses the `places()` function to get places from Texas, and `tx_outline` gets the actual state outline of Texas using `states()`. Click run code. 
 
-```{r understanding-tigris-and-simpl-17, exercise = TRUE}
+```{r understanding-tigris-and-simpl-27, exercise = TRUE}
 tx_places <- places("TX", cb = TRUE) %>%
   filter(NAME %in% c("Dallas", "Fort Worth", "Houston",
                      "Austin", "San Antonio", "El Paso")) %>%
@@ -650,17 +883,17 @@ ggplot() +
 
 The issue with this graphic is that city geographies are pretty irregular All  cities spread across large areas, have holes, and  include portions that are far from the main city. We can fix this by making the polygons into points. 
 
-### Exercise 18
+### Exercise 28
 
 Copy and paste the code above. Before `ggplot()`, create a new variable named `tx_centroids`. Set this variable to the `st_centroid()` function with the argument `tx_places`. Then in the second `geom_sf()`, set `data` to `tx_centroids`, `color` to `"red"`, and `size` to `3`.
 
-```{r understanding-tigris-and-simpl-18, exercise = TRUE}
+```{r understanding-tigris-and-simpl-28, exercise = TRUE}
 
 ```
 
 <button onclick = "transfer_code(this)">Copy previous code</button>
 
-```{r understanding-tigris-and-simpl-18-hint-1, eval = FALSE}
+```{r understanding-tigris-and-simpl-28-hint-1, eval = FALSE}
 ...
 
 tx_centroids <- st_centroids(...)
