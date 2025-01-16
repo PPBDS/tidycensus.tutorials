@@ -1,0 +1,12 @@
+^renv$
+^renv\.lock$
+^tidycensus\.tutorials\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
+tutorials/[^/]*/(?!(data|images|.*Rmd))
+^README\.Rmd$
+^TODO\.txt$

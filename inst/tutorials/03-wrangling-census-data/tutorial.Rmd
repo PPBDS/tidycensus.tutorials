@@ -1,0 +1,1461 @@
+---
+title: Wrangling Census data with Tidyverse tools
+author: David Kane and Satvika Upperla
+tutorial:
+  id: wrangling-census-data-with-tidyverse-tools
+output:
+  learnr::tutorial:
+    progressive: yes
+    allow_skip: yes
+runtime: shiny_prerendered
+description: 'Tutorial for Chapter 3: Wrangling Census data with tidyverse tools'
+---
+
+```{r setup, include = FALSE}
+library(learnr)
+library(tutorial.helpers)
+library(tidycensus)
+library(tidyverse)
+library(knitr)
+
+knitr::opts_chunk$set(echo = FALSE)
+options(tutorial.exercise.timelimit = 60, 
+        tutorial.storage = "local") 
+
+# We want the tutorial to run even if students do not have an internet
+# connection, so we need to save all the downloaded data. Save the creation code
+# to make replication/improvements easier.
+
+# The tidyverse
+
+# median_age <- get_acs(
+#   geography = "county",
+#   variables = "B01002_001",
+#   year = 2020
+# )
+# write_rds(median_age, "data/median_age.rds")
+
+median_age <- read_rds("data/median_age.rds")
+
+race_vars <- c(
+  White = "B03002_003",
+  Black = "B03002_004",
+  Native = "B03002_005",
+  Asian = "B03002_006",
+  HIPI = "B03002_007",
+  Hispanic = "B03002_012"
+)
+
+# az_race <- get_acs(
+#   geography = "county",
+#   state = "AZ",
+#   variables = race_vars,
+#   summary_var = "B03002_001",
+#   year = 2020
+# ) 
+# write_rds(az_race, "data/az_race.rds")
+
+az_race <- read_rds("data/az_race.rds")
+
+az_race_percent <- az_race |>
+  mutate(percent = 100 * (estimate / summary_est)) |>
+  select(NAME, variable, percent)
+
+# Groupwise
+
+# mn_hh_income <- get_acs(
+#   geography = "county",
+#   table = "B19001",
+#   state = "MN",
+#   year = 2016
+# )
+# write_rds(mn_hh_income, "data/mn_hh_income.rds")
+
+mn_hh_income <- read_rds("data/mn_hh_income.rds")
+
+mn_hh_income_recode <- mn_hh_income |>
+  filter(variable != "B19001_001") |>
+  mutate(incgroup = case_when(
+    variable < "B19001_008" ~ "below35k", 
+    variable < "B19001_013" ~ "bw35kand75k", 
+    TRUE ~ "above75k"
+  )) 
+
+# Comparing ACS estimates over time
+
+
+# oglala_lakota_age <- get_acs(
+#   geography = "county",
+#   state = "SD",
+#   county = "Oglala Lakota",
+#   table = "B01001",
+#   year = 2020)
+# write_rds(oglala_lakota_age, "data/oglala_lakota_age.rds")
+
+oglala_lakota_age <- read_rds("data/oglala_lakota_age.rds")
+
+college_vars <- c("B15002_015",
+                  "B15002_016",
+                  "B15002_017",
+                  "B15002_018",
+                  "B15002_032",
+                  "B15002_033",
+                  "B15002_034",
+                  "B15002_035")
+
+years <- 2010:2019
+names(years) <- years
+
+# college_by_year <- map_dfr(years, ~{
+#   get_acs(
+#     geography = "county",
+#     variables = college_vars,
+#     state = "CO",
+#     summary_var = "B15002_001",
+#     survey = "acs1",
+#     year = .x
+#   )
+# }, .id = "year")
+# write_rds(college_by_year, "data/college_by_year.rds")  
+
+college_by_year <- read_rds("data/college_by_year.rds")
+  
+percent_college_by_year <- college_by_year |>
+  summarize(numerator = sum(estimate),
+            denominator = first(summary_est), .by = c(NAME, year)) |>
+  mutate(pct_college = 100 * (numerator / denominator)) |>
+  pivot_wider(id_cols = NAME,
+              names_from = year,
+              values_from = pct_college)
+
+dekalb_years <- read_rds("data/dekalb_years.rds")
+
+# vars <- paste0("B01001_0", c(20:25, 44:49))
+# salt_lake <- get_acs(
+#  geography = "tract",
+#  variables = vars,
+#   state = "Utah",
+#   county = "Salt Lake",
+#   year = 2020
+# )
+# write_rds(salt_lake, "data/salt_lake.rds")
+
+salt_lake <- read_rds("data/salt_lake.rds")
+
+example_tract <- salt_lake |>
+  filter(GEOID == "49035100100")
+
+example_tract |> 
+  select(-NAME)
+  
+```
+
+```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
+```
+
+```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
+```
+
+## Introduction
+### 
+
+This tutorial covers [Chapter 3: Wrangling Census data with tidyverse tools](https://walker-data.com/census-r/wrangling-census-data-with-tidyverse-tools.html) from [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You will learn about the [**tidycensus**](https://walker-data.com/tidycensus/index.html) package and some of its key functions, including [`get_decennial()`](https://walker-data.com/tidycensus/articles/basic-usage.html) and [`get_acs()`](https://walker-data.com/tidycensus/articles/basic-usage.html). We discuss margins of error (MOEs) in the American Community Survey and how to wrangle and interpret MOEs appropriately.
+
+Visit [https://api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html) and request an API key. Use your school or other organization name for the `Organization Name` field. Follow the steps and verify your API key via email. Do this now so that, once we need the API key in a few questions, it is available. 
+
+
+## The tidyverse
+### 
+
+<!-- Covers sections 3.1 and 3.2. -->
+
+The [tidyverse](https://tidyverse.tidyverse.org/) is a collection of R packages that are designed to work together in common data wrangling, analysis, and visualization projects. Many of these R packages, maintained by RStudio, are among the most popular R packages worldwide.
+
+### Exercise 1
+
+Load in **tidyverse** package. 
+
+```{r the-tidyverse-1, exercise = TRUE}
+
+```
+
+```{r the-tidyverse-1-hint-1, eval = FALSE}
+library(...)
+```
+
+```{r the-tidyverse-1-test, include = FALSE}
+library(tidyverse)
+```
+
+The **tidyverse** is not really a package itself, but, rather, loads several core packages.
+
+### Exercise 2
+
+We can access the US Census API via the **tidycensus** package. The **tidycensus** package utilizes an API key to access Census data. Load the **tidycensus** package into your R session.
+
+Run `search()` in the Console to see the libraries that you've currently loaded. CP/CR.
+
+```{r the-tidyverse-2}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+### 
+
+The output should include the string "package:tidycensus". Kyle Walker is also the author of the [**tidycensus**](https://walker-data.com/tidycensus/) package.
+
+### Exercise 3
+
+An API key is basically a password for an API, but they often come with certain restrictions. For example, the Census API only allows you to collect 50 variables (or columns) from a database at a time. 
+
+### 
+
+Copy and paste your API key into the box below. If you don't want to share your API key, change a few letters to make it different after you have pasted it into the box.
+
+```{r the-tidyverse-3}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 3)
+```
+
+### 
+
+While an API key isn't mandatory for accessing the Census, it allows you to do more requests and use multiple computers to collect data. It's  also necessary for using the **tidycensus** package.
+
+### Exercise 4
+
+You may remember putting your GitHub Personal Access Token into your `.Renviron` file for safekeeping. We'll be doing the same for our Census API key, but the process looks a little bit different.
+
+### 
+
+The **tidycensus** package makes the process much simpler. Run `census_api_key("YOUR API KEY HERE", install = TRUE)` in the Console, substituting your API key in the field.
+
+### 
+
+This should save your key into your `.Renviron` file. Restart your R session.
+
+### 
+
+Run `Sys.getenv("CENSUS_API_KEY")` in the Console. Copy-paste the command and the output in the space below. 
+
+```{r the-tidyverse-4}
+question_text(NULL,
+    answer(NULL, correct = TRUE),
+    allow_retry = TRUE,
+    try_again_button = "Edit Answer",
+    incorrect = NULL,
+    rows = 2)
+```
+
+### 
+
+This should contain your Census API key. If you want to see where the key is stored, run `usethis::edit_r_environ()` in the Console. It should open up your `.Renviron` file and show you all of the keys that you have stored there so far. Make sure to close this file after every usage, for it stores very sensitive information that you don't want to accidentally alter or delete. 
+
+
+### Exercise 5
+
+For a first example, let’s request data on median age from the 2016-2020 ACS with `get_acs()` for all counties in the United States. Run `get_acs()` with `geography` = `"county"`, `variables` = `"B01002_001"`, and the `year` = `2020` as arguments.
+
+```{r the-tidyverse-5, exercise = TRUE}
+
+```
+
+```{r the-tidyverse-5-hint-1, eval = FALSE}
+get_acs(
+  geography = "...",
+  variables = "B01002_001",
+  year = ...
+)
+```
+
+### 
+
+The default method for printing data used by the **tibble** package shows the first 10 rows of the dataset, which in this case prints counties in Alabama. On the right hand side of the tibble you can see both moe and estimate, both of which we will talk about later in the chapter. 
+
+
+### Exercise 6
+
+Behind the scenes, we assigned the results of this call to `get_acs()` to a new object, `median_age`.
+
+We almost always assign the results of a function call which retrieves data from a source like the Census to a permanent object, `median_age` in this case. Strictly speaking, we don't need to do this. We could just start a pipe with this function call. But, first, this is sometimes annoyingly slow and, second, we don't want to be abusive and query an online source every time we make a tiny change.
+
+### 
+
+Write `median_age` and press "Run Code".
+
+
+```{r the-tidyverse-6, exercise = TRUE}
+
+```
+
+```{r the-tidyverse-6-hint-1, eval = FALSE}
+median_age
+```
+
+```{r the-tidyverse-6-test, include = FALSE}
+median_age
+```
+
+### 
+
+Note that the key variable is called `estimate` rather than `age` or `median_age`. The default behavior of `get_acs()` is for the variable we are interested in to be labelled `estimate` since, in fact, it is an estimate. 
+
+
+
+### Exercise 7
+
+`arrange()` sorts a dataset by values in one or more columns and returns the sorted result. Pipe `median_age` to `arrange()` with the argument `estimate`.
+
+```{r the-tidyverse-7, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r the-tidyverse-7-hint-1, eval = FALSE}
+median_age |> 
+  ...(estimate)
+```
+
+```{r the-tidyverse-7-test, include = FALSE}
+median_age |> 
+  arrange(estimate)
+```
+
+### 
+
+Per the 2016-2020 ACS, the youngest county is De Baca County, New Mexico. Two of the five youngest “counties” in the United States are independent cities in Virginia, which are treated as county-equivalents. 
+
+
+
+### Exercise 8
+
+New let's try to find the oldest counties in the US by median age. Change `estimate` to `desc(estimate)` within `arrange()` in the previous code.
+
+```{r the-tidyverse-8, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r the-tidyverse-8-hint-1, eval = FALSE}
+median_age |> 
+  arrange(...(estimate))
+```
+
+```{r the-tidyverse-8-test, include = FALSE}
+median_age |> 
+  arrange(desc(estimate))
+```
+
+### 
+
+The oldest county in the United States is Sumter County, Florida. Sumter County is home to The Villages, a Census-designated place that includes a large age-restricted community also called [The Villages](https://www.thevillages.com/). 
+
+
+
+### Exercise 9
+
+How many counties in the US have a median age of 50 or older? Pipe `median_age` to `filter()` with the argument `estimate >= 50`. 
+
+
+```{r the-tidyverse-9, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r the-tidyverse-9-hint-1, eval = FALSE}
+median_age |> 
+  filter(... >= 50)
+```
+
+```{r the-tidyverse-9-test, include = FALSE}
+median_age |> 
+  filter(estimate >= 50)
+```
+
+### 
+
+The `filter()` function queries a data set for rows where a given condition evaluates to TRUE, and retains those rows only. In this case, the data set is filtering our `median_age` data set for counties that have a median age of 50 or older. 
+
+
+### Exercise 10
+
+What if we want to separate the columns into county and state? The best tool for that is the `separate` function. Pipe `median_age` to `separate` with arguments `col = NAME`,
+`into = c("county","state")` and `sep = ", "`. (Note that it is `", "` with a space, not `","` without one.)
+
+```{r the-tidyverse-10, exercise = TRUE}
+
+```
+
+```{r the-tidyverse-10-hint-1, eval = FALSE}
+median_age |> 
+  separate(... = NAME,
+  into = ...,
+  ... = ", ")
+```
+
+```{r the-tidyverse-10-test, include = FALSE}
+median_age |> 
+  separate(col = NAME,
+  into = c("county", "state"),
+  sep = ", ")
+```
+
+### 
+
+`separate()` is an older **dplyr** function for accomplishing this same task. It has been superseded by [`separate_wider_position()`](https://tidyr.tidyverse.org/reference/separate_wider_delim.html) and [`separate_wider_delim()`](https://tidyr.tidyverse.org/reference/separate_wider_delim.html). 
+
+
+### Exercise 11
+
+Data in Census and ACS tables, as in the example above, are frequently comprised of variables that individually constitute sub-categories such as the numbers of households in different household income bands. One limitation of the approach above, however, is that the data and the resulting analysis return estimated counts, which are difficult to compare across geographies. Press "Run Code".
+
+
+```{r the-tidyverse-11, exercise = TRUE}
+race_vars <- c(
+  White = "B03002_003",
+  Black = "B03002_004",
+  Native = "B03002_005",
+  Asian = "B03002_006",
+  HIPI = "B03002_007",
+  Hispanic = "B03002_012"
+)
+```
+
+```{r the-tidyverse-11-test, include = FALSE}
+race_vars <- c(
+  White = "B03002_003",
+  Black = "B03002_004",
+  Native = "B03002_005",
+  Asian = "B03002_006",
+  HIPI = "B03002_007",
+  Hispanic = "B03002_012"
+)
+```
+
+### 
+
+We will make use of this variable in our next download request. 
+
+### Exercise 12
+
+Call `get_acs()` with `geography = "county"`, `state = "AZ"`, `variables = race_vars`,  and `year = 2020`. This is similar to previous calls we have made to `get_acs()` except, instead of using a single variable code, we are providing a vector of codes.  
+
+
+```{r the-tidyverse-12, exercise = TRUE}
+
+```
+
+```{r the-tidyverse-12-hint-1, eval = FALSE}
+get_acs(
+  geography = ...,
+  ... = "AZ",
+  variables = ...,
+  ... = 2020
+) 
+```
+
+### 
+
+Note the wide range in raw numbers in the "estimate" column. Some categories are 100 or even 1,000 times more common than others. We often want to "normalize" these values so that everything is on a more similar scale.
+
+
+
+### Exercise 13
+
+A solution to this issue might involve normalizing the estimated count data by dividing it by the overall population from which the sub-group is derived. Appropriate denominators for ACS tables are frequently found in the tables themselves as variables.
+
+Use the same code as in the last Exercise, but add `summary_var = "B03002_001"` as an argument to the call to `get_acs()`.
+
+
+```{r the-tidyverse-13, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r the-tidyverse-13-hint-1, eval = FALSE}
+get_acs(
+  geography = "county",
+  state = "AZ",
+  variables = race_vars,
+  summary_var = ...,
+  year = 2020
+) 
+```
+
+### 
+
+Adding a variable ID to the `summary_var` parameter in `get_acs()`  will create two new columns: `summary_est` and `summary_moe`, representing the summary variable’s estimate and margin of error. In this case, the summary variable is the total population for each county. 
+
+### Exercise 14
+
+In the background, we ran this same download and assigned the result to a new object: `az_race`. Type `az_race` and hit "Run Code".
+
+```{r the-tidyverse-14, exercise = TRUE}
+
+```
+
+```{r the-tidyverse-14-hint-1, eval = FALSE}
+az_race
+```
+
+```{r the-tidyverse-14-test, include = FALSE}
+az_race
+```
+
+### 
+
+Look closely as the results for Apache County. Each of the variables which we requested gets its own row. Instead of just having one row for the county, we have 6 rows, one for each race. The `summary_est` is the total population of the county. (Note that, for technical reasons, the sum of the estimated populations for each race may not exactly equal the estimated population for the whole county.)
+
+<!-- Someday, it might be useful to understand and explain why `sum(az_race$estimate[1:6])`, which is the sum of the different racial/ethnic subpopulations does not equal `az_race$summary_est[1]`, which is the town total population. Maybe there is a "two or more races" or "other" bucket? -->
+
+### Exercise 15
+
+Pipe `az_race` to `mutate(percent = 100 * (estimate / summary_est))` and continue the pipe with `select(NAME, variable, percent)`.
+
+```{r the-tidyverse-15, exercise = TRUE}
+
+```
+
+```{r the-tidyverse-15-hint-1, eval = FALSE}
+az_race |>
+  ...(percent = 100 * (estimate / ...)) |>
+  select(..., variable, percent)
+```
+
+```{r the-tidyverse-15-test, include = FALSE}
+az_race |>
+  mutate(percent = 100 * (estimate / summary_est)) |>
+  select(NAME, variable, percent)
+```
+
+### 
+
+This is the typical workflow. First, we figure out what variables we need and download them using a function like `get_acs()` or `get_decennial()`. We save the result to a permanent object like `az_race`. Then, we build pipes starting from that saved object.
+
+## Group-wise Census Data analysis
+### 
+
+The split-apply-combine model of data analysis, is a powerful framework for analyzing demographic data.
+
+The analyst identifies salient groups in a dataset between which they want to make comparisons. The dataset is then split into multiple pieces, one for each group.
+
+A function is then applied to each group in turn. Finally, the results of the function applied to each group are combined back into a single dataset, allowing the analyst to compare the results by group.
+
+### Exercise 1
+
+Behind the scenes we have assigned the previous code to the variable `az_race_percent`. Print out `az_race_percent` to ensure it works
+
+```{r groupwise-census-data-analysis-1, exercise = TRUE}
+
+```
+
+```{r groupwise-census-data-analysis-1-hint-1, eval = FALSE}
+az_race_percent
+```
+
+```{r groupwise-census-data-analysis-1-test, include = FALSE}
+az_race_percent
+```
+
+### Exercise 2
+
+Pipe tibble `az_race_percent` into the function `filter()` setting `percent` to `max()` `percent` and `.by` = `NAME` as arguments.
+
+```{r groupwise-census-data-analysis-2, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r groupwise-census-data-analysis-2-hint-1, eval = FALSE}
+az_race_percent |>
+  filter(... == max(...), ... = NAME)
+```
+
+```{r groupwise-census-data-analysis-2-test, include = FALSE}
+az_race_percent |> 
+  filter(percent == max(percent), .by = NAME)
+```
+
+We can read the analytic pipeline grouping the dataset by the NAME column THEN filtering for rows that are equal to the maximum value of percent for each group."
+
+### Exercise 3
+
+Pipe `az_race_percent` into the function `summarize` setting `median_pct` to the `median()` of `percent` as an argument. Pass in another argument, setting `.by` equal to `variable` The result of this operation tells us the median county percentage of each racial and ethnic group for the state of Arizona. 
+
+```{r groupwise-census-data-analysis-3, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r groupwise-census-data-analysis-3-hint-1, eval = FALSE}
+az_race_percent |>
+  summarize(... = median(...)) 
+```
+
+```{r groupwise-census-data-analysis-3-test, include = FALSE}
+az_race_percent |>
+  summarize(median_pct = median(percent), .by = variable)
+```
+
+### Exercise 4
+
+Commonly, analysts will need to calculate new custom groups to address specific analytic questions. As such, an analyst might take the following steps: 1) recode the ACS variables into wider income bands; 2) group the data by the wider income bands; 3) calculate grouped sums to generate new estimates.Pass the function `get_acs()` passing in these arguments: geography = `"county"`, `table = "B19001"`,`state = "MN"`, and `year = 2016`.
+  
+```{r groupwise-census-data-analysis-4, exercise = TRUE}
+
+```
+
+```{r groupwise-census-data-analysis-4-hint-1, eval = FALSE}
+get_acs(
+  geography = ...,
+  ... = "B19001",
+  state = "MN",
+  year = ...
+)
+```
+
+### Exercise 5
+
+Pipe the dataset `mn_hh_income` to the function `filter()` passing in `variable` is not equal to `"B19001_001"` as an argument
+
+```{r groupwise-census-data-analysis-5, exercise = TRUE}
+
+```
+
+```{r groupwise-census-data-analysis-5-hint-1, eval = FALSE}
+ mn_hh_income |>
+  filter(... != "B19001_001") 
+  
+```
+
+```{r groupwise-census-data-analysis-5-test, include = FALSE}
+mn_hh_income |>
+  filter(variable != "B19001_001") 
+  
+```
+
+### Exercise 6
+
+Pipe the previous code into the function `mutate()` setting `incgroup` to `case_when()` as an argument. Within `case_when()` pass in `variable < "B19001_008" ~ "below35k"`,  `variable < "B19001_013" ~ "bw35kand75k"`, and `TRUE ~ "above75k"` as arguments. 
+    
+```{r groupwise-census-data-analysis-6, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r groupwise-census-data-analysis-6-hint-1, eval = FALSE}
+mn_hh_income |>
+  filter(... != "B19001_001")  |>
+  mutate(incgroup = case_when(
+    variable < "B19001_008" ~ ..., 
+    variable < ... ~ "bw35kand75k", 
+    ... ~ "above75k"
+  ))
+```
+
+```{r groupwise-census-data-analysis-6-test, include = FALSE}
+mn_hh_income |>
+  filter(variable != "B19001_001")  |>
+  mutate(incgroup = case_when(
+    variable < "B19001_008" ~ "below35k", 
+    variable < "B19001_013" ~ "bw35kand75k", 
+    TRUE ~ "above75k"
+  ))
+```
+
+ 
+ Within `case-when()` the first condition is evaluated, telling the function to assign the value of below35k to all rows with a variable value that comes before `"B19001_008"` - which in this case will be `B19001_002` (income less than $10,000) through `B19001_007` (income between $30,000 and $34,999). The second condition is then evaluated for all those rows not accounted for by the first condition. This means that case_when() knows not to assign `"bw35kand75k"` to the income group of $10,000 and below even though its variable comes before B19001_013. The final condition in `case_when()` can be set to `TRUE` which in this scenario translates as “all other values.”
+ 
+
+### Exercise 7
+
+We have assigned the result of the previous pipe to a new object, `mn_hh_income_recode`. Type `mn_hh_income_recode` in the box and hit "Run Code." 
+
+```{r groupwise-census-data-analysis-7, exercise = TRUE}
+
+```
+
+```{r groupwise-census-data-analysis-7-hint-1, eval = FALSE}
+mn_hh_income_recode
+```
+
+```{r groupwise-census-data-analysis-7-test, include = FALSE}
+mn_hh_income_recode
+```
+
+### 
+
+### Exercise 8
+
+Pipe `mn_hh_income_recode` to `summarize()` setting `estimate` to the `sum()` of `estimate` as an argument, with `.by` equal to `c(GEOID, incgroup)`. 
+
+```{r groupwise-census-data-analysis-8, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r groupwise-census-data-analysis-8-hint-1, eval = FALSE}
+mn_hh_income_recode |>
+  summarize(... = sum(estimate), .by = c(GEOID, ...))
+```
+
+```{r groupwise-census-data-analysis-8-test, include = FALSE}
+mn_hh_income_recode |>
+  summarize(estimate = sum(estimate), .by = c(GEOID, incgroup))
+```
+
+Our result illustrates how the different variable IDs are mapped to the new, recoded categories that we specified in case_when(). 
+
+## Comparing ACS estimates over time
+### 
+
+A common task when working with Census data is to examine demographic change over time. Data from the Census API - and consequently tidycensus - only go back to the 2000 Decennial Census.
+
+### Exercise 1
+
+Before engaging in any sort of time series analysis of Census data, analysts need to account for potential problems that can emerge when using Census data longitudinally. One major issue that can emerge is geography changes over time.
+ 
+
+Use `get_acs()` to create the dataset `oglala_lakota_age`. Within `get_acs()`, set `geography` = `"county"`, `state` = `"SD"`, `county` = `"Oglala Lakota"`, `table` =  `"B01001"` and `year` = `2020`. 
+
+```{r comparing-acs-estimates-over-t-1, exercise = TRUE}
+
+```
+
+```{r comparing-acs-estimates-over-t-1-hint-1, eval = FALSE}
+oglala_lakota_age <- ...(
+  geography = "...",
+  state = "...",
+  ... = "Oglala Lakota",
+  table = "...",
+  year = ...
+)
+```
+
+### 
+
+The `get_acs()` function allows us obtain data from the American Community Survey. More information on this function can be found [here](https://www.rdocumentation.org/packages/tidycensus/versions/1.5/topics/get_acs).  
+
+
+
+### Exercise 2
+
+Print out the `oglala_lakota_age` tibble which you just created.
+
+```{r comparing-acs-estimates-over-t-2, exercise = TRUE}
+
+```
+
+```{r comparing-acs-estimates-over-t-2-hint-1, eval = FALSE}
+oglala_lakota_age
+```
+
+```{r comparing-acs-estimates-over-t-2-test, include = FALSE}
+oglala_lakota_age
+```
+
+### 
+
+This is a 2016-2020 age table for Oglala Lakota County, SD. This graph allows us to see the age composition of the Oglola Lakota County through this time period
+
+
+### Exercise 3
+
+Using the same code as in the first exercise in this section, change the `year` = `2010`. You should get an error. 
+
+```{r comparing-acs-estimates-over-t-3, exercise = TRUE}
+
+```
+
+```{r comparing-acs-estimates-over-t-3-hint-1, eval = FALSE}
+oglala_lakota_age <- get_acs(
+  geography = "county",
+  state = "SD",
+  county = "Oglala Lakota",
+  table = "B01001",
+  year = ...
+)
+```
+
+### 
+
+We get an error because ten years ago, this county was named "Shannon". 
+
+### Exercise 4
+
+Using the same code as above, change the `county` name to `"Shannon"`. 
+
+```{r comparing-acs-estimates-over-t-4, exercise = TRUE}
+
+```
+
+<!-- this "copy previous code button" does not work -->
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-acs-estimates-over-t-4-hint-1, eval = FALSE}
+oglala_lakota_age <- get_acs(
+  geography = "county",
+  state = "SD",
+  county = "...",
+  table = "B01001",
+  year = 2010
+)
+```
+
+### 
+
+When looking at the two datasets, you may notice that the `GEOID` column changed from `46113` in 2010 to `46102`to 2020. This is because when a geographic entity changes their name, the Census Bureau assigns it a new `GEOID`, meaning that analysts need to take care when dealing with those changes. 
+
+
+### Exercise 5
+
+ Let’s say that we are interested in analyzing the percentage of residents age 25 and up with a 4-year college degree for counties in Colorado from the 2019 1-year ACS. 
+ 
+ Pipe the function `get_acs()`. Inside the function, set `geography` = `"county"`, `variables` = `"DP02_0068P"`, `state` = `"CO"`, `survey` = `"acs1"` and `year` = `2019`.  
+ 
+
+```{r comparing-acs-estimates-over-t-5, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-acs-estimates-over-t-5-hint-1, eval = FALSE}
+get_acs(
+  ... = "county",
+  variables = "...",
+  ... = "CO",
+  survey = "...",
+  year = ...
+)
+```
+
+### 
+
+Notice how Boulder County, home to the University of Colorado, has a very high percentage of its population with a 4-year degree or higher.
+
+### Exercise 6
+
+Copying the code above, lets change the `year` to `2018`. 
+
+```{r comparing-acs-estimates-over-t-6, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-acs-estimates-over-t-6-hint-1, eval = FALSE}
+get_acs(
+  geography = "county",
+  variables = "DP02_0068P",
+  state = "CO",
+  survey = "acs1",
+  year = ...
+)
+```
+
+### 
+
+Why are the values completely changed and different? This is because variable ID's change every year and as a result should not be used for time-series analysis. These variable ID's actually represent the civilian population age 18 and up, and have nothing to do with educational attainment.
+
+### Exercise 7
+
+If our data is compromised from geography changes and variable ID changes, what is the best way to make a time-series analysis? The safest way to compare data is through Comparison Profile Tables!
+
+Let's get data from the ACS Comparison Profile on inflation-adjusted median household income for counties and county-equivalents in Alaska.
+
+Set the dataset `ak_income_compare` to the function `get_acs()`. Inside the function, set `geography` = `"county"`, `variables` to a vector of `income15 = "CP03_2015_062"` and `income20 = "CP03_2020_062"`, `state` = `"AK"`, and `year` = `2020`.
+
+```{r comparing-acs-estimates-over-t-7, exercise = TRUE}
+
+```
+
+```{r comparing-acs-estimates-over-t-7-hint-1, eval = FALSE}
+... <- get_acs(
+  ... = "county",
+  variables = c(
+    income15 = "...",
+    income20 = "..."
+  ),
+  ... = "AK",
+  year = ...
+)
+```
+
+### 
+
+These tables are available for both the 1-year and 5-year ACS, and allow for comparison of demographic indicators over the past five years for a given year. For the 2016-2020 ACS, the “comparison year” is 2015, representing the closest non-overlapping 5-year dataset, which in this case is 2011-2015.
+
+### Exercise 8
+
+Let’s re-engineer the analysis above on educational attainment in Colorado counties, which below will be computed for a time series from 2010 to 2019. We only need a few variables (representing estimates of populations age 25+ who have finished a 4-year degree or graduate degrees, by sex), we’ll request those variables directly rather than the entire B15002 table. 
+
+Set `college_vars` equal to a vector of `"B15002_015"`, `"B15002_016"`, `"B15002_017"`, `"B15002_018"`, `"B15002_032"`, `"B15002_033"`, `"B15002_034"`, and `"B15002_035"`. 
+
+
+
+```{r comparing-acs-estimates-over-t-8, exercise = TRUE}
+
+```
+
+```{r comparing-acs-estimates-over-t-8-hint-1, eval = FALSE}
+c("...",
+  "B15002_016",
+  "B15002_017",
+  "...",
+  "...",
+  "B15002_033",
+  "...",
+  "B15002_035")
+```
+
+```{r comparing-acs-estimates-over-t-8-test, include = FALSE}
+c("B15002_015",
+  "B15002_016",
+  "B15002_017",
+  "B15002_018",
+  "B15002_032",
+  "B15002_033",
+  "B15002_034",
+  "B15002_035")
+```
+
+### 
+
+If we want data on college career holders from 2010 to 2019, we will have a lot of `get_acs()` functions. To reduce the unnecessary work, we will use iterations to avoid repetitive coding. This is similar to the loop operators `for` and `while` 
+
+
+### Exercise 9
+
+The **purrr** package has a variety of iteration functions such as `map_*()`. The function `map_dfr()` is especially useful in tidycensus, as it iterates over an input and applies it to a function or process defined by the user, then row-binds the result into a single data frame. 
+
+Set `years` to `2010:2019`. On a separate line type the function `names()` with the argument as `years`. Set this function to `years`. 
+
+
+
+```{r comparing-acs-estimates-over-t-9, exercise = TRUE}
+
+```
+
+```{r comparing-acs-estimates-over-t-9-hint-1, eval = FALSE}
+years <- ....
+names(..) <- years
+```
+
+```{r comparing-acs-estimates-over-t-9-test, include = FALSE}
+years <- 2010:2019
+names(years) <- years
+```
+
+### 
+
+The `names()` function allows us to get or set the names of an object. More information on this function can be found [here](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/names)
+
+### Exercise 10
+
+Copy the code above. Get function `map_dfr()` with the first argument as `years`. Inside the `map_dfr()` function, set the second argument to `~{ getacs() }`. It is fine to have an error.  
+
+```{r comparing-acs-estimates-over-t-10, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-acs-estimates-over-t-10-hint-1, eval = FALSE}
+
+years <- 2010:2019
+names(years) <- years
+
+college_by_year <- ...(..., ~{
+  get_acs() })
+```
+
+### 
+
+The tilde (`~`) operator and the curly brackets (`{}`) means that the code will run once for each element of `years`. 
+
+### Exercise 11
+
+Copy the code above. Within the `get_acs()` function, set `geography` = `"county"`, `variables` = `college_vars`, `state` = `"CO"`, `summary_var` = `"B15002_001"`, `survey` = `"acs1"` and `year` = `.x`. Within the `map_dfr()` function, set the third argument `.id` equal to `"year"`
+
+```{r comparing-acs-estimates-over-t-11, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-acs-estimates-over-t-11-hint-1, eval = FALSE}
+years <- 2010:2019
+names(years) <- years
+
+map_dfr(years, ~{
+  get_acs(
+    geography = "county",
+    variables = ...,
+    ... = "CO",
+    summary_var = "...",
+    ... = "acs1",
+    year = .x
+  )
+}, .id = "...")
+```
+
+### 
+
+Let's go over the code so that you can understand. A numeric vector of `years` is defined with the syntax 2010:2019. This will create a vector of `years` at 1-year intervals. 
+
+Then the function `map_dfr()` takes three arguments. The first argument, `years` is the object that the function will iterate over. The second argument uses the formula to create data for each element of `years` and then outputs the data into a single data frame. By setting the thirs argument .id = "year", we tell `map_dfr()` to name the new column that will contain these values "year".`. 
+
+### Exercise 12
+
+We have assigned the previous code to the variable `college_by_year`. Print `college_by_year`
+
+```{r comparing-acs-estimates-over-t-12, exercise = TRUE}
+
+```
+
+```{r comparing-acs-estimates-over-t-12-hint-1, eval = FALSE}
+college_by_year
+```
+
+```{r comparing-acs-estimates-over-t-12-test, include = FALSE}
+college_by_year
+```
+
+### Exercise 13
+
+Lets look at the results! 
+
+Pipe `college_by_year` using `|>` to the function `arrange()`. Within `arrange()`, set the first argument as `NAME`, the second as `variable` and the third as `year`. 
+
+```{r comparing-acs-estimates-over-t-13, exercise = TRUE}
+
+```
+
+```{r comparing-acs-estimates-over-t-13-hint-1, eval = FALSE}
+... |> 
+  arrange(NAME, ..., ...)
+```
+
+```{r comparing-acs-estimates-over-t-13-test, include = FALSE}
+college_by_year |> 
+  arrange(NAME, variable, year)
+```
+
+### 
+
+The result is a long-form data set that contains a time series of each requested ACS variable for each county in Colorado that is available in the 1-year ACS. 
+
+### 
+
+### Exercise 14
+
+Copy the code above. Continue using the pipe `|>` to the function `summarize()`. For the first argument of `summarize()`, set `numerator` equal to `sum(estimate)`. For the second argument of `summarize()`, set `denominator` to `first(summary_est)`, and for the third set `.by` equal to `NAME` and `year`. 
+
+```{r comparing-acs-estimates-over-t-14, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-acs-estimates-over-t-14-hint-1, eval = FALSE}
+college_by_year |>
+  summarize(... = sum(estimate),
+            ... = first(...), .by = c(...,...))
+```
+
+```{r comparing-acs-estimates-over-t-14-test, include = FALSE}
+college_by_year |>
+  summarize(numerator = sum(estimate),
+            denominator = first(summary_est), .by = c(NAME, year))
+```
+
+### 
+
+The function `summarize()` creates a new data frame. More information can be found [here](https://dplyr.tidyverse.org/reference/summarise.html)
+
+### Exercise 15
+
+Copy the code above. Continue the pipe `|>` to the function `mutate()`. Within the function, set `pct_college` = `100` times `(numerator/denominator)`. 
+
+```{r comparing-acs-estimates-over-t-15, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-acs-estimates-over-t-15-hint-1, eval = FALSE}
+college_by_year |>
+  summarize(numerator = sum(estimate),
+            denominator = first(summary_est), .by = c(..., ...)) |>
+  mutate(... = ... * (numerator / ...)) 
+
+```
+
+```{r comparing-acs-estimates-over-t-15-test, include = FALSE}
+college_by_year |>
+  summarize(numerator = sum(estimate),
+            denominator = first(summary_est), .by = c(NAME, year)) |>
+  mutate(pct_college = 100 * (numerator / denominator))
+```
+
+### 
+
+The `mutate()` function allows us the create, modify and delete columns. More information about this function can be found [here](https://dplyr.tidyverse.org/reference/mutate.html)
+
+### Exercise 16
+
+Copy the code above. Continue the pipe `|>` to the function `pivot_wider()`. Within the function, set `id_cols` to `NAME`, `names_from` to `year`, and `values_from` to `pct_college`. 
+
+```{r comparing-acs-estimates-over-t-16, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r comparing-acs-estimates-over-t-16-hint-1, eval = FALSE}
+college_by_year |>
+  summarize(numerator = sum(estimate),
+            denominator = first(summary_est), .by = c(..., ...)) |>
+  mutate(pct_college = 100 * (numerator / denominator)) |>
+  ...(... = NAME,
+              names_from = ...,
+              ... = pct_college)
+```
+
+```{r comparing-acs-estimates-over-t-16-test, include = FALSE}
+college_by_year |>
+  summarize(numerator = sum(estimate),
+            denominator = first(summary_est), .by = c(NAME, year)) |>
+  mutate(pct_college = 100 * (numerator / denominator)) |>
+  pivot_wider(id_cols = NAME,
+              names_from = year,
+              values_from = pct_college)
+```
+
+### 
+
+The chapter outlines a `group_by() |> summarize()` workflow, however the use of `group_by` is largely outdated, and superseded by the argument `.by` for functionality. We use it for calculating the percentage of the population age 25 and up with a 4-year college degree, then uses the `pivot_wider()` function from the **tidyr** package to spread the years across the columns for tabular data display. If you want to know more information about the `pivot_wider()` function click [here](https://tidyr.tidyverse.org/reference/pivot_wider.html)
+
+## Handling margins of error with tidycensus
+### 
+
+The American Community Survey is based on a sample with estimates characterized by margins of error, and by default MOE is set to a 90 confidence interval. This can be translated roughly as “we are 90 percent sure that the true value falls within a range defined by the estimate plus or minus the margin of error.” 
+
+<!-- We are not going to teach you statistics in this tutorial! Behind the scenes, the ACS is making all sorts of calculations. In the end, using statistics, they provide us with two numbers: an *estimate* of the median household income in each county and a *moe* (margin of error) for that estimate. -->
+
+### Exercise 1
+
+Lets look at data on median household income by county in Rhode Island using the default `moe_level` of 90. 
+
+Type the function `get_acs()`. Within this function, set `geography` to `"county"`, `state` to `"Rhode Island"`, `variables` to `"B19013_001"`, and `year` to `2020`. 
+
+```{r handling-margins-of-error-with-1, exercise = TRUE}
+
+```
+
+```{r handling-margins-of-error-with-1-hint-1, eval = FALSE}
+get_acs(
+  geography = ...,
+  ... = "Rhode Island",
+  ... = ...,
+  year = ...
+)
+```
+
+### 
+
+The data can be translated to saying, "We are 90% confident that the median household income in the county of Rhode Island falls within the range of the `estimate` plus or minus the `moe`." For example, our estimate of the average household income in Bristol County, Rhode Island is $85,413 with a 90% confidence interval of +/- $6,122.
+
+### 
+
+There are only five counties in Rhode Island. In an ideal world, we would have the household income for every family in each county. If we did, we could precisely calculate what the median (and the mean and the max and . . .) household income is in each county. But we don't have data on every household because the ACS is a survey, unlike the Census. We only have a sample of some households in each county.
+
+### 
+
+In other words, the ACS calculated that a good estimate of the median household income in Bristol County is \$85,413. Is that the *true* number? The ACS does not know! It does not have data for all the households in Bristol County. The ACS only has data for a *sample* of households.
+
+### Exercise 2
+
+Rather than using the default 90% margin of error, let's change the argument using the `get_acs()` function. Side note, the `moe_level` argument can only be either 90, 95 or 99.
+
+Copy the code above and add an argument setting `moe_level` to `99`. 
+
+```{r handling-margins-of-error-with-2, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r handling-margins-of-error-with-2-hint-1, eval = FALSE}
+get_acs(
+  geography = "county",
+  state = "Rhode Island",
+  variables = "B19013_001",
+  year = 2020,
+  moe_level = ...
+)
+```
+
+### 
+
+Look at the data and notice how the values for the `moe` column has changed. The stricter margin of error increases the size of the confidence interval. In simpler terms, if you want to be more confident (i.e., set a higher `moe_level`) in the estimate, then your margin of error will increase. 
+
+### 
+
+When the confidence level is 99%, it means (roughly!) that 99 out of 100 times, the true (and unknown) value of median household income will fall between the confidence interval's upper bound and lower bound. 
+
+In the examples earlier, as confidence level increased, so did margin of error because if your interval is larger, there is a higher chance that the true value falls within it.
+
+ You can learn more about a margin of error and some related functions [here](https://walker-data.com/census-r/wrangling-census-data-with-tidyverse-tools.html#handling-margins-of-error-in-the-american-community-survey-with-tidycensus).
+
+<!-- Could insert some more examples here and spread out all the commentary. Also include: -->
+
+
+### Exercise 3
+
+For small geographies or small populations, margins of error can get quite large, in some cases exceeding their corresponding estimates. Let's examine data on age groups by sex for the population age 65 and older for Census tracts in Salt Lake County, Utah.
+
+Set `vars` to the function `paste0()`. Within the function, set the first argument as `"B01001_0"` and the second argument as a vector of `20:25` and `44:49`. On the next line print out `vars`. 
+
+```{r handling-margins-of-error-with-3, exercise = TRUE}
+
+```
+
+```{r handling-margins-of-error-with-3-hint-1, eval = FALSE}
+... <- paste0(..., c(20:25, ...))
+
+vars
+```
+
+```{r handling-margins-of-error-with-3-test, include = FALSE}
+vars <- paste0("B01001_0", c(20:25, 44:49))
+
+vars
+```
+
+### 
+
+Let's look at this code. First we are evaluating the `20:25` and `44:49` expressions to generate a vector of numbers for suffixes of variable IDs. Next we are using the `c()` function to combine the two vectors into a single vector. Lastly the `paste0()` function concatenates the prefix `"B01001_0"` with the variable IDs we just created. 
+
+### Exercise 4
+
+The resulting object `vars` allows us to request variables in a call to `get_acs()`. 
+
+Get the function `get_acs()`. Within the function, set `geography` = `"tract"`, `variables` = `vars`, state = `"Utah"`, `county` = `"Salt Lake"`, and `year` = `2020`. 
+
+```{r handling-margins-of-error-with-4, exercise = TRUE}
+
+```
+
+```{r handling-margins-of-error-with-4-hint-1, eval = FALSE}
+get_acs(
+  ... = "tract",
+  ... = vars,
+  state = ...,
+  county = ...,
+  ... = 2020
+)
+```
+
+### 
+
+The `paste0()` function we used for the `vars` object allows us to concatenate vectors after converting to character. More information about the function and its arguments can be found [here](https://stat.ethz.ch/R-manual/R-devel/library/base/html/paste.html)
+
+### Exercise 5
+
+We have assigned the code above to the variable `salt_lake`. Type `salt_lake` and run code to make sure it works.
+
+```{r handling-margins-of-error-with-5, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r handling-margins-of-error-with-5-hint-1, eval = FALSE}
+salt_lake
+```
+
+```{r handling-margins-of-error-with-5-test, include = FALSE}
+salt_lake
+```
+
+### 
+
+### Exercise 6
+
+Now we should examine our data using the `filter()` function. 
+
+Set `example_tract` to the `salt_lake` object we used above. Now pipe the `salt_lake` object using `|>` to the function `filter()`. Within `filter()`, set `GEOID` equals to `"49035100100"`. On a separate line, pipe `example_tract` to the `select()` function and pass `-NAME` in as an argument.  
+
+```{r handling-margins-of-error-with-6, exercise = TRUE}
+
+```
+
+```{r handling-margins-of-error-with-6-hint-1, eval = FALSE}
+example_tract <- ... |>
+  filter(GEOID == ...)
+
+example_tract |> 
+  select(...)
+```
+
+```{r handling-margins-of-error-with-6-test, include = FALSE}
+example_tract <- salt_lake |>
+  filter(GEOID == "49035100100")
+
+example_tract |> 
+  select(-NAME)
+```
+
+### 
+
+In many cases, the margins of error exceed their corresponding estimates. For example, for the variable `B01001_0025` it suggests that or the male population age 85 and up, there are anywhere between 0 and 45 people in that Census tract. This can make ACS data for small geographies problematic for planning and analysis purposes.
+
+
+### Exercise 7
+
+A potential solution to large margins of error for small estimates in the ACS is to aggregate data upwards until a satisfactory margin of error to estimate ratio is reached.
+
+The `moe_prop()` function calculates a margin of error for a derived proportion. Type the function, then set the arguments to `25`, `100`, `5`, and `3`. 
+
+```{r handling-margins-of-error-with-7, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button>
+
+```{r handling-margins-of-error-with-7-hint-1, eval = FALSE}
+moe_prop(25, ..., 5, ...)
+```
+
+```{r handling-margins-of-error-with-7-test, include = FALSE}
+moe_prop(25, 100, 5, 3)
+```
+
+### 
+
+we had an ACS estimate of 25 with a margin of error of 5 around that estimate. This allowed us the determine the margin of error around the derived proportion of 0.25. The US Census Bureau publishes formulas to calculate margin of errors with the functions [`moe_prop()`](https://rdocumentation.org/packages/tidycensus/versions/1.4.4/topics/moe_prop), [`moe_sum()`](https://www.rdocumentation.org/packages/tidycensus/versions/1.5/topics/moe_sum), and [`moe_product()`](https://www.rdocumentation.org/packages/tidycensus/versions/1.5/topics/moe_product). Click on the functions to learn more about them.   
+
+
+### 
+
+Margin of error functions in tidycensus can be integrated into tidyverse-centric analytic pipelines to handle large margins of error around estimates.
+
+### Exercise 8
+
+If datasets are characterized by too much uncertainty for our analysis, we decide in this scenario to aggregate our data upwards 
+
+Pipe the data `salt_lake` to the function mutate()
+
+```{r handling-margins-of-error-with-8, exercise = TRUE}
+
+```
+
+```{r handling-margins-of-error-with-8-hint-1, eval = FALSE}
+salt_lake |> ...
+```
+
+```{r handling-margins-of-error-with-8-test, include = FALSE}
+salt_lake |> mutate()
+```
+
+### Exercise 9
+
+Copy and paste the previous code. Set `sex` to `case_when()` as an argument of `mutate()`. 
+
+We can use the `case_when()` function to create a new column, sex, that represents a mapping of the variables we pulled from the ACS to their sex categories. 
+
+Inside `case_when` pass `str_sub` as an argument. Within `str_sub` pass the argument `variable` in and set `start` equal to `-2` as another variable. Add `< "26" ~ "Male"`right after `str_sub` and `TRUE ~ "Female"` as another argument to `case_when()`
+
+```{r handling-margins-of-error-with-9, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button> 
+
+```{r handling-margins-of-error-with-9-hint-1, eval = FALSE}
+salt_lake |>
+  mutate(sex = case_when(
+    str_sub(..., start = ...) < "26" ~ ...,
+    ... ~ "Female"
+  ))
+```
+
+```{r handling-margins-of-error-with-9-test, include = FALSE}
+salt_lake |>
+  mutate(sex = case_when(
+    str_sub(variable, start = -2) < "26" ~ "Male",
+    TRUE ~ "Female"
+  ))
+```
+
+### Exercise 10
+
+Pipe the previous code into the function `summarize()` passing in the argument setting `sum_est` to the `sum()` of `estimate`. Add another argument setting `sum_moe` to `moe_sum()` with argument `moe` and `estimate` and on setting `.by` equal to both `GEOID` and `sex`.
+
+```{r handling-margins-of-error-with-10, exercise = TRUE}
+
+```
+
+<button onclick = "transfer_code(this)">Copy previous code</button> 
+
+```{r handling-margins-of-error-with-10-hint-1, eval = FALSE}
+salt_lake |>
+  mutate(sex = case_when(
+    str_sub(variable, start = -2) < "26" ~ "Male",
+    TRUE ~ "Female"
+  )) |> 
+  summarize(... = ...(estimate), 
+            ... = moe_sum(..., estimate), .by = c(..., ...))
+```
+
+```{r handling-margins-of-error-with-10-test, include = FALSE}
+salt_lake |>
+  mutate(sex = case_when(
+    str_sub(variable, start = -2) < "26" ~ "Male",
+    TRUE ~ "Female"
+  )) |>
+  summarize(sum_est = sum(estimate), 
+            sum_moe = moe_sum(moe, estimate), .by = c(GEOID, sex))
+```
+
+We employed a familiar  summarize(.by = ...) method to aggregate our data by Census tract and sex. Notably, the call to summarize() includes a call to tidycensus’s moe_sum() function, which will generate a new column that represents the margin of error around the derived sum.
+
+### 
+
+The margins of error relative to their estimates are now much more reasonable than in the disaggregated data.
+
+### 
+
+That said, the Census Bureau issues a note of caution (American Community Survey Office 2020):
+
+All derived MOE methods are approximations and users should be cautious in using them. 
+
+### 
+
+Your “best bet” is to first search the ACS tables to see if your data are found in aggregated form elsewhere before doing the aggregation and MOE estimation yourself. In many cases, you’ll find aggregated information in the ACS combined tables, Data Profile, or Subject Tables that will include pre-computed margins of error for you.
+
+## Summary
+### 
+
+This tutorial covered [Chapter 3: Wrangling Census data with tidyverse tools](https://walker-data.com/census-r/wrangling-census-data-with-tidyverse-tools.html) from [*Analyzing US Census Data: Methods, Maps, and Models in R*](https://walker-data.com/census-r/index.html) by Kyle Walker. You learned about the [**tidycensus**](https://walker-data.com/tidycensus/index.html) package and some of its key functions, including [`get_decennial()`](https://walker-data.com/tidycensus/articles/basic-usage.html) and [`get_acs()`](https://walker-data.com/tidycensus/articles/basic-usage.html). We discussed margins of error (MOEs) in the American Community Survey and how to wrangle and interpret MOEs appropriately.
+
+
+```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
+```

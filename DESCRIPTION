@@ -1,0 +1,43 @@
+Package: tidycensus.tutorials
+Title: Tutorials for Analyzing US Census Data
+Version: 0.0.0.9004
+Authors@R: 
+    person(given = "David",
+           family = "Kane",
+           role = c("aut", "cre"),
+           email = "dave.kane@gmail.com",
+           comment = c(ORCID = "0000-0002-6660-3934"))
+Description: When assigned "Analyzing US Census Data: Methods, Maps, and Models
+  in R" (Walker (2023, ISBN: 1032366443)), students should read the book and
+  type in all the associated R commands themselves. Sadly, that never happens.
+  These tutorials allow students to demonstrate (and their instructors
+  to be sure) that all work has been completed. See Kane (2023)
+  <https://ppbds.github.io/tutorial.helpers/articles/instructions.html> from
+  the 'tutorial.helpers' package for a background discussion.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+Imports:
+    tidycensus,
+    tutorial.helpers (>= 0.3.0)
+Suggests:
+    ggbeeswarm,
+    geofacet,
+    ggthemes,
+    ggridges,
+    ipumsr,
+    leaflet,
+    learnr,
+    mapview,
+    patchwork,
+    plotly,
+    roxygen2,
+    rsconnect,
+    sf,
+    testthat (>= 3.0.0),
+    tidyverse,
+    tigris,
+    tmap
+Config/testthat/edition: 3
+URL: https://ppbds.github.io/tidycensus.tutorials/

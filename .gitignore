@@ -1,0 +1,13 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+*.Rproj
+docs
+
+inst/tutorials/[^/]*/(?!(data|images|.*Rmd))
+
+inst/tutorials/*/*html
+
+inst/tutorials/*/*_files/
