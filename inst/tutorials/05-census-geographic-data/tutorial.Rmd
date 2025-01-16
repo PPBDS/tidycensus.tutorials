@@ -55,9 +55,9 @@ dc_roads <- read_rds("data/dc_roads.rds")
 # write_rds(dc_block_groups, "data/dc_block_groups.rds")
 dc_block_groups <- read_rds("data/dc_block_groups.rds")
 
-mi_counties <- counties("MI")
+# mi_counties <- counties("MI")
 # write_rds(mi_counties, "data/mi_counties.rds")
-# mi_counties <- read_rds("data/mi_counties.rds")
+mi_counties <- read_rds("data/mi_counties.rds")
 
 # mi_counties_cb <- counties("MI", cb = TRUE)
 # write_rds(mi_counties_cb, "data/mi_counties_cb.rds")
