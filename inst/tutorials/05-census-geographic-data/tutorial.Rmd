@@ -76,6 +76,18 @@ mi_counties_cb <- read_rds("data/mi_counties_cb.rds")
 fl_counties <- read_rds("data/fl_counties.rds")
 
 fl_crs <- suggest_crs(fl_counties)
+
+fl_projected <- st_transform(fl_counties, crs = 3087)
+
+# us_states <- states(cb = TRUE, resolution = "20m")
+# write_rds(us_states, "data/us_states.rds")
+us_states <- read_rds("data/us_states.rds")
+
+us_states_shifted <- shift_geometry(us_states)
+
+us_states_outside <- shift_geometry(us_states, 
+                                    preserve_area = FALSE, 
+                                    position = "outside")
 ```
 
 ```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
@@ -89,6 +101,8 @@ fl_crs <- suggest_crs(fl_counties)
 <!-- Deal with Tarrant County questions? -->
 
 <!-- Entire second half of tigris workflows section is missing us_bgs_2020 is too big a data set for GitHub. -->
+
+<!-- Working with geometries section needs test cases and clean up. Also, commented out the last dozen questions.-->
 
 ## Introduction
 ### 
@@ -1050,6 +1064,10 @@ Run `st_transform()` with `fl_counties` and `crs = 3087` as the arguments.
 st_transform(..., crs = ...)
 ```
 
+```{r coordinate-reference-systems-8-test, include = FALSE}
+st_transform(fl_counties, crs = 3087)
+```
+
 ### 
 
 Other large states with large or irregular extents like Florida (Texas is one such example) maintain statewide coordinate reference systems like this suitable for statewide mapping and analysis. Coordinate reference system transformations in **sf** are implemented in the `st_transform()` function.
@@ -1064,6 +1082,10 @@ We have assigned the previous code to an object called `fl_projected`. Run `head
 
 ```{r coordinate-reference-systems-9-hint-1, eval = FALSE}
 head(...)
+```
+
+```{r coordinate-reference-systems-9-test, include = FALSE}
+head(fl_projected)
 ```
 
 ### 
@@ -1082,6 +1104,10 @@ Let’s take a closer look at our selected CRS. Run `st_crs()` with `fl_projecte
 st_crs(...)
 ```
 
+```{r coordinate-reference-systems-10-test, include = FALSE}
+st_crs(fl_projected)
+```
+
 ### 
 
 There is a lot more information in the CRS’s well-known text than for the NAD83 geographic CRS. Information about the base geographic CRS is provided along with parameters for a “false origin.” This “false origin” is located at -84 degrees longitude, 24 degrees latitude (SW of the Florida Keys and north of western Cuba) with a false X value of 400,000 and a false Y value of 0.
@@ -1090,18 +1116,22 @@ There is a lot more information in the CRS’s well-known text than for the NAD8
 
 When plotting an object with `geom_sf()` we can specify a CRS with `coord_sf()`
 
-Create a variable named `fl_counties` and assign it to the `counties()` function with arguments `"FL"` and `cb = TRUE`. Below that, use `ggplot()` and `geom_sf()` to plot the variable. 
+Pipe `fl_counties` to `ggplot()` and then `geom_sf()`. 
 
 ```{r coordinate-reference-systems-11, exercise = TRUE}
 
 ```
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
-
 ```{r coordinate-reference-systems-11-hint-1, eval = FALSE}
-fl_counties <- counties("...", cb = ...)
-ggplot(...) + 
-  geom_sf()
+fl_counties |> 
+  ggplot() + 
+    ...()
+```
+
+```{r coordinate-reference-systems-11-test, incude = FALSE}
+fl_counties |> 
+  ggplot() + 
+    geom_sf()
 ```
 
 ### 
@@ -1121,6 +1151,13 @@ Copy and paste your code from before. Add the `coord_sf()` layer and set the arg
 ```{r coordinate-reference-systems-12-hint-1, eval = FALSE}
 ... + 
   coord_sf(crs = ...)
+```
+
+```{r coordinate-reference-systems-12-test, incude = FALSE}
+fl_counties |> 
+  ggplot() + 
+    geom_sf() +
+    coord_sf(crs = 3087)
 ```
 
 ### 
@@ -1146,6 +1183,13 @@ Copy and paste your code from above. Within `coord_sf()`, add another argument (
 ```{r coordinate-reference-systems-13-hint-1, eval = FALSE}
 ... + 
   coord_sf(... = ..., datum = ...)
+```
+
+```{r coordinate-reference-systems-13-test, incude = FALSE}
+fl_counties |> 
+  ggplot() + 
+    geom_sf() +
+    coord_sf(crs = 3087, datum = 3087)
 ```
 
 ### 
@@ -1182,6 +1226,10 @@ We have assigned the previous code to an object called `us_states`. Run `us_stat
 ```
 
 ```{r working-with-geometries-2-hint-1, eval = FALSE}
+us_states
+```
+
+```{r working-with-geometries-2-test, include = FALSE}
 us_states
 ```
 
@@ -1328,241 +1376,241 @@ ggplot(...) +
 
 In addition to spatial objects obtained with tigris, `shift_geometry()` can shift and rescale other geographic datasets for display in this way. Just make sure you use the same arguments in `shift_geometry()` for all layers or they will end up misaligned!
 
-### Exercise 11
+<!-- ### Exercise 11 -->
 
-Let's explore some other useful reformatting options, such as changing polygons to points. Hit "Run Code."
+<!-- Let's explore some other useful reformatting options, such as changing polygons to points. Hit "Run Code." -->
 
-```{r working-with-geometries-11, exercise = TRUE}
-places("TX", cb = TRUE) |>
-  filter(NAME |> c("Dallas", "Fort Worth", "Houston",
-                     "Austin", "San Antonio", "El Paso")) |>
-  st_transform(6580)
-```
+<!-- ```{r working-with-geometries-11, exercise = TRUE} -->
+<!-- places("TX", cb = TRUE) |> -->
+<!--   filter(NAME |> c("Dallas", "Fort Worth", "Houston", -->
+<!--                      "Austin", "San Antonio", "El Paso")) |> -->
+<!--   st_transform(6580) -->
+<!-- ``` -->
 
-### 
+<!-- ###  -->
 
-The `places()` function can obtain city geometries. 
+<!-- The `places()` function can obtain city geometries.  -->
 
-### Exercise 12
+<!-- ### Exercise 12 -->
 
-We have assigned the previous code to an object called `tx_places`. Run `tx_places` to ensure it works. 
+<!-- We have assigned the previous code to an object called `tx_places`. Run `tx_places` to ensure it works.  -->
 
-```{r working-with-geometries-12, exercise = TRUE}
+<!-- ```{r working-with-geometries-12, exercise = TRUE} -->
 
-```
+<!-- ``` -->
 
-```{r working-with-geometries-12-hint-1, eval = FALSE}
-tx_places
-```
+<!-- ```{r working-with-geometries-12-hint-1, eval = FALSE} -->
+<!-- tx_places -->
+<!-- ``` -->
 
-### 
+<!-- ###  -->
 
-We can obtain the outline of the state of Texas using the `states()` function.
+<!-- We can obtain the outline of the state of Texas using the `states()` function. -->
 
-### Exercise 13
+<!-- ### Exercise 13 -->
 
-Hit "Run Code."
+<!-- Hit "Run Code." -->
 
-```{r working-with-geometries-13, exercise = TRUE}
-states(cb = TRUE) |>
-  filter(NAME == "Texas") |>
-  st_transform(6580)
-```
+<!-- ```{r working-with-geometries-13, exercise = TRUE} -->
+<!-- states(cb = TRUE) |> -->
+<!--   filter(NAME == "Texas") |> -->
+<!--   st_transform(6580) -->
+<!-- ``` -->
 
-### 
+<!-- ###  -->
 
-As discussed earlier in this chapter, most datasets obtained with tigris are returned with geometry type `POLYGON` or `MULTIPOLYGON`, reflecting the fact that Census geometries are generally areal units to which Census data are aggregated. While this makes sense for many applications, there are some instances in which the default geometry type of Census shapes is not necessary.
+<!-- As discussed earlier in this chapter, most datasets obtained with tigris are returned with geometry type `POLYGON` or `MULTIPOLYGON`, reflecting the fact that Census geometries are generally areal units to which Census data are aggregated. While this makes sense for many applications, there are some instances in which the default geometry type of Census shapes is not necessary. -->
 
-### Exercise 14
+<!-- ### Exercise 14 -->
 
-We have assigned the previous code to an object called `tx_outline`. Run `tx_outline` to ensure it works. 
+<!-- We have assigned the previous code to an object called `tx_outline`. Run `tx_outline` to ensure it works.  -->
 
-```{r working-with-geometries-14, exercise = TRUE}
+<!-- ```{r working-with-geometries-14, exercise = TRUE} -->
 
-```
+<!-- ``` -->
 
-```{r working-with-geometries-14-hint-1, eval = FALSE}
-tx_outline
-```
+<!-- ```{r working-with-geometries-14-hint-1, eval = FALSE} -->
+<!-- tx_outline -->
+<!-- ``` -->
 
-### 
+<!-- ###  -->
 
-Two successive calls to `geom_sf()` create a graphic that displays those cities on top of the state outline.
+<!-- Two successive calls to `geom_sf()` create a graphic that displays those cities on top of the state outline. -->
 
-### Exercise 15
+<!-- ### Exercise 15 -->
 
-Run `ggplot()`, add `geom_sf(data = tx_outline)` and `geom_sf(data = tx_places, fill = "red", color = NA)`. Finally, add `theme_void()` to construct the map.
+<!-- Run `ggplot()`, add `geom_sf(data = tx_outline)` and `geom_sf(data = tx_places, fill = "red", color = NA)`. Finally, add `theme_void()` to construct the map. -->
 
-```{r working-with-geometries-15, exercise = TRUE}
+<!-- ```{r working-with-geometries-15, exercise = TRUE} -->
 
-```
+<!-- ``` -->
 
-```{r working-with-geometries-15-hint-1, eval = FALSE}
-ggplot() +
-  geom_sf(data = ...) + 
-  geom_sf(data = ..., fill = ..., color = ...) + 
-  theme_void()
-```
+<!-- ```{r working-with-geometries-15-hint-1, eval = FALSE} -->
+<!-- ggplot() + -->
+<!--   geom_sf(data = ...) +  -->
+<!--   geom_sf(data = ..., fill = ..., color = ...) +  -->
+<!--   theme_void() -->
+<!-- ``` -->
 
-### 
+<!-- ###  -->
 
-The issue with this graphic is that city geographies are actually quite irregular and disjoint in practice. All six cities spread across large areas, have holes, and even in some cases include portions that are detached from the main part of the city. This information is important for local planning purposes, but are unnecessary for a state-wide map.
+<!-- The issue with this graphic is that city geographies are actually quite irregular and disjoint in practice. All six cities spread across large areas, have holes, and even in some cases include portions that are detached from the main part of the city. This information is important for local planning purposes, but are unnecessary for a state-wide map. -->
 
-### Exercise 16
+<!-- ### Exercise 16 -->
 
-Run `st_centroid()` with `tx_places` as the argument. Hit "Run Code."
+<!-- Run `st_centroid()` with `tx_places` as the argument. Hit "Run Code." -->
 
-```{r working-with-geometries-16, exercise = TRUE}
+<!-- ```{r working-with-geometries-16, exercise = TRUE} -->
 
-```
+<!-- ``` -->
 
-```{r working-with-geometries-16-hint-1, eval = FALSE}
-st_centroid(...)
-```
+<!-- ```{r working-with-geometries-16-hint-1, eval = FALSE} -->
+<!-- st_centroid(...) -->
+<!-- ``` -->
 
-### 
+<!-- ###  -->
 
-An alternative representation is possible by converting the city polygons to points where each point represents the centroid of each polygon, placed at their geometric centers. In sf, this conversion is implemented with the function `st_centroid()`.
+<!-- An alternative representation is possible by converting the city polygons to points where each point represents the centroid of each polygon, placed at their geometric centers. In sf, this conversion is implemented with the function `st_centroid()`. -->
 
-### Exercise 17
+<!-- ### Exercise 17 -->
 
-We have assigned the previous code to an object called `tx_centroids`. Run `tx_centroids` to ensure it works. 
+<!-- We have assigned the previous code to an object called `tx_centroids`. Run `tx_centroids` to ensure it works.  -->
 
-```{r working-with-geometries-17, exercise = TRUE}
+<!-- ```{r working-with-geometries-17, exercise = TRUE} -->
 
-```
+<!-- ``` -->
 
-```{r working-with-geometries-17-hint-1, eval = FALSE}
-tx_centroids
-```
+<!-- ```{r working-with-geometries-17-hint-1, eval = FALSE} -->
+<!-- tx_centroids -->
+<!-- ``` -->
 
-### 
+<!-- ###  -->
 
-Now, we can plot the cities as points instead of irregular polygons.
+<!-- Now, we can plot the cities as points instead of irregular polygons. -->
 
-### Exercise 18
+<!-- ### Exercise 18 -->
 
-Run `ggplot()`, add `geom_sf(data = tx_outline)` and `geom_sf(data = tx_centroids, color = "red", size = 3)`. Finally, add `theme_void()` to construct the map.
+<!-- Run `ggplot()`, add `geom_sf(data = tx_outline)` and `geom_sf(data = tx_centroids, color = "red", size = 3)`. Finally, add `theme_void()` to construct the map. -->
 
-```{r working-with-geometries-18, exercise = TRUE}
+<!-- ```{r working-with-geometries-18, exercise = TRUE} -->
 
-```
+<!-- ``` -->
 
-```{r working-with-geometries-18-hint-1, eval = FALSE}
-ggplot() +
-  geom_sf(data = ...) + 
-  geom_sf(data = ..., color = ..., size = ...) + 
-  theme_void()
-```
+<!-- ```{r working-with-geometries-18-hint-1, eval = FALSE} -->
+<!-- ggplot() + -->
+<!--   geom_sf(data = ...) +  -->
+<!--   geom_sf(data = ..., color = ..., size = ...) +  -->
+<!--   theme_void() -->
+<!-- ``` -->
 
-### 
+<!-- ###  -->
 
-The cities are displayed as circles rather than as irregular polygons, which makes more sense for visualization of the cities’ locations at this scale.
+<!-- The cities are displayed as circles rather than as irregular polygons, which makes more sense for visualization of the cities’ locations at this scale. -->
 
-### Exercise 19
+<!-- ### Exercise 19 -->
 
-Pipe `fl_projected` to `filter()` with the argument `NAME == "Lee"`. 
+<!-- Pipe `fl_projected` to `filter()` with the argument `NAME == "Lee"`.  -->
 
-```{r working-with-geometries-19, exercise = TRUE}
+<!-- ```{r working-with-geometries-19, exercise = TRUE} -->
 
-```
+<!-- ``` -->
 
-```{r working-with-geometries-19-hint-1, eval = FALSE}
-fl_projected |> 
-  filter(NAME == ...)
-```
+<!-- ```{r working-with-geometries-19-hint-1, eval = FALSE} -->
+<!-- fl_projected |>  -->
+<!--   filter(NAME == ...) -->
+<!-- ``` -->
 
-### 
+<!-- ###  -->
 
-The Lee County polygon has four distinct parts as displayed on the map: the mainland area that contains the cities of Cape Coral and Fort Myers, and three disjoint island areas.
+<!-- The Lee County polygon has four distinct parts as displayed on the map: the mainland area that contains the cities of Cape Coral and Fort Myers, and three disjoint island areas. -->
 
-### Exercise 20
+<!-- ### Exercise 20 -->
 
-We have assigned the previous code to an object called `lee`. Run `lee` to ensure it works. 
+<!-- We have assigned the previous code to an object called `lee`. Run `lee` to ensure it works.  -->
 
-```{r working-with-geometries-20, exercise = TRUE}
+<!-- ```{r working-with-geometries-20, exercise = TRUE} -->
 
-```
+<!-- ``` -->
 
-```{r working-with-geometries-20-hint-1, eval = FALSE}
-lee
-```
+<!-- ```{r working-with-geometries-20-hint-1, eval = FALSE} -->
+<!-- lee -->
+<!-- ``` -->
 
-### 
+<!-- ###  -->
 
-Specific parts of the multipolygon Lee County object can be extracted by exploding the multipart geometry into single parts. This is accomplished with sf’s function `st_cast()`.
+<!-- Specific parts of the multipolygon Lee County object can be extracted by exploding the multipart geometry into single parts. This is accomplished with sf’s function `st_cast()`. -->
 
-### Exercise 21
+<!-- ### Exercise 21 -->
 
-Run `st_cast()` with `lee` and `"POLYGON"` as the arguments. 
+<!-- Run `st_cast()` with `lee` and `"POLYGON"` as the arguments.  -->
 
-```{r working-with-geometries-21, exercise = TRUE}
+<!-- ```{r working-with-geometries-21, exercise = TRUE} -->
 
-```
+<!-- ``` -->
 
-```{r working-with-geometries-21-hint-1, eval = FALSE}
-st_cast(..., "...")
-```
+<!-- ```{r working-with-geometries-21-hint-1, eval = FALSE} -->
+<!-- st_cast(..., "...") -->
+<!-- ``` -->
 
-### 
+<!-- ###  -->
 
-The `st_cast()` function cconverts spatial objects from one geometry type to another. In this example, we will “cast” Lee County as a `POLYGON` object which will create a separate row for each non-contiguous area.
+<!-- The `st_cast()` function cconverts spatial objects from one geometry type to another. In this example, we will “cast” Lee County as a `POLYGON` object which will create a separate row for each non-contiguous area. -->
 
-### Exercise 22
+<!-- ### Exercise 22 -->
 
-We have assigned the previous code to an object called `lee_singlepart`. Run `lee_singlepart` to ensure it works. 
+<!-- We have assigned the previous code to an object called `lee_singlepart`. Run `lee_singlepart` to ensure it works.  -->
 
-```{r working-with-geometries-22, exercise = TRUE}
+<!-- ```{r working-with-geometries-22, exercise = TRUE} -->
 
-```
+<!-- ``` -->
 
-```{r working-with-geometries-22-hint-1, eval = FALSE}
-lee_singlepart
-```
+<!-- ```{r working-with-geometries-22-hint-1, eval = FALSE} -->
+<!-- lee_singlepart -->
+<!-- ``` -->
 
-### 
+<!-- ###  -->
 
-The resulting spatial object now has four rows. Using row indexing, we can extract any of these rows as an individual object, such as the area representing Sanibel Island.
+<!-- The resulting spatial object now has four rows. Using row indexing, we can extract any of these rows as an individual object, such as the area representing Sanibel Island. -->
 
-### Exercise 23
+<!-- ### Exercise 23 -->
 
-Run `lee_singlepart[2, ]` to extract the second row. 
+<!-- Run `lee_singlepart[2, ]` to extract the second row.  -->
 
-```{r working-with-geometries-23, exercise = TRUE}
+<!-- ```{r working-with-geometries-23, exercise = TRUE} -->
 
-```
+<!-- ``` -->
 
-<button onclick = "transfer_code(this)">Copy previous code</button>
+<!-- <button onclick = "transfer_code(this)">Copy previous code</button> -->
 
-```{r working-with-geometries-23-hint-1, eval = FALSE}
-lee_singlepart[2,]
-```
+<!-- ```{r working-with-geometries-23-hint-1, eval = FALSE} -->
+<!-- lee_singlepart[2,] -->
+<!-- ``` -->
 
-### 
+<!-- ###  -->
 
-The second row of the `lee_singlepart` object represents Sanibel Island.
+<!-- The second row of the `lee_singlepart` object represents Sanibel Island. -->
 
-### Exercise 24
+<!-- ### Exercise 24 -->
 
-We have assigned the previous code to an object called `sanibel`. Run `mapview(sanibel)` to see the graph.
+<!-- We have assigned the previous code to an object called `sanibel`. Run `mapview(sanibel)` to see the graph. -->
 
-```{r working-with-geometries-24, exercise = TRUE}
+<!-- ```{r working-with-geometries-24, exercise = TRUE} -->
 
-```
+<!-- ``` -->
 
-```{r working-with-geometries-24-hint-1, eval = FALSE}
-mapview(...)
-```
+<!-- ```{r working-with-geometries-24-hint-1, eval = FALSE} -->
+<!-- mapview(...) -->
+<!-- ``` -->
 
-### 
+<!-- ###  -->
 
-Here are some excerises that you can practice yourself: 
+<!-- Here are some excerises that you can practice yourself:  -->
 
-* Give **tigris** a try for yourselves! Go through the available geographies in **tigris** and fetch data for a state and/or county of your choosing.
+<!-- * Give **tigris** a try for yourselves! Go through the available geographies in **tigris** and fetch data for a state and/or county of your choosing. -->
 
-* Using your data, try some of the plotting options covered in this chapter. Plot the data with `plot()`, `geom_sf()`, and with `mapview()`.
+<!-- * Using your data, try some of the plotting options covered in this chapter. Plot the data with `plot()`, `geom_sf()`, and with `mapview()`. -->
 
-* Use `suggest_crs()` from the **crsuggest** package to identify an appropriate projected coordinate reference system for your data. Then, use `st_transform()` from the sf package to apply a CRS transformation to your data.
+<!-- * Use `suggest_crs()` from the **crsuggest** package to identify an appropriate projected coordinate reference system for your data. Then, use `st_transform()` from the sf package to apply a CRS transformation to your data. -->
 
 ## Summary
 ### 
