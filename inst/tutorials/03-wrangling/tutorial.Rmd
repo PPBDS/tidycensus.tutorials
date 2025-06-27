@@ -968,7 +968,7 @@ The `names()` function allows us to get or set the names of an object. More info
 
 ### Exercise 10
 
-Copy the code above. Get function `map_dfr()` with the first argument as `years`. Inside the `map_dfr()` function, set the second argument to `~{ getacs() }`. It is fine to have an error.  
+Copy the code above. Get function `map_dfr()` with the first argument as `years`. Inside the `map_dfr()` function, set the second argument to `~{ get_acs() }`. It is fine to have an error.  
 
 ```{r comparing-acs-estimates-over-t-10, exercise = TRUE}
 
@@ -1077,6 +1077,7 @@ Copy the code above. Continue using the pipe `|>` to the function `summarize()`.
 college_by_year |>
   summarize(... = sum(estimate),
             ... = first(...), .by = c(...,...))
+            
 ```
 
 ```{r comparing-acs-estimates-over-t-14-test, include = FALSE}
