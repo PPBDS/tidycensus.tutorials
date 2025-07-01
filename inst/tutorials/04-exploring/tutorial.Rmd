@@ -2,7 +2,7 @@
 title: Exploring US Census data with visualization
 author: David Kane and Gia Khang
 tutorial:
-  id: wrangling-census-data-with-tidyverse-tools
+  id: 04-exploring
 output:
   learnr::tutorial:
     progressive: yes

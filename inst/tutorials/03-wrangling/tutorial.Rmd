@@ -2,7 +2,7 @@
 title: Wrangling Census data with Tidyverse tools
 author: David Kane and Satvika Upperla
 tutorial:
-  id: wrangling-census-data-with-tidyverse-tools
+  id: 03-wrangling
 output:
   learnr::tutorial:
     progressive: yes

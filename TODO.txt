@@ -1,4 +1,8 @@
-
+Change tutorial IDs to match the directories. change tutorial 2 id to include more than just introduction.
+  
+  
+  
+  
   write tutorial for chapter 4
   skip 4.1. and 4.2
 

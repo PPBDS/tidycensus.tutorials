@@ -2,7 +2,7 @@
 title: An introduction to tidycensus
 author: David Kane
 tutorial:
-  id: an-introduction-to-tidycensus
+  id: 02-introduction-tidycensus
 output:
   learnr::tutorial:
     progressive: yes

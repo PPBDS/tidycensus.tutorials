@@ -2,7 +2,7 @@
 title: Census geographic data and applications in R
 author: David Kane and Gia Khang
 tutorial:
-  id: census-geographic-data-and-applications-in-r
+  id: 05-geographic
 output:
   learnr::tutorial:
     progressive: yes
