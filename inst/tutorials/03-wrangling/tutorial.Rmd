@@ -142,6 +142,8 @@ dekalb_years <- read_rds("data/dekalb_years.rds")
 
 salt_lake <- read_rds("data/salt_lake.rds")
 
+vars <- paste0("B01001_0", c(20:25, 44:49))
+
 example_tract <- salt_lake |>
   filter(GEOID == "49035100100")
 
@@ -1245,8 +1247,6 @@ vars
 ```
 
 ```{r handling-margins-of-error-with-3-test, include = FALSE}
-vars <- paste0("B01001_0", c(20:25, 44:49))
-
 vars
 ```
 

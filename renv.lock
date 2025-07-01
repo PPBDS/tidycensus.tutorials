@@ -2087,13 +2087,13 @@
     },
     "geofacet": {
       "Package": "geofacet",
-      "Version": "0.2.1",
+      "Version": "0.2.4",
       "Source": "Repository",
       "Title": "'ggplot2' Faceting Utilities for Geographical Data",
       "Authors@R": "c( person(\"Ryan\", \"Hafen\", email = \"rhafen@gmail.com\", role = c(\"aut\", \"cre\")), person(\"Barret\", \"Schloerke\", email = \"schloerke@gmail.com\", role = \"ctb\"))",
       "Description": "Provides geographical faceting functionality for 'ggplot2'. Geographical faceting arranges a sequence of plots of data for different geographical entities into a grid that preserves some of the geographical orientation.",
       "Depends": [
-        "R (>= 3.2)"
+        "R (>= 4.1.0)"
       ],
       "License": "MIT + file LICENSE",
       "Encoding": "UTF-8",
@@ -2105,11 +2105,11 @@
         "rnaturalearth",
         "sp",
         "ggrepel",
-        "imguR",
         "gridExtra",
         "geogrid",
         "methods",
-        "rlang"
+        "rlang",
+        "httr2"
       ],
       "Suggests": [
         "sf",
@@ -2119,9 +2119,9 @@
         "knitr",
         "rmarkdown"
       ],
-      "URL": "https://github.com/hafen/geofacet",
+      "URL": "https://github.com/hafen/geofacet, https://hafen.github.io/geofacet/",
       "BugReports": "https://github.com/hafen/geofacet/issues",
-      "RoxygenNote": "7.2.3",
+      "RoxygenNote": "7.3.2",
       "VignetteBuilder": "knitr",
       "NeedsCompilation": "no",
       "Author": "Ryan Hafen [aut, cre], Barret Schloerke [ctb]",
@@ -3046,29 +3046,6 @@
       "Maintainer": "Rich FitzJohn <rich.fitzjohn@gmail.com>",
       "Repository": "CRAN"
     },
-    "imguR": {
-      "Package": "imguR",
-      "Version": "1.0.3",
-      "Source": "Repository",
-      "Type": "Package",
-      "Title": "An Imgur.com API Client Package",
-      "Date": "2016-03-29",
-      "Authors@R": "c(person(\"Thomas J.\", \"Leeper\", role = c(\"aut\", \"cre\"), email = \"thosjleeper@gmail.com\"), person(\"Aaron\", \"Statham\", role = c(\"ctb\"),  email = \"aaron.l.statham@gmail.com\"), person(\"Yihui\", \"Xie\", role = c(\"ctb\")) )",
-      "Maintainer": "Thomas J. Leeper <thosjleeper@gmail.com>",
-      "Imports": [
-        "httr",
-        "png",
-        "jpeg",
-        "tools"
-      ],
-      "Description": "A complete API client for the image hosting service Imgur.com, including the an imgur graphics device, enabling the easy upload and sharing of plots.",
-      "License": "GPL-3",
-      "URL": "https://github.com/leeper/imguR",
-      "BugReports": "https://github.com/leeper/imguR/issues",
-      "NeedsCompilation": "no",
-      "Author": "Thomas J. Leeper [aut, cre], Aaron Statham [ctb], Yihui Xie [ctb]",
-      "Repository": "CRAN"
-    },
     "isoband": {
       "Package": "isoband",
       "Version": "0.2.7",
@@ -3103,25 +3080,6 @@
       "NeedsCompilation": "yes",
       "Author": "Hadley Wickham [aut, cre] (<https://orcid.org/0000-0003-4757-117X>), Claus O. Wilke [aut] (Original author, <https://orcid.org/0000-0002-7470-9261>), Thomas Lin Pedersen [aut] (<https://orcid.org/0000-0002-5147-4711>)",
       "Maintainer": "Hadley Wickham <hadley@posit.co>",
-      "Repository": "CRAN"
-    },
-    "jpeg": {
-      "Package": "jpeg",
-      "Version": "0.1-11",
-      "Source": "Repository",
-      "Title": "Read and write JPEG images",
-      "Author": "Simon Urbanek [aut, cre, cph] (https://urbanek.org, <https://orcid.org/0000-0003-2297-1732>)",
-      "Authors@R": "person(\"Simon\", \"Urbanek\", role=c(\"aut\",\"cre\",\"cph\"), email=\"Simon.Urbanek@r-project.org\", comment=c(\"https://urbanek.org\", ORCID=\"0000-0003-2297-1732\"))",
-      "Maintainer": "Simon Urbanek <Simon.Urbanek@r-project.org>",
-      "Depends": [
-        "R (>= 2.9.0)"
-      ],
-      "Description": "This package provides an easy and simple way to read, write and display bitmap images stored in the JPEG format. It can read and write both files and in-memory raw vectors.",
-      "License": "GPL-2 | GPL-3",
-      "SystemRequirements": "libjpeg",
-      "URL": "https://www.rforge.net/jpeg/",
-      "BugReports": "https://github.com/s-u/jpeg/issues",
-      "NeedsCompilation": "yes",
       "Repository": "CRAN"
     },
     "jquerylib": {

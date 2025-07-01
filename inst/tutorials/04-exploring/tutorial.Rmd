@@ -59,48 +59,45 @@ metros <- read_rds("data/metros.rds")
 #  geography = "county",
 #  variables = c(hhincome = "B19013_001"),
 #  year = 2020
-#) |>
+# ) |>
 #  mutate(NAME = str_remove(NAME, " County, Maine"))
 # write_rds(maine_income, "data/main_income.rds")
- maine_income <- read_rds( "data/main_income.rds")
+maine_income <- read_rds( "data/main_income.rds")
 
 
 # years <- 2005:2019
-#names(years) <- years
+# names(years) <- years
 
-#deschutes_value <- map_dfr(years, ~{
- # get_acs(
- #   geography = "county",
- #   variables = "B25077_001",
-  #  state = "OR",
-  #  county = "Deschutes",
- #   year = .x,
- #   survey = "acs1"
- # )
-#}, .id = "year")
-#  write_rds(deschutes_value, "data/deschutes_value.rds")
+# deschutes_value <- map_dfr(years, ~{
+#  get_acs(
+#    geography = "county",
+#    variables = "B25077_001",
+#    state = "OR",
+#    county = "Deschutes",
+#    year = .x,
+#    survey = "acs1"
+#  )
+# }, .id = "year")
+# write_rds(deschutes_value, "data/deschutes_value.rds")
 deschutes_value <- read_rds("data/deschutes_value.rds")
   
   
-
-  
-  
-   # utah <- get_estimates(
- # geography = "state",
- #  state = "UT",
- # product = "characteristics",
- # breakdown = c("SEX", "AGEGROUP"),
- # breakdown_labels = TRUE,
- # year = 2019
-#) 
- # write_rds(utah, "data/utah.rds")
+# utah <- get_estimates(
+#  geography = "state",
+#   state = "UT",
+#  product = "characteristics",
+#  breakdown = c("SEX", "AGEGROUP"),
+#  breakdown_labels = TRUE,
+#  year = 2019
+# ) 
+# write_rds(utah, "data/utah.rds")
 utah <-  read_rds("data/utah.rds")
   
- # utah_filtered <- filter(utah, str_detect(AGEGROUP, "^Age"), 
- #                SEX != "Both sexes") |>
-  #mutate(value = ifelse(SEX == "Male", -value, value))
+# utah_filtered <- filter(utah, str_detect(AGEGROUP, "^Age"), 
+#                 SEX != "Both sexes") |>
+#   mutate(value = ifelse(SEX == "Male", -value, value))
   
-#  write_rds(utah_filtered, "data/utah_filtered.rds")
+# write_rds(utah_filtered, "data/utah_filtered.rds")
 utah_filtered <- read_rds("data/utah_filtered.rds")
   
 utah_pyramid <- ggplot(utah_filtered, 
@@ -122,34 +119,33 @@ utah_pyramid <- ggplot(utah_filtered,
        fill = "", 
        caption = "Data source: US Census Bureau population estimates & tidycensus R package")
   
- # housing_val <- get_acs(
-  #geography = "tract", 
-  #variables = "B25077_001", 
-  #state = "OR", 
-#  county = c(
- #   "Multnomah", 
-  #  "Clackamas", 
-   # "Washington",
-    #"Yamhill", 
-  #  "Marion", 
-  #  "Columbia"
-  #),
-  #year = 2020
-#)
-  
-#write_rds(housing_val, "data/housing_val.rds")
+#  housing_val <- get_acs(
+#   geography = "tract", 
+#   variables = "B25077_001", 
+#   state = "OR", 
+#   county = c(
+#    "Multnomah", 
+#    "Clackamas", 
+#    "Washington",
+#     "Yamhill", 
+#    "Marion", 
+#    "Columbia"
+#   ),
+#   year = 2020
+# )
+# write_rds(housing_val, "data/housing_val.rds")
 housing_val <- read_rds("data/housing_val.rds")
 
-#housing_val2 <- separate(
- # housing_val, 
-  #NAME, 
-  #into = c("tract", "county", "state"), 
-  #sep = ", "
-#)
-#write_rds(housing_val2, "data/housing_val2.rds")
+# housing_val2 <- separate(
+#  housing_val, 
+#   NAME, 
+#   into = c("tract", "county", "state"), 
+#   sep = ", "
+# )
+# write_rds(housing_val2, "data/housing_val2.rds")
 housing_val2 <- read_rds("data/housing_val2.rds")
 
-#ny_race_income <- get_acs(
+# ny_race_income <- get_acs(
 #  geography = "tract", 
 #  state = "NY",  
 #  county = c("New York", "Bronx", "Queens", "Richmond", "Kings"),
@@ -159,25 +155,25 @@ housing_val2 <- read_rds("data/housing_val2.rds")
 #                Hispanic = "B03002_012"), 
 #  summary_var = "B19013_001",
 #  year = 2020
-#)
-#write_rds(ny_race_income, "data/ny_race_income.rds")
+# )
+# write_rds(ny_race_income, "data/ny_race_income.rds")
 ny_race_income <- read_rds("data/ny_race_income.rds")
 
 
-#us_pyramid_data <- get_estimates(
+# us_pyramid_data <- get_estimates(
 #  geography = "state",
 #  product = "characteristics",
 #  breakdown = c("SEX", "AGEGROUP"),
 #  breakdown_labels = TRUE,
 #  year = 2019
-#) |> 
+# ) |> 
 #  filter(str_detect(AGEGROUP, "^Age"),
 #         SEX != "Both sexes") |>
 #  group_by(NAME) |>
 #  mutate(prop = value / sum(value, na.rm = TRUE)) |>
 #  ungroup() |>
 #  mutate(prop = ifelse(SEX == "Male", -prop, prop))
-#write_rds(us_pyramid_data, "data/us_pyramid_data.rds")
+# write_rds(us_pyramid_data, "data/us_pyramid_data.rds")
 us_pyramid_data <- read_rds("data/us_pyramid_data.rds")
 
 ```
@@ -703,7 +699,7 @@ metros |>
 
 ### Exercise 5
 
-Run the function `ggplot()` on `metros`, setting the `aes()` argument to `x = NAME`, and `y = estimatet`. Hit "Run Code."
+Run the function `ggplot()` on `metros`, setting the `aes()` argument to `x = NAME`, and `y = estimate`. Hit "Run Code."
 
 ```{r customizing-ggplot2-visualizat-5, exercise = TRUE}
 
