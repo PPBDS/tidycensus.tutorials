@@ -262,7 +262,7 @@ The core visualization package within the *[Tidyverse](https://www.tidyverse.org
 
 ### Exercise 4
 
-Run the function `ggplot()` on `ga_wide`, setting the `aes()` argument to `x = midincE`. Note that this will return a plain graph.
+Run the function `ggplot()` on `ga_wide`, setting the `aes()` argument to `x = medincE`. Note that this will return a plain graph.
 
 ```{r basic-census-visualization-wit-4, exercise = TRUE}
 
