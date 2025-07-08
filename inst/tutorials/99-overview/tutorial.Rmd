@@ -1,0 +1,160 @@
+---
+title: Overview
+author: David Kane and Ansh Pathak
+tutorial:
+  id: 99-overview
+output:
+  learnr::tutorial:
+    progressive: yes
+    allow_skip: yes
+runtime: shiny_prerendered
+description: 'Overview tutorial for entire book'
+---
+
+```{r}
+library(learnr)
+library(tutorial.helpers)
+
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = FALSE)
+options(tutorial.exercise.timelimit = 600, 
+        tutorial.storage = "local") 
+```
+
+```{r copy-code-chunk, child = system.file("child_documents/copy_button.Rmd", package = "tutorial.helpers")}
+```
+
+```{r info-section, child = system.file("child_documents/info_section.Rmd", package = "tutorial.helpers")}
+```
+
+<!-- DK: Replace primer.data with tidycensus. Done -->
+
+## Introduction
+###
+
+### Exercise 1
+
+Create a Github repo called `XX`. Make sure to click the "Add a README file" check box.
+
+Connect the repo to a project on your computer using `File -> New Folder from Git ...`. Make sure to select the "Open in a new window" box. 
+
+You need two Positon windows: this one for running the tutorial and the one you just created for writing your code and interacting with the Console.
+
+Select `File -> New File -> Quarto Document ...`. Provide a title -- `"XX"` -- and an author (you). Render the document and save it as `XX.qmd`.
+
+Create a `.gitignore` file with `XX_files` on the first line and then a blank line. Save and push.
+
+In the Console, run:
+
+```         
+show_file(".gitignore")
+```
+
+If that fails, it is probably because you have not yet loaded `library(tutorial.helpers)` in the Console.
+
+CP/CR.
+
+```{r introduction-1}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+### 
+
+Professionals keep their data science work in the cloud because laptops fail.
+
+### Exercise 2
+
+<!-- XX: Switch primer.data for whichever package you get your data from. -->
+
+In your QMD, put `library(tidyverse)` and [XX: `library(primer.data)`] in a new code chunk. Render the file.
+
+Notice that the file does not look good because the code is visible and there are annoying messages. To take care of this, add `#| message: false` to remove all the messages in this `setup` chunk. Also add the following to the YAML header to remove all code echos from the HTML:
+
+```         
+execute: 
+  echo: false
+```
+
+In the Console, run:
+
+```         
+show_file("XX.qmd", start = -5)
+```
+
+CP/CR.
+
+```{r introduction-2}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 6)
+```
+
+### 
+
+Render again. Everything looks nice, albeit empty, because we have added code to make the file look better and more professional.
+
+### Exercise 3
+
+<!-- XX: This reason for this somewhat convoluted approach is that we want to give students lots of practice working in both the QMD World and the Console World. -->
+
+Place your cursor in the QMD file on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to execute that line.
+
+Note that this causes `library(tidyverse)` to be copied down to the Console and then executed. 
+
+CP/CR.
+
+```{r introduction-3}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+<!-- XX: Report the source of the data, along with some background information about it. -->
+
+### Exercise 4
+
+<!-- DK: Load up data before Wisdom? -->
+
+<!-- XX. Note that these instructions do not specify what the next library is. Feel free to specify it, if you like. If you are not adding another library, just delete this question. -->
+
+Place your cursor in the QMD file on the next line. Use `Cmd/Ctrl + Enter` to execute that line.
+
+This work flow --- writing things in the QMD so that you have a permanent copy and then executing them in the Console with `Cmd/Ctrl + Enter` --- is the most common approach to data science. 
+
+There is QMD World and Console World. It is your responsibility to keep them in sync.
+
+CP/CR.
+
+```{r introduction-4}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+
+A version of the data from XX is available in the `XX` tibble.
+
+
+
+```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
+```
+
