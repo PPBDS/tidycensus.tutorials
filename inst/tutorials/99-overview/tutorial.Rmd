@@ -279,9 +279,36 @@ library(ggplot2)
 income_map <- ggplot(income_tx) +
   geom_sf(aes(fill = estimate), color = "white", size = 0.2) +
   scale_fill_viridis_c(option = "plasma", name = "Median Income") +
-  labs(`
+  labs(
     title = "Median Household Income by County, Texas (2020)",
-    caption = "Data source: ACS 5-year estimates"`
+    caption = "Data source: ACS 5-year estimates"
+  ) +
+  theme_minimal()
+
+income_map
+```
+
+```{r}
+#| message: false
+library(tidycensus)
+library(tidyverse)
+
+income_tx <- get_acs(
+  geography = "county",
+  variables = "B19013_001",
+  state = "TX",
+  year = 2020,
+  geometry = TRUE
+)
+
+library(ggplot2)
+
+income_map <- ggplot(income_tx) +
+  geom_sf(aes(fill = estimate), color = "white", size = 0.2) +
+  scale_fill_viridis_c(option = "plasma", name = "Median Income") +
+  labs(
+    title = "Median Household Income by County, Texas (2020)",
+    caption = "Data source: ACS 5-year estimates"
   ) +
   theme_minimal()
 
@@ -407,11 +434,40 @@ edu_ca <- edu_ca %>%
 ggplot(edu_ca) +
   geom_sf(aes(fill = percent)) +
   scale_fill_viridis_c(option = "C") +
-  labs(title = "Percent of Adults with Bachelor's Degree or Higher in CA Counties (2020)",
+  labs(title = "Adult Percentage with at least a Bachelor's in CA (2020)",
        fill = "% with Degree") +
   theme_minimal()
 ```
 
+```{r}
+#| message: false
+library(tidycensus)
+library(tidyverse)
+
+edu_ca <- get_acs(
+  geography = "county",
+  variables = c("B15003_001", "B15003_022", "B15003_023", "B15003_024", "B15003_025"),
+  state = "CA",
+  year = 2020,
+  geometry = TRUE,
+  summary_var = "B15003_001"
+)
+
+edu_ca <- edu_ca %>%
+  group_by(GEOID) %>%
+  summarize(
+    percent = 100 * sum(estimate[variable != "B15003_001"]) / unique(summary_est)
+  )
+
+ggplot(edu_ca) +
+  geom_sf(aes(fill = percent)) +
+  scale_fill_viridis_c(option = "C") +
+  labs(title = "Adult Percentage with at least a Bachelor's in CA (2020)",
+       fill = "% with Degree") +
+  theme_minimal()
+```
+
+###
 
 `ggplot2` can handle spatial data directly using `geom_sf()`. Use `mutate()` to calculate percentages, and pipe that into `ggplot()` for a map.
 
@@ -457,6 +513,7 @@ The `get_acs()` function from `tidycensus` lets you download American Community 
 1. Ask an AI assistant (such as ChatGPT) to generate R code that:
    - Loads the `tidycensus` and `tidyverse` libraries,
    - Uses `get_acs()` to get median age (`B01002_001`) for all counties in California for 2020,
+   - Uses `get_acs()` to get population (`B01003_001`) for all counties in California for 2020,
    - Saves the result to a variable called `age_ca`.
 
 2. Copy the AI-generated code into your Quarto document and render the file (e.g., press Ctrl/Cmd + Shift + K).
@@ -482,11 +539,11 @@ library(tidyverse)
 
 age_ca <- get_acs(
   geography = "county",
-  variables = "B01002_001",
+  variables = c(median_age = "B01002_001", population = "B01003_001"),
   state = "CA",
-  year = 2020
+  year = 2020,
+  geometry = FALSE
 )
-age_ca
 ```
 
 
@@ -500,11 +557,14 @@ Now that you have the median age data for California counties, the goal is to cr
 In this exercise:
 
 Ask an AI assistant to generate R code that:
+
 Uses the `age_ca` data,
-Creates a bar plot with `ggplot2` where counties (`NAME`) are on the y-axis, median age estimates on the x-axis,
-Sorts counties by median age descending (highest to lowest),
-Uses a horizontal bar chart (`coord_flip()`),
-Adds a title and axis labels.
+Filter the dataset to the 15 most populous counties
+Create a bar chart (`geom_col()`) of median age by county
+Order counties by population (descending)
+Flip the axes using `coord_flip()`
+Add informative labels and a title with `labs()`
+Use `theme_minimal()` for a clean look
 
 Copy the AI-generated code into your Quarto document and render it.
 Copy and paste the console output here (CP/CR).
@@ -523,19 +583,73 @@ question_text(NULL,
 Now, replace the code it gave you with this code: 
 
 ```r
-age_ca %>%
-  mutate(NAME = fct_reorder(NAME, estimate, .desc = TRUE)) %>%
-  ggplot(aes(x = NAME, y = estimate)) +
-  geom_col(fill = "steelblue") +
+age_ca_wide <- age_ca %>%
+  select(NAME, variable, estimate) %>%
+  pivot_wider(names_from = variable, values_from = estimate)
+
+# Filter to the 15 most populous counties
+largest_ca <- age_ca_wide %>%
+  arrange(desc(population)) %>%
+  slice_head(n = 15)
+
+# Plot median age for the biggest counties
+ggplot(largest_ca, aes(x = reorder(NAME, median_age), y = median_age)) +
+  geom_col(fill = "#4daf4a") +
   coord_flip() +
   labs(
-    title = "Median Age by County in California (2020)",
+    title = "2020 California Counties Median Age",
     x = "County",
-    y = "Median Age"
+    y = "Median Age",
+    caption = "Source: ACS 5-Year Estimates via tidycensus"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.text.y = element_text(size = 10)
+  )
 ```
 
+```{r}
+#| message: false
+library(tidycensus)
+library(tidyverse)
+
+# Get both median age and population for all California counties
+age_ca <- get_acs(
+  geography = "county",
+  variables = c(median_age = "B01002_001", population = "B01003_001"),
+  state = "CA",
+  year = 2020,
+  geometry = FALSE
+)
+
+# Convert to wide format for easier filtering
+age_ca_wide <- age_ca %>%
+  select(NAME, variable, estimate) %>%
+  pivot_wider(names_from = variable, values_from = estimate)
+
+# Filter to the 15 most populous counties
+largest_ca <- age_ca_wide %>%
+  arrange(desc(population)) %>%
+  slice_head(n = 15)
+
+# Plot median age for the biggest counties
+ggplot(largest_ca, aes(x = reorder(NAME, median_age), y = median_age)) +
+  geom_col(fill = "#4daf4a") +
+  coord_flip() +
+  labs(
+    title = "2020 California Counties Median Age",
+    x = "County",
+    y = "Median Age",
+    caption = "Source: ACS 5-Year Estimates via tidycensus"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.text.y = element_text(size = 10)
+  )
+
+```
 
 `coord_flip()` from ggplot2:
 Flips x and y axes, often used to make horizontal bar charts easier to read.
