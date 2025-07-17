@@ -18,6 +18,46 @@ library(tidycensus)
 library(tidyverse)
 library(knitr)
 
+
+# income_tx <- get_acs(
+#   geography = "county",
+#   variables = "B19013_001",
+#   state = "TX",
+#   year = 2020,
+#   geometry = TRUE
+# )
+# write_rds(income_tx, "data/income_tx.rds")
+
+income_tx <- read_rds("data/income_tx.rds")
+
+
+# edu_ca <- get_acs(
+#   geography = "county",
+#   variables = c("B15003_001", "B15003_022", "B15003_023", "B15003_024", "B15003_025"),
+#   state = "CA",
+#   year = 2020,
+#   geometry = TRUE,
+#   summary_var = "B15003_001"
+# )
+#  write_rds(edu_ca, "data/edu_ca.rds")
+
+edu_ca <- read_rds("data/edu_ca.rds")
+
+
+# age_ca <- get_acs(
+#   geography = "county",
+#   variables = c(median_age = "B01002_001", population = "B01003_001"),
+#   state = "CA",
+#   year = 2020,
+#   geometry = FALSE
+# )
+# write_rds(age_ca, "data/age_ca.rds")
+
+age_ca <- read_rds("data/age_ca.rds")
+
+
+
+
 knitr::opts_chunk$set(echo = FALSE)
 options(tutorial.exercise.timelimit = 600, 
         tutorial.storage = "local") 
@@ -278,15 +318,6 @@ ggplot(income_tx) +
 `geom_sf()` plots spatial data stored as simple features (`sf` objects). The `fill` aesthetic maps color to median income. The `viridis` color scale provides perceptually uniform colors for better interpretation.
 ```{r}
 #| message: false
-
-income_tx <- get_acs(
-  geography = "county",
-  variables = "B19013_001",
-  state = "TX",
-  year = 2020,
-  geometry = TRUE
-)
-
 ggplot(income_tx) +
   geom_sf(aes(fill = estimate), color = "white", size = 0.2) +
   scale_fill_viridis_c(option = "plasma", name = "Median Income") +
@@ -543,15 +574,6 @@ ggplot(edu_ca) +
 
 ```{r}
 #| message: false
-edu_ca <- get_acs(
-  geography = "county",
-  variables = c("B15003_001", "B15003_022", "B15003_023", "B15003_024", "B15003_025"),
-  state = "CA",
-  year = 2020,
-  geometry = TRUE,
-  summary_var = "B15003_001"
-)
-
 edu_ca <- edu_ca %>%
   group_by(GEOID) %>%
   summarize(
@@ -830,14 +852,6 @@ ggplot(largest_ca, aes(x = reorder(NAME, median_age), y = median_age)) +
 
 ```{r}
 #| message: false
-age_ca <- get_acs(
-  geography = "county",
-  variables = c(median_age = "B01002_001", population = "B01003_001"),
-  state = "CA",
-  year = 2020,
-  geometry = FALSE
-)
-
 age_ca_wide <- age_ca %>%
   select(NAME, variable, estimate) %>%
   pivot_wider(names_from = variable, values_from = estimate)
