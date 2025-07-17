@@ -70,12 +70,19 @@ options(tutorial.exercise.timelimit = 600,
 ```
 
 
-## Texas Income
+## Introduction
 
-
+<!-- DK: Overview introduction. Link to the book.  -->
 
 The smallest unit at which data are made available from the decennial US Census is the block, and the smallest unit available in the ACS is the block group, which represents a collection of blocks. Other surveys are generally available at higher levels of aggregation.
 
+<!-- DK: Do the repo -> project -> quarto stuff. -->
+
+
+## Texas Income
+###
+
+<!-- DK? Tell me what I am going to learn. -->
 
 ### Exercise 1
 
@@ -114,7 +121,7 @@ Professionals keep their data science work in the cloud because laptops fail.
 
 ### Exercise 2
 
-In your QMD, put `library(tidyverse)` and  `library(tidycensus)` in a new code chunk. Press Ctrl/Cmd + Shift + K to render the file
+In your QMD, put `library(tidyverse)` and  `library(tidycensus)` in a new code chunk. Press `Ctrl/Cmd + Shift + K` to render the file
 
 Notice that the file does not look good because the code is visible and there are annoying messages. To take care of this, add `#| message: false` to remove all the messages in this `setup` chunk. Also add the following to the YAML header to remove all code echos from the HTML:
 
@@ -126,7 +133,7 @@ execute:
 In the Console, run:
 
 ```         
-tutorial.helpers::show_file("TexasIncome.qmd", start = -5)
+tutorial.helpers::show_file("TexasIncome.qmd", chunk = "Last")
 ```
 
 CP/CR.
@@ -163,17 +170,15 @@ question_text(NULL,
 
 ###
 
-Always pair `get_acs()` with tidyverse functions for filtering, transforming, and visualizing your data.
+Always pair `get_acs()` with **tidyverse** functions for filtering, transforming, and visualizing your data.
 
 ### Exercise 4
 
-In this exercise, you will use an AI assistant (such as ChatGPT) to generate R code to collect data.
+Ask AI to use **tidycensus** to get data on the median household income for all counties in Texas for 2020.
 
-Open your AI and tell it to use tidycensus to get data on the median household income for all counties in Texas for 2020.
+Put what it gives you in your code chunk and do `Ctrl/Cmd + Enter` to send it to the Console.
 
-Put what it gives you in your code chunk and do `Ctrl/Cmd + Enter` to send it to the console
-
-CP/CR
+CP/CR.
 
 ```{r texas-income-4}
 question_text(NULL,
@@ -185,6 +190,12 @@ question_text(NULL,
 ```
 
 ###
+
+Our answer:
+
+````
+
+````
 
 Tip: Always inspect your output using `glimpse()` or `head()` before plotting.
 
@@ -220,7 +231,7 @@ income_tx <- get_acs(
   variables = "B19013_001",
   state = "TX",
   year = 2020,
-  geometry = TRUE
+  geometry = FALSE
 )
 ````
 
@@ -905,3 +916,7 @@ The `show_file()` function from tutorial.helpers is a convenient way to check th
 
 ```{r download-answers, child = system.file("child_documents/download_answers.Rmd", package = "tutorial.helpers")}
 ```
+
+
+### Good Knowledge Drops
+
