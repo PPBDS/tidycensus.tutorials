@@ -449,7 +449,7 @@ Select `File -> New File -> Quarto Document ...`. Provide a title -- `"Californi
 
 In this exercise, we’ll get the percentage of adults with a bachelor’s degree or higher in each California county.
 
-### Exercise 2
+### Exercise 1
 
 In your QMD, put `library(tidyverse)` and  `library(tidycensus)` in a new code chunk. Press Ctrl/Cmd + Shift + K to render the file
 
@@ -468,7 +468,7 @@ tutorial.helpers::show_file("CaliforniaBachelors.qmd", chunk = "Last")
 
 CP/CR.
 
-```{r california-bachelors-degree-2}
+```{r california-bachelors-degree-1}
 question_text(NULL,
 	answer(NULL, correct = TRUE),
 	allow_retry = TRUE,
@@ -481,7 +481,7 @@ question_text(NULL,
 
 Render again. Everything looks nice, albeit empty, because we have added code to make the file look better and more professional.
 
-### Exercise 3
+### Exercise 2
 
 Place your cursor in the QMD file on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to execute that line.
 
@@ -489,7 +489,7 @@ Note that this causes `library(tidyverse)` to be copied down to the Console and 
 
 CP/CR.
 
-```{r california-bachelors-degree-3}
+```{r california-bachelors-degree-2}
 question_text(NULL,
 	answer(NULL, correct = TRUE),
 	allow_retry = TRUE,
@@ -502,7 +502,7 @@ question_text(NULL,
 
 Working in the console like this is how professionals work!
 
-### Exercise 4
+### Exercise 3
 
 Ask AI to generate R code that uses tidycensus to get educational attainment variables for all California counties in 2020 and save it in a variable called `edu_ca`
 
@@ -511,7 +511,7 @@ Put what it gives you in a new code chunk and do `Ctrl/Cmd + Enter` to send it t
 CP/CR
 
 
-```{r california-bachelors-degree-4}
+```{r california-bachelors-degree-3}
 question_text(NULL,
 	answer(NULL, correct = TRUE),
 	allow_retry = TRUE,
@@ -536,7 +536,7 @@ edu_ca <- get_acs(
 )
 ````
 
-### Exercise 5
+### Exercise 4
 
 Using our code, set `geometry = TRUE`.
 
@@ -550,7 +550,7 @@ tutorial.helpers::show_file("CaliforniaBachelors.qmd", chunk = "Last")
 
 CP/CR.
 
-```{r california-bachelors-degree-5}
+```{r california-bachelors-degree-4}
 question_text(NULL,
 	answer(NULL, correct = TRUE),
 	allow_retry = TRUE,
@@ -574,11 +574,31 @@ edu_ca <- get_acs(
 
 The American Community Survey (ACS) provides annual demographic, economic, and housing data based on samples, while the Decennial Census gives a complete count every 10 years.
 
-### Exercise 6
+### Exercise 5
 
 Let's explore the data, run `glimpse(edu_ca)` in the console.
 
 CP/CR.
+
+```{r california-bachelors-degree-5}
+question_text(NULL,
+	answer(NULL, correct = TRUE),
+	allow_retry = TRUE,
+	try_again_button = "Edit Answer",
+	incorrect = NULL,
+	rows = 3)
+```
+
+###
+
+### Exercise 6
+
+Let's get some quick stats for each column of the data. 
+
+Run `summary(edu_ca)` in the console.
+
+CP/CR.
+
 
 ```{r california-bachelors-degree-6}
 question_text(NULL,
@@ -593,12 +613,13 @@ question_text(NULL,
 
 ### Exercise 7
 
-Let's get some quick stats for each column of the data. 
+We’ll now make a choropleth map of bachelor’s degree attainment across California counties.
 
-Run `summary(edu_ca)` in the console.
+Send our code to the console from the previous exercise.
 
-CP/CR.
+Now, type `edu_ca` in the console.
 
+CP/CR the first few lines.
 
 ```{r california-bachelors-degree-7}
 question_text(NULL,
@@ -611,30 +632,9 @@ question_text(NULL,
 
 ###
 
-### Exercise 8
-
-We’ll now make a choropleth map of bachelor’s degree attainment across California counties.
-
-Send our code to the console from the previous exercise.
-
-Now, type `edu_ca` in the console.
-
-CP/CR the first few lines.
-
-```{r california-bachelors-degree-8}
-question_text(NULL,
-	answer(NULL, correct = TRUE),
-	allow_retry = TRUE,
-	try_again_button = "Edit Answer",
-	incorrect = NULL,
-	rows = 3)
-```
-
-###
-
 Geometry must be `TRUE` if we want to map later.
 
-### Exercise 9
+### Exercise 8
 
 Now copy the first few lines into your AI and say that you are working with tidyverse. Tell it to take the data in `edu_ca` and make a choropleth map of at least bachelor’s degree attainment or higher across California counties and use `mutate()` to calculate the percentage of the population with at least a bachelor’s degree and pipe it into a `ggplot()`
 
@@ -642,7 +642,7 @@ Put what it gives you in a new code chunk and do `Ctrl/Cmd + Enter` to send it t
 
 CP/CR
 
-```{r california-bachelors-degree-9}
+```{r california-bachelors-degree-8}
 question_text(NULL,
 	answer(NULL, correct = TRUE),
 	allow_retry = TRUE,
@@ -697,14 +697,14 @@ ggplot(edu_ca) +
 `ggplot2` can handle spatial data directly using `geom_sf()`. Use `mutate()` to calculate percentages, and pipe that into `ggplot()` for a map.
 
 
-### Exercise 10
+### Exercise 9
 
 
 1. In the Console, run the following command to display the last chunk of your `.qmd` file: CP/CR
 
 tutorial.helpers::show_file("CaliforniaBachelors.qmd", chunk = "last")
 
-```{r california-bachelors-degree-10}
+```{r california-bachelors-degree-9}
 question_text(NULL,
 	answer(NULL, correct = TRUE),
 	allow_retry = TRUE,
@@ -733,7 +733,7 @@ Select `File -> New File -> Quarto Document ...`. Provide a title -- `"Californi
 
 
 
-### Exercise 2
+### Exercise 1
 
 In your QMD, put `library(tidyverse)` and  `library(tidycensus)` in a new code chunk. Press Ctrl/Cmd + Shift + K to render the file
 
@@ -752,7 +752,7 @@ tutorial.helpers::show_file("CaliforniaAge.qmd", chunk = "last")
 
 CP/CR.
 
-```{r california-median-age-2}
+```{r california-median-age-1}
 question_text(NULL,
 	answer(NULL, correct = TRUE),
 	allow_retry = TRUE,
@@ -765,7 +765,7 @@ question_text(NULL,
 
 Render again. Everything looks nice, albeit empty, because we have added code to make the file look better and more professional.
 
-### Exercise 3
+### Exercise 2
 
 Place your cursor in the QMD file on the `library(tidyverse)` line. Use `Cmd/Ctrl + Enter` to execute that line.
 
@@ -773,7 +773,7 @@ Note that this causes `library(tidyverse)` to be copied down to the Console and 
 
 CP/CR.
 
-```{r california-median-age-3}
+```{r california-median-age-2}
 question_text(NULL,
 	answer(NULL, correct = TRUE),
 	allow_retry = TRUE,
@@ -788,7 +788,7 @@ Working in the console like this is how professionals work!
 
 
 
-### Exercise 4
+### Exercise 3
 
 
 Ask AI to generate R code that uses tidycensus data to get both the median age and populations for all counties in California for 2020 in a variable called `age_ca`
@@ -798,7 +798,7 @@ Put what it gives you in a new code chunk and do `Ctrl/Cmd + Enter` to send it t
 
 CP/CR
 
-```{r california-median-age-4}
+```{r california-median-age-3}
 question_text(NULL,
 	answer(NULL, correct = TRUE),
 	allow_retry = TRUE,
@@ -824,7 +824,7 @@ age_ca <- get_acs(
 AI is your best friend! Professionals use AI to generate code and plot. You however, need to be careful as it can and will generate much extra code that you may not need.
 
 
-### Exercise 5
+### Exercise 4
 
 Using our code, add `geometry = FALSE`.
 
@@ -838,7 +838,7 @@ tutorial.helpers::show_file("CaliforniaAge.qmd", chunk = "Last")
 
 CP/CR.
 
-```{r california-bachelors-degree-5}
+```{r california-median-age-4}
 question_text(NULL,
 	answer(NULL, correct = TRUE),
 	allow_retry = TRUE,
@@ -862,13 +862,13 @@ age_ca <- get_acs(
 
 The American Community Survey (ACS) provides annual demographic, economic, and housing data based on samples, while the Decennial Census gives a complete count every 10 years.
 
-### Exercise 6
+### Exercise 5
 
 Let's explore the data, run `glimpse(age_ca)` in the console.
 
 CP/CR.
 
-```{r california-bachelors-degree-6}
+```{r california-median-age-5}
 question_text(NULL,
 	answer(NULL, correct = TRUE),
 	allow_retry = TRUE,
@@ -879,7 +879,7 @@ question_text(NULL,
 
 ###
 
-### Exercise 7
+### Exercise 6
 
 Let's get some quick stats for each column of the data. 
 
@@ -888,7 +888,7 @@ Run `summary(age_ca)` in the console.
 CP/CR.
 
 
-```{r california-bachelors-degree-7}
+```{r california-median-age-6}
 question_text(NULL,
 	answer(NULL, correct = TRUE),
 	allow_retry = TRUE,
@@ -1038,14 +1038,14 @@ ggplot(largest_ca, aes(x = reorder(NAME, median_age), y = median_age)) +
 ```
 
 
-### Exercise 11
+### Exercise 10
 
 
 1. In the Console, run the following command to display the last chunk of your `.qmd` file: CP/CR
 
 tutorial.helpers::show_file("CaliforniaAge.qmd", chunk = "last")
 
-```{r california-median-age-11}
+```{r california-median-age-10}
 question_text(NULL,
 	answer(NULL, correct = TRUE),
 	allow_retry = TRUE,
