@@ -77,8 +77,6 @@ options(tutorial.exercise.timelimit = 600,
 
 This tutorial covers an overview of  [Analyzing US Census Data](https://walker-data.com/census-r/index.html) by Kyle Walker. You will learn about using the [**tidycensus**] package for collecting, interacting, and plotting US Census data. You will mainly focus on collecting data from the Decennial Census and the American Community Survey (ACS).
 
-<!-- DK: Do the repo -> project -> quarto stuff. AP: Done -->
-
 ### Exercise 1
 
 Create a Github repo called `tidycensus-plots`. Make sure to click the "Add a README file" check box.
@@ -169,7 +167,8 @@ This is how professionals work, they type code in the quarto document and send i
 
 ## Texas Income
 
-<!-- DK? Tell me what I am going to learn. AP: Done -->
+<!-- DK: Clean up as we discussed. No wasted words. -->
+
 A critical part of the Census data analysis process is data visualization, where an analyst examines patterns and trends found in their data graphically. This first section illustrates some examples for getting started with exploratory Census data visualization with [ggplot2](https://ggplot2.tidyverse.org/). You will be using the `get_acs()` and the `geom_sf()` functions as well.
 
 
@@ -206,6 +205,9 @@ income_tx <- get_acs(
 )
 ````
 
+###
+
+
 ### Exercise 2
 
 Copy and paste our code to replace it with what you have.
@@ -234,7 +236,7 @@ question_text(NULL,
 
 ### Exercise 3
 
-Using our code, set `geometry = TRUE`.
+Edit your QMD, to change the value of `geometry` to `TRUE`.
 
 Take your code chunk and do `Ctrl/Cmd + Enter` to send it to the Console.
 
@@ -258,20 +260,25 @@ question_text(NULL,
 ###
 
 ````
-income_tx <- get_acs(
-  geography = "county",
-  variables = "B19013_001",
-  state = "TX",
-  year = 2020,
-  geometry = TRUE
-)
+> income_tx <- get_acs(
++   geography = "county",
++   variables = "B19013_001",
++   state = "TX",
++   year = 2020,
++   geometry = TRUE
++ )
+Getting data from the 2016-2020 5-year ACS
+Downloading feature geometry from the Census website.  To cache shapefiles for use in future sessions, set `options(tigris_use_cache = TRUE)`.
+Using FIPS code '48' for state 'TX'
+  |========================================================================================================================| 100%
+>
 ````
 
  The `geometry = TRUE` argument returns spatial polygons, useful for maps and spatial analysis.
 
 ### Exercise 4
 
-Let's explore the data, run `glimpse(income_tx)` in the console.
+Run `glimpse()` on `income_tx` in the Console.
 
 CP/CR.
 
@@ -287,8 +294,6 @@ question_text(NULL,
 ###
 
 ### Exercise 5
-
-Let's get some quick stats for each column of the data. 
 
 Run `summary(income_tx)` in the console.
 
@@ -306,15 +311,11 @@ question_text(NULL,
 
 ###
 
-
+<!-- DK: Chance to define the estimate and moe. -->
 
 
 
 ### Exercise 6
-
-Use AI to generate code that creates a plot of median household income in Texas counties.
-
-Send our code to the console from the previous exercise.
 
 Now, type `income_tx` in the console.
 
