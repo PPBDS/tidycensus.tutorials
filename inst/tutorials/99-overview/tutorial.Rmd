@@ -1063,6 +1063,17 @@ The `show_file()` function from tutorial.helpers is a convenient way to check th
 ```
 
 
+## Summary
+
+This tutorial covered an overview of  [Analyzing US Census Data](https://walker-data.com/census-r/index.html) by Kyle Walker. You learned about using the [**tidycensus**] package for collecting, interacting, and plotting US Census data. You mainly focused on collecting data from the Decennial Census and the American Community Survey (ACS).
+
+
+
+
+
+
+
+
 ### Good Knowledge Drops
 
 If the year is not specified, `get_acs()` defaults to the most recent five-year ACS sample. The data returned is similar in structure to that returned by `get_decennial()`, but includes an `estimate` column (for the ACS estimate) and `moe` column (for the margin of error around that estimate) instead of a value column.
@@ -1100,3 +1111,7 @@ The `theme_void()` function strips the background grid and axis labels from the 
 
 `coord_flip()` from ggplot2:
 Flips x and y axes, often used to make horizontal bar charts easier to read.
+
+
+
+
