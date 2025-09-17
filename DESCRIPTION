@@ -1,6 +1,6 @@
 Package: tidycensus.tutorials
 Title: Tutorials for Analyzing US Census Data
-Version: 0.0.0.9006
+Version: 0.0.0.9007
 Authors@R: 
     person(given = "David",
            family = "Kane",
